@@ -2,6 +2,7 @@
 
 export(Agg)
 export(CrossCor)
+export(CrossCorRandom)
 export(CrossCorX)
 export(ELayers)
 export(LayerSplit)
