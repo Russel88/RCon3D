@@ -1,8 +1,8 @@
 Package: RCon3D
-Title: What the Package Does (one line, title case)
+Title: Analysis of Confocal Images of Microbial Biofilms
 Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+Authors@R: person("Jakob", "Russel", email = "russel2620@gmail.com", role = c("aut", "cre"))
+Description: Various 3D analyses of confocal images. E.g. Quantification, co-aggregation and identifying aggregates.
 Depends: R (>= 3.2.5)
 License: What license is it under?
 Encoding: UTF-8
