@@ -16,6 +16,7 @@ Then lets load the package and some packages for plotting
 ### Load the images
 
 The example image has four channels (named "xan","pan","ste" and "mic").
+It can be downloaded here (ExampleData.zip).
 
 The images has to be binary, and are assumed to have been thresholded
 already
