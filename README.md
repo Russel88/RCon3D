@@ -24,10 +24,10 @@ If the images has already been loaded we can use findIMG to load in the
 images.
 
 The path should lead to folder with a .tif for each image (with all
-z-stacks in one), or a folder with subfolders in which the images is
+z-stacks in one), or a folder with subfolders in which the images are
 split in z-stacks and channels.
 
-(Note:An internal function tiffToArray is partly borrowed from
+(Note: An internal function tiffToArray is partly borrowed from
 github/rmnppt/iMage)
 
     myimg <- loadIMG(".../ExampleData",c("xan","pan","ste","mic"),split=TRUE)
