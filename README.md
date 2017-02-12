@@ -30,7 +30,7 @@ split in z-stacks and channels.
 (Note: An internal function tiffToArray is partly borrowed from
 github/rmnppt/iMage)
 
-    myimg <- loadIMG(".../ExampleData",c("xan","pan","ste","mic"),split=TRUE)
+    myimg <- loadIMG(".../ExampleData",channels=c("xan","pan","ste","mic"),split=TRUE)
 
     ## Loading image 1
 
