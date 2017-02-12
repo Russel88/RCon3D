@@ -1,8 +1,11 @@
 RCon3D: Analyzing confocal images of microbial biofilms
 -------------------------------------------------------
 
-The images has to be binary, and are assumed to have been thresholded
-already The example image has four channels (named "xan","pan","ste" and
+This is a short tutorial of how to use this package for the analysis of confocal images
+
+The images has to be binary, and are assumed to have been thresholded already
+
+The example image can be downloaded here (ExampleData.zip) and has four channels (named "xan","pan","ste" and
 "mic").
 
 First install the package
@@ -24,11 +27,11 @@ subfolders in which the images is split in z-stacks and channels. An
 internal function tiffToArray is partly borrowed from
 github/rmnppt/iMage
 
-    myimg <- loadIMG("//a00143.science.domain/cmf483/Documents/PhD/Projects/Image Analysis/Data",c("xan","pan","ste","mic"),split=TRUE)
+    myimg <- loadIMG(".../ExampleData",c("xan","pan","ste","mic"),split=TRUE)
 
     ## Loading image 1
 
-    myimg <- findIMG("//a00143.science.domain/cmf483/Documents/PhD/Projects/Image Analysis/Data")
+    myimg <- findIMG(".../ExampleData")
 
 Quantify pixels for each layer for the four channels. The naming
 argument is optional but can be used to look through the names of the
