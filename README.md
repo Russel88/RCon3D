@@ -137,8 +137,8 @@ Plot the result
       geom_line() 
     p
 
-![](README_files/figure-markdown_strict/unnamed-chunk-9-1.png) At small
-distances "xan" and "ste" appear to be intermixed more than expected
+![](README_files/figure-markdown_strict/unnamed-chunk-9-1.png) 
+At small distances "xan" and "ste" appear to be intermixed more than expected
 from random chance
 
 ### 3D aggregates
