@@ -20,15 +20,15 @@ The example image has four channels (named "xan","pan","ste" and "mic").
 The images has to be binary, and are assumed to have been thresholded
 already
 
-If the images have already been loaded we can use findIMG to load in the
+If the images has already been loaded we can use findIMG to load in the
 images.
 
 The path should lead to folder with a .tif for each image (with all
 z-stacks in one), or a folder with subfolders in which the images is
 split in z-stacks and channels.
 
-Note:An internal function tiffToArray is partly borrowed from
-github/rmnppt/iMage
+(Note:An internal function tiffToArray is partly borrowed from
+github/rmnppt/iMage)
 
     myimg <- loadIMG(".../ExampleData",c("xan","pan","ste","mic"),split=TRUE)
 
@@ -112,6 +112,9 @@ Ok. lets try 21 microns then. As an example we pick 100 random pixels
 (should be higher for actual analysis), and we run the whole thing 5
 times to see how picking random pixels affect the variability of the
 result
+
+(Note: The framework for this function is partly borrowed from
+github/rmnppt/iMage)
 
     mycc <- CrossCorX(imgs=myimg,channels=c("xan","ste"),size=21,npixel=100,dstep=1,pwidth=0.75,zstep=0.25,R=5)
 
