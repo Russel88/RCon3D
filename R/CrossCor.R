@@ -1,7 +1,7 @@
 #' 3D cross-correlation
 #'
 #' Function to calculate the pairwise 3D cross-correlation between two channels
-#' @param imgs The paths of array files; i.e. output from loadIMG or findIMG functions. A dataframe from the quantify function
+#' @param imgs The paths of array files; i.e. output from loadIMG or findIMG functions.
 #' @param channels Character vector with names of the two channels to calculate cross-correlation for. Should be in the names of the array files
 #' @param size The maximum distance (microns) to examine. Has to be a multiple of both pwidth and zstep. Beware, increasing size will increase runtime exponetially!
 #' @param npixel Number of random pixels to examine. Increasing this will increase precision (and runtime in a linear fashion)
@@ -10,6 +10,7 @@
 #' @param zstep z-step in microns
 #' @param freec The number of cores NOT to use.Defaults to 1
 #' @param layers Optional. Should the function only look in a subset of layers. A list with lists of layers to use for each image. Can also be the output from ELayers 
+#' @param naming Optional. Add metadata to the output dataframe by looking through names of array files. Should be a list of character vectors, each list element will be added as a variable. Example: naming=list(Time=c("T0","T1","T2")). The function inserts a variable called Time, and then looks through the names of the array files and inserts characters mathcing either T0, T1 or T2
 #' @keywords array image cross-correlation
 #' @return A dataframe with the cross-correlation vaules for each distance
 #' @import doParallel
@@ -178,6 +179,21 @@ CrossCor <- function(imgs,channels,size,npixel,dstep=1,pwidth,zstep,freec=1,laye
   
   cc_results$Pair <- paste(channels[1],"+",channels[2])
   
-  return(cc_results)
+  if(!is.null(naming)){
+    cc_resultsx <- cc_results
+    for(i in 1:length(naming)){
+      name.temp <- naming[[i]]
+      cc_resultsx <- cbind(cc_resultsx,NA)
+      for(j in 1:length(name.temp)){
+        cc_resultsx[grep(name.temp[j],cc_resultsx$Img),ncol(cc_results)+i] <- name.temp[j]
+      }
+    }
+    
+    colnames(cc_resultsx) <- c(colnames(cc_resultsx),names(naming))
+    
+  } else cc_resultsx <- cc_results
+  
+  
+  return(cc_resultsx)
   
 }

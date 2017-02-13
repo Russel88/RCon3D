@@ -9,7 +9,7 @@ CrossCorX(..., R = NULL)
 \arguments{
 \item{...}{Arguments to the CrossCor function}
 
-\item{R}{Number of times to run with cross-correlation analysis}
+\item{R}{Number of times to run the cross-correlation analysis}
 }
 \value{
 A dataframe with the cross-correlation vaules for each distance

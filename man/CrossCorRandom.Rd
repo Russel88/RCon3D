@@ -8,7 +8,7 @@ CrossCorRandom(overlap, size, npixel, dstep, side, h, pwidth, zstep, R,
   p1 = 1/3, p2 = 1/3, freec = 1)
 }
 \arguments{
-\item{overlap}{Are the channels allowed to overlap, such that they can be at the same pixels}
+\item{overlap}{Logical. Are the channels allowed to overlap, such that they can be at the same pixels}
 
 \item{size}{The maximum distance (microns) to examine. Has to be a multiple of both pwidth and zstep. Beware, increasing size will increase runtime exponetially!}
 

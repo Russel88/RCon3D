@@ -5,10 +5,9 @@
 #' @param channels Character vector with name(s) of channels. Channel names should be in the names of the array files
 #' @param naming Optional. Add metadata to the output dataframe by looking through names of array files. Should be a list of character vectors, each list element will be added as a variable. Example: naming=list(Time=c("T0","T1","T2")). The function inserts a variable called Time, and then looks through the names of the array files and inserts characters mathcing either T0, T1 or T2
 #' @keywords array image quantify
-#' @return Creates arrays as RDS files in working directory, and outputs the paths for these files
+#' @return A dataframe with number of pixels for each layer
 #' @export
 
-### Function to quantify pixels for each channel at each layer
 Quantify <- function(imgs,channels,naming=NULL) {
   
   # DF for storing data

@@ -8,7 +8,7 @@ CrossCor(imgs, channels, size, npixel, dstep = 1, pwidth, zstep, freec = 1,
   layers = NULL)
 }
 \arguments{
-\item{imgs}{The paths of array files; i.e. output from loadIMG or findIMG functions. A dataframe from the quantify function}
+\item{imgs}{The paths of array files; i.e. output from loadIMG or findIMG functions.}
 
 \item{channels}{Character vector with names of the two channels to calculate cross-correlation for. Should be in the names of the array files}
 
@@ -25,6 +25,8 @@ CrossCor(imgs, channels, size, npixel, dstep = 1, pwidth, zstep, freec = 1,
 \item{freec}{The number of cores NOT to use.Defaults to 1}
 
 \item{layers}{Optional. Should the function only look in a subset of layers. A list with lists of layers to use for each image. Can also be the output from ELayers}
+
+\item{naming}{Optional. Add metadata to the output dataframe by looking through names of array files. Should be a list of character vectors, each list element will be added as a variable. Example: naming=list(Time=c("T0","T1","T2")). The function inserts a variable called Time, and then looks through the names of the array files and inserts characters mathcing either T0, T1 or T2}
 }
 \value{
 A dataframe with the cross-correlation vaules for each distance

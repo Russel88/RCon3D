@@ -2,7 +2,7 @@
 #'
 #' Wrapper function to run CrossCor several times
 #' @param ... Arguments to the CrossCor function
-#' @param R Number of times to run with cross-correlation analysis
+#' @param R Number of times to run the cross-correlation analysis
 #' @keywords array image cross-correlation
 #' @return A dataframe with the cross-correlation vaules for each distance
 #' @export

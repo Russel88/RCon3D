@@ -5,10 +5,10 @@
 \title{Find 3D aggregates}
 \usage{
 Agg(imgs, channel, kern.neighbour = c(3, 3, 3), kern.smooth = c(3, 3, 3),
-  layers = NULL, pwidth = NULL, zstep = NULL)
+  layers = NULL, pwidth = NULL, zstep = NULL, naming = NULL)
 }
 \arguments{
-\item{imgs}{The paths of array files; i.e. output from loadIMG or findIMG functions. A dataframe from the quantify function}
+\item{imgs}{The paths of array files; i.e. output from loadIMG or findIMG functions.}
 
 \item{channel}{Name of the channel to find aggregates in. Should be in the names of the array files}
 
@@ -21,6 +21,8 @@ Agg(imgs, channel, kern.neighbour = c(3, 3, 3), kern.smooth = c(3, 3, 3),
 \item{pwidth}{Optional. Width of pixels in microns to calculate aggregate size in microns instead of pixels}
 
 \item{zstep}{Optional. z-step in microns to calculate aggregate size in microns instead of pixels}
+
+\item{naming}{Optional. Add metadata to the output dataframe by looking through names of array files. Should be a list of character vectors, each list element will be added as a variable. Example: naming=list(Time=c("T0","T1","T2")). The function inserts a variable called Time, and then looks through the names of the array files and inserts characters mathcing either T0, T1 or T2}
 }
 \value{
 A list with two parts. First part is a dataframe with ID and size of aggregates and name of image, second part is a list of the arrays in which pixels are NA if empty or given a number indicating the aggregate ID

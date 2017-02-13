@@ -1,7 +1,7 @@
 #' 3D random cross-correlation
 #'
 #' Function to calculate the pairwise 3D cross-correlation between two random channels
-#' @param overlap Are the channels allowed to overlap, such that they can be at the same pixels
+#' @param overlap Logical. Are the channels allowed to overlap, such that they can be at the same pixels
 #' @param size The maximum distance (microns) to examine. Has to be a multiple of both pwidth and zstep. Beware, increasing size will increase runtime exponetially!
 #' @param npixel Number of random pixels to examine. Increasing this will increase precision (and runtime in a linear fashion)
 #' @param dstep The interval between examined distances (microns). Increasing this decreases resolution but speeds up function linearly. Defaults to 1

@@ -1,19 +1,20 @@
 #' Find 3D aggregates
 #'
 #' Function to group adjacent pixels in aggregates
-#' @param imgs The paths of array files; i.e. output from loadIMG or findIMG functions. A dataframe from the quantify function
+#' @param imgs The paths of array files; i.e. output from loadIMG or findIMG functions.
 #' @param channel Name of the channel to find aggregates in. Should be in the names of the array files
 #' @param kern.neighbour Numeric vector indicating range of neighbouring pixels to aggregate in the x,y,z directions. Has to be odd intergers. c(1,1,1) means no aggregating.
 #' @param kern.smooth Numeric vector indicating range of median smoothing in the x,y,z directions. Has to be odd intergers. c(1,1,1) means no smoothing.
 #' @param layers Optional. Should the function only look in a subset of layers. A list with lists of layers to use for each image. Can also be the output from ELayers 
 #' @param pwidth Optional. Width of pixels in microns to calculate aggregate size in microns instead of pixels
 #' @param zstep Optional. z-step in microns to calculate aggregate size in microns instead of pixels
+#' @param naming Optional. Add metadata to the output dataframe by looking through names of array files. Should be a list of character vectors, each list element will be added as a variable. Example: naming=list(Time=c("T0","T1","T2")). The function inserts a variable called Time, and then looks through the names of the array files and inserts characters mathcing either T0, T1 or T2
 #' @keywords array image aggregate
 #' @return A list with two parts. First part is a dataframe with ID and size of aggregates and name of image, second part is a list of the arrays in which pixels are NA if empty or given a number indicating the aggregate ID
 #' @import mmand
 #' @export
 
-Agg <- function(imgs,channel,kern.neighbour=c(3,3,3),kern.smooth=c(3,3,3),layers=NULL,pwidth=NULL,zstep=NULL) {
+Agg <- function(imgs,channel,kern.neighbour=c(3,3,3),kern.smooth=c(3,3,3),layers=NULL,pwidth=NULL,zstep=NULL,naming=NULL) {
   
   # Load image
   ch_files <- imgs[grep(channel, imgs)]
@@ -69,7 +70,21 @@ Agg <- function(imgs,channel,kern.neighbour=c(3,3,3),kern.smooth=c(3,3,3),layers
   
   afrx <- do.call(rbind,results)
   
-  All <- list(Aggregates=afrx,Arrays=arrays)
+  if(!is.null(naming)){
+    afrxn <- afrx
+    for(i in 1:length(naming)){
+      name.temp <- naming[[i]]
+      afrxn <- cbind(afrxn,NA)
+      for(j in 1:length(name.temp)){
+        afrxn[grep(name.temp[j],afrxn$Img),ncol(afrx)+i] <- name.temp[j]
+      }
+    }
+    
+    colnames(afrxn) <- c(colnames(afrx),names(naming))
+    
+  } else afrxn <- afrx
+  
+  All <- list(Aggregates=afrxn,Arrays=arrays)
   
   return(All)
 }
