@@ -18,7 +18,7 @@
 #' @import foreach
 #' @export
 
-CrossCor <- function(imgs,channels,size,npixel,dstep=1,pwidth,zstep,freec=1,layers=NULL) {
+CrossCor <- function(imgs,channels,size,npixel,dstep=1,pwidth,zstep,freec=1,layers=NULL,naming=NULL) {
   
   stopifnot(size%%zstep == 0)
   stopifnot(size%%pwidth == 0)

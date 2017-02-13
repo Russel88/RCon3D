@@ -5,7 +5,7 @@
 \title{3D cross-correlation}
 \usage{
 CrossCor(imgs, channels, size, npixel, dstep = 1, pwidth, zstep, freec = 1,
-  layers = NULL)
+  layers = NULL, naming = NULL)
 }
 \arguments{
 \item{imgs}{The paths of array files; i.e. output from loadIMG or findIMG functions.}
