@@ -4,10 +4,11 @@
 \alias{CrossCor}
 \title{3D cross-correlation}
 \usage{
-CrossCor(imgs, channels, size, npixel, dstep = 1, pwidth, zstep, freec = 1,
-  layers = NULL, naming = NULL)
+CrossCor(..., R = NULL)
 }
 \arguments{
+\item{R}{Number of times to run the cross-correlation analysis}
+
 \item{imgs}{The paths of array files; i.e. output from loadIMG or findIMG functions.}
 
 \item{channels}{Character vector with names of the two channels to calculate cross-correlation for. Should be in the names of the array files}

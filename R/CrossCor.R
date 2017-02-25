@@ -1,6 +1,7 @@
 #' 3D cross-correlation
 #'
 #' Function to calculate the pairwise 3D cross-correlation between two channels
+#' @param R Number of times to run the cross-correlation analysis
 #' @param imgs The paths of array files; i.e. output from loadIMG or findIMG functions.
 #' @param channels Character vector with names of the two channels to calculate cross-correlation for. Should be in the names of the array files
 #' @param size The maximum distance (microns) to examine. Has to be a multiple of both pwidth and zstep. Beware, increasing size will increase runtime exponetially!
@@ -17,8 +18,26 @@
 #' @import parallel
 #' @import foreach
 #' @export
+#' 
+CrossCor <- function(...,R=NULL){
+  
+  # Create progress bar
+  pb <- txtProgressBar(min = 0, max = R, style = 3)
+  
+  CC.all <- list()
+  for(r in 1:R){
+    CC <- CrossCor.default(...)
+    CC$R <- r
+    CC.all[[r]] <- CC
+    # Update progress bar
+    setTxtProgressBar(pb, r)
+  }
+  CCall <- do.call("rbind", CC.all)
+  close(pb)
+  return(CCall)
+}
 
-CrossCor <- function(imgs,channels,size,npixel,dstep=1,pwidth,zstep,freec=1,layers=NULL,naming=NULL) {
+CrossCor.default <- function(imgs,channels,size,npixel,dstep=1,pwidth,zstep,freec=1,layers=NULL,naming=NULL) {
   
   stopifnot(size%%zstep == 0)
   stopifnot(size%%pwidth == 0)
@@ -42,7 +61,7 @@ CrossCor <- function(imgs,channels,size,npixel,dstep=1,pwidth,zstep,freec=1,laye
   # Load images
   ch1_files <- imgs[grep(channels[1], imgs)]
   ch2_files <- imgs[grep(channels[2], imgs)]
-
+  
   # Start parallel for each replica
   cl <- makeCluster(detectCores()-freec)
   registerDoParallel(cl)  

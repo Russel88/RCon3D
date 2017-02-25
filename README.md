@@ -16,26 +16,26 @@ Then lets load the package and some packages for plotting
 ### Load the images
 
 The example image has four channels (named "xan","pan","ste" and "mic").
-It can be downloaded here (ExampleData.zip).
+It is available here (ExampleData.zip)
 
-The images has to be binary, and are assumed to have been thresholded
+The images have to be binary, and are assumed to have been thresholded
 already
 
-If the images has already been loaded we can use findIMG to load in the
+If the images have already been loaded we can use findIMG to load in the
 images.
 
 The path should lead to folder with a .tif for each image (with all
-z-stacks in one), or a folder with subfolders in which the images are
+z-stacks in one), or a folder with subfolders in which the images is
 split in z-stacks and channels.
 
-(Note: An internal function tiffToArray is partly borrowed from
-github/rmnppt/iMage)
+Note:An internal function tiffToArray is partly borrowed from
+github/rmnppt/iMage
 
-    myimg <- loadIMG(".../ExampleData",channels=c("xan","pan","ste","mic"),split=TRUE)
+    myimg <- loadIMG("/ExampleData",c("xan","pan","ste","mic"),split=TRUE)
 
     ## Loading image 1
 
-    myimg <- findIMG(".../ExampleData")
+    myimg <- findIMG("/ExampleData")
 
 ### Quantify pixels for each layer for each channel
 
@@ -114,10 +114,7 @@ Ok. lets try 21 microns then. As an example we pick 100 random pixels
 times to see how picking random pixels affect the variability of the
 result
 
-(Note: The framework for this function is partly borrowed from
-github/rmnppt/iMage)
-
-    mycc <- CrossCorX(imgs=myimg,channels=c("xan","ste"),size=21,npixel=100,dstep=1,pwidth=0.75,zstep=0.25,R=5)
+    mycc <- CrossCor(imgs=myimg,channels=c("xan","ste"),size=21,npixel=100,dstep=1,pwidth=0.75,zstep=0.25,R=5)
 
     ## 
       |                                                                       
@@ -141,10 +138,10 @@ Plot the result
       geom_line() 
     p
 
-![](README_files/figure-markdown_strict/unnamed-chunk-9-1.png) 
+![](README_files/figure-markdown_strict/unnamed-chunk-9-1.png)
 
-At small distances "xan" and "ste" appear to be intermixed more than expected
-from random chance
+At small distances "xan" and "ste" appear to be intermixed more than
+expected from random chance
 
 ### 3D aggregates
 
