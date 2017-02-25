@@ -1,6 +1,7 @@
 #' 3D cross-ratio
 #'
 #' Function to calculate 3D cross-ratio between three channels. The ratio is between first and second target channel at the distance from the focal channel.
+#' @param ... Arguments for the CrossRatio.default function
 #' @param R Number of times to run the cross-ratio analysis
 #' @param imgs The paths of array files; i.e. output from loadIMG or findIMG functions.
 #' @param focal.channel Character of name of channel of focus.
@@ -37,6 +38,9 @@ CrossRatio <- function(...,R=NULL){
   close(pb)
   return(CRall)
 }
+
+#' @rdname CrossRatio
+#' @export
 
 CrossRatio.default <- function(imgs,focal.channel,target.channels,size,npixel,dstep=1,pwidth,zstep,freec=1,layers=NULL,naming=NULL) {
   

@@ -2,11 +2,17 @@
 % Please edit documentation in R/CrossRatio.R
 \name{CrossRatio}
 \alias{CrossRatio}
+\alias{CrossRatio.default}
 \title{3D cross-ratio}
 \usage{
 CrossRatio(..., R = NULL)
+
+CrossRatio.default(imgs, focal.channel, target.channels, size, npixel,
+  dstep = 1, pwidth, zstep, freec = 1, layers = NULL, naming = NULL)
 }
 \arguments{
+\item{...}{Arguments for the CrossRatio.default function}
+
 \item{R}{Number of times to run the cross-ratio analysis}
 
 \item{imgs}{The paths of array files; i.e. output from loadIMG or findIMG functions.}

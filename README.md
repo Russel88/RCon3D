@@ -31,11 +31,11 @@ split in z-stacks and channels.
 Note:An internal function tiffToArray is partly borrowed from
 github/rmnppt/iMage
 
-    myimg <- loadIMG("/ExampleData",c("xan","pan","ste","mic"),split=TRUE)
+    myimg <- loadIMG("//a00143.science.domain/cmf483/Documents/PhD/Projects/Image Analysis/Data",c("xan","pan","ste","mic"),split=TRUE)
 
     ## Loading image 1
 
-    myimg <- findIMG("/ExampleData")
+    myimg <- findIMG("//a00143.science.domain/cmf483/Documents/PhD/Projects/Image Analysis/Data")
 
 ### Quantify pixels for each layer for each channel
 
@@ -109,12 +109,12 @@ of both zstep and pwidth
     ##  [1]  0.0  1.5  3.0  4.5  6.0  7.5  9.0 10.5 12.0 13.5 15.0 16.5 18.0 19.5
     ## [15] 21.0 22.5 24.0 25.5 27.0 28.5 30.0
 
-Ok. lets try 21 microns then. As an example we pick 100 random pixels
+Ok. lets try 21 microns then. As an example we pick 200 random pixels
 (should be higher for actual analysis), and we run the whole thing 5
 times to see how picking random pixels affect the variability of the
 result
 
-    mycc <- CrossCor(imgs=myimg,channels=c("xan","ste"),size=21,npixel=100,dstep=1,pwidth=0.75,zstep=0.25,R=5)
+    mycc <- CrossCor(imgs=myimg,channels=c("xan","ste"),size=21,npixel=200,dstep=1,pwidth=0.75,zstep=0.25,R=5)
 
     ## 
       |                                                                       
@@ -150,7 +150,7 @@ Lets find 3D aggregates of "mic"
 kern.smooth=c(3,3,3) means that we median smooth the image with a 3x3x3
 filter (x,y,z)
 
-kern.neighbour=c(3,3,3) means that 3x3x3 box is used to determine
+kern.neighbour=c(3,3,3) means that a 3x3x3 box is used to determine
 whether pixels are in the same aggregate or not. c(3,3,3) is immediate
 neighbours. c(5,5,5) would extend a pixel further in all directions.
 c(3,3,1) would find aggregates for each x,y 2D plane
@@ -176,3 +176,40 @@ Lets plot the 3D image of aggregates larger than 20000 pixels
     scatterplot3d(M$Var1,M$Var2,M$Var3,color=M$value)
 
 ![](README_files/figure-markdown_strict/unnamed-chunk-11-1.png)
+
+### 3D Cross-ratio
+
+It might be of interest to examine which of two channels is
+closer/further from a focal channel.
+
+For this we use a cross-ratio: At each distance from a focal channel,
+what is the ratio between two target channels. Normalized to what is
+expected given random chance. A cross-ratio above 1 at some distance
+means that target channel 1 is more likely to be found than target
+channel 2 at that distance.
+
+    mycr <- CrossRatio(imgs=myimg,focal.channel="pan",target.channels=c("xan","ste"),size=21,npixel=200,dstep=1,pwidth=0.75,zstep=0.25,R=5)
+
+    ## 
+      |                                                                       
+      |                                                                 |   0%
+      |                                                                       
+      |=============                                                    |  20%
+      |                                                                       
+      |==========================                                       |  40%
+      |                                                                       
+      |=======================================                          |  60%
+      |                                                                       
+      |====================================================             |  80%
+      |                                                                       
+      |=================================================================| 100%
+
+Plot the result
+
+    p <- ggplot(mycr,aes(x=Distance,y=CR,group=R)) +
+      theme_classic() +
+      geom_hline(yintercept=1) +
+      geom_line() 
+    p
+
+![](README_files/figure-markdown_strict/unnamed-chunk-13-1.png)

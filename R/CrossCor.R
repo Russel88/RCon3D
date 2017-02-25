@@ -1,6 +1,7 @@
 #' 3D cross-correlation
 #'
 #' Function to calculate the pairwise 3D cross-correlation between two channels
+#' @param ... Arguments for the CrossCor.default function
 #' @param R Number of times to run the cross-correlation analysis
 #' @param imgs The paths of array files; i.e. output from loadIMG or findIMG functions.
 #' @param channels Character vector with names of the two channels to calculate cross-correlation for. Should be in the names of the array files
@@ -18,7 +19,7 @@
 #' @import parallel
 #' @import foreach
 #' @export
-#' 
+
 CrossCor <- function(...,R=NULL){
   
   # Create progress bar
@@ -36,6 +37,9 @@ CrossCor <- function(...,R=NULL){
   close(pb)
   return(CCall)
 }
+
+#' @rdname CrossCor
+#' @export
 
 CrossCor.default <- function(imgs,channels,size,npixel,dstep=1,pwidth,zstep,freec=1,layers=NULL,naming=NULL) {
   

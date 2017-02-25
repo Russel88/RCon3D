@@ -2,11 +2,17 @@
 % Please edit documentation in R/CrossCor.R
 \name{CrossCor}
 \alias{CrossCor}
+\alias{CrossCor.default}
 \title{3D cross-correlation}
 \usage{
 CrossCor(..., R = NULL)
+
+CrossCor.default(imgs, channels, size, npixel, dstep = 1, pwidth, zstep,
+  freec = 1, layers = NULL, naming = NULL)
 }
 \arguments{
+\item{...}{Arguments for the CrossCor.default function}
+
 \item{R}{Number of times to run the cross-correlation analysis}
 
 \item{imgs}{The paths of array files; i.e. output from loadIMG or findIMG functions.}
