@@ -212,7 +212,7 @@ CrossCor.default <- function(imgs,channels,size,npixel,dstep=1,pwidth,zstep,free
       }
     }
     
-    colnames(cc_resultsx) <- c(colnames(cc_resultsx),names(naming))
+    colnames(cc_resultsx) <- c(colnames(cc_results),names(naming))
     
   } else cc_resultsx <- cc_results
   

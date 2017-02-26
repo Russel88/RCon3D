@@ -194,7 +194,7 @@ CrossRatio.default <- function(imgs,focal.channel,target.channels,size,npixel,ds
     
     theseCR <- cbind(gsub(target.channels[1],"",sub(".*/", "", ch.t1_files[i])),ds, CR)
     theseCR <- as.data.frame(theseCR)
-    colnames(theseCR) <- c("R","Distance", "CR")
+    colnames(theseCR) <- c("Img","Distance", "CR")
     
     return(theseCR)
     
@@ -219,7 +219,7 @@ CrossRatio.default <- function(imgs,focal.channel,target.channels,size,npixel,ds
       }
     }
     
-    colnames(cr_resultsx) <- c(colnames(cr_resultsx),names(naming))
+    colnames(cr_resultsx) <- c(colnames(cr_results),names(naming))
     
   } else cr_resultsx <- cr_results
   
