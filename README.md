@@ -31,11 +31,11 @@ split in z-stacks and channels.
 Note:An internal function tiffToArray is partly borrowed from
 github/rmnppt/iMage
 
-    myimg <- loadIMG("//a00143.science.domain/cmf483/Documents/PhD/Projects/Image Analysis/Data",c("xan","pan","ste","mic"),split=TRUE)
+    myimg <- loadIMG("/ExampleData",c("xan","pan","ste","mic"),split=TRUE)
 
     ## Loading image 1
 
-    myimg <- findIMG("//a00143.science.domain/cmf483/Documents/PhD/Projects/Image Analysis/Data")
+    myimg <- findIMG("/ExampleData")
 
 ### Quantify pixels for each layer for each channel
 

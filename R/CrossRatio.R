@@ -43,9 +43,9 @@ CrossRatio <- function(...,R=NULL){
 #' @export
 
 CrossRatio.default <- function(imgs,focal.channel,target.channels,size,npixel,dstep=1,pwidth,zstep,freec=1,layers=NULL,naming=NULL) {
-  
-  stopifnot(size%%zstep == 0)
-  stopifnot(size%%pwidth == 0)
+
+  if(size%%zstep != 0) if(all.equal(size%%zstep,zstep)!=TRUE) stop("size not a multiple of zstep")
+  if(size%%pwidth != 0) if(all.equal(size%%pwidth,pwidth)!=TRUE) stop("size not a multiple of pwidth")
   
   # Null box (pixels)
   null_box <- expand.grid(x = seq((-size/pwidth), (size/pwidth), by = 1), 
