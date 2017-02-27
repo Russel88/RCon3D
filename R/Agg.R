@@ -4,7 +4,7 @@
 #' @param imgs The paths of array files; i.e. output from loadIMG or findIMG functions.
 #' @param channel Name of the channel to find aggregates in. Should be in the names of the array files
 #' @param kern.neighbour Numeric vector indicating range of neighbouring pixels to aggregate in the x,y,z directions. Has to be odd intergers. c(1,1,1) means no aggregating.
-#' @param kern.smooth Numeric vector indicating range of median smoothing in the x,y,z directions. Has to be odd intergers. c(1,1,1) means no smoothing.
+#' @param kern.smooth Optional. Numeric vector indicating range of median smoothing in the x,y,z directions. Has to be odd intergers. c(1,1,1) means no smoothing.
 #' @param layers Optional. Should the function only look in a subset of layers. A list with lists of layers to use for each image. Can also be the output from ELayers 
 #' @param pwidth Optional. Width of pixels in microns to calculate aggregate size in microns instead of pixels
 #' @param zstep Optional. z-step in microns to calculate aggregate size in microns instead of pixels
@@ -14,7 +14,7 @@
 #' @import mmand
 #' @export
 
-Agg <- function(imgs,channel,kern.neighbour=c(3,3,3),kern.smooth=c(3,3,3),layers=NULL,pwidth=NULL,zstep=NULL,naming=NULL) {
+Agg <- function(imgs,channel,kern.neighbour=c(3,3,3),kern.smooth=NULL,layers=NULL,pwidth=NULL,zstep=NULL,naming=NULL) {
   
   # Load image
   ch_files <- imgs[grep(channel, imgs)]
@@ -46,7 +46,7 @@ Agg <- function(imgs,channel,kern.neighbour=c(3,3,3),kern.smooth=c(3,3,3),layers
     ch_new[(ep+1):(side+ep),(ep+1):(side+ep),(ep+1):(h+ep)] <- ch_t 
     
     # Smooth
-    if(kern.smooth != NULL) {
+    if(!is.null(kern.smooth)) {
       if(kern.smooth[1] %% 1 == 0 & kern.smooth[1] %% 2 != 0 &
          kern.smooth[2] %% 1 == 0 & kern.smooth[2] %% 2 != 0 &
          kern.smooth[3] %% 1 == 0 & kern.smooth[3] %% 2 != 0) {

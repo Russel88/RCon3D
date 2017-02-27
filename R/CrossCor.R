@@ -83,7 +83,7 @@ CrossCor.default <- function(imgs,channels,size,npixel,dstep=1,pwidth,zstep,free
     }
     
     # Smooth
-    if(kern.smooth != NULL) {
+    if(!is.null(kern.smooth)) {
       if(kern.smooth[1] %% 1 == 0 & kern.smooth[1] %% 2 != 0 &
          kern.smooth[2] %% 1 == 0 & kern.smooth[2] %% 2 != 0 &
          kern.smooth[3] %% 1 == 0 & kern.smooth[3] %% 2 != 0) {

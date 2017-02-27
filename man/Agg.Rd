@@ -4,7 +4,7 @@
 \alias{Agg}
 \title{Find 3D aggregates}
 \usage{
-Agg(imgs, channel, kern.neighbour = c(3, 3, 3), kern.smooth = c(3, 3, 3),
+Agg(imgs, channel, kern.neighbour = c(3, 3, 3), kern.smooth = NULL,
   layers = NULL, pwidth = NULL, zstep = NULL, naming = NULL)
 }
 \arguments{
@@ -14,7 +14,7 @@ Agg(imgs, channel, kern.neighbour = c(3, 3, 3), kern.smooth = c(3, 3, 3),
 
 \item{kern.neighbour}{Numeric vector indicating range of neighbouring pixels to aggregate in the x,y,z directions. Has to be odd intergers. c(1,1,1) means no aggregating.}
 
-\item{kern.smooth}{Numeric vector indicating range of median smoothing in the x,y,z directions. Has to be odd intergers. c(1,1,1) means no smoothing.}
+\item{kern.smooth}{Optional. Numeric vector indicating range of median smoothing in the x,y,z directions. Has to be odd intergers. c(1,1,1) means no smoothing.}
 
 \item{layers}{Optional. Should the function only look in a subset of layers. A list with lists of layers to use for each image. Can also be the output from ELayers}
 

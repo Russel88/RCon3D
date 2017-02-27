@@ -87,7 +87,7 @@ CrossRatio.default <- function(imgs,focal.channel,target.channels,size,npixel,ds
     }
     
     # Smooth
-    if(kern.smooth != NULL) {
+    if(!is.null(kern.smooth)) {
       if(kern.smooth[1] %% 1 == 0 & kern.smooth[1] %% 2 != 0 &
          kern.smooth[2] %% 1 == 0 & kern.smooth[2] %% 2 != 0 &
          kern.smooth[3] %% 1 == 0 & kern.smooth[3] %% 2 != 0) {
