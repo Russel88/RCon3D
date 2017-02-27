@@ -46,12 +46,14 @@ Agg <- function(imgs,channel,kern.neighbour=c(3,3,3),kern.smooth=c(3,3,3),layers
     ch_new[(ep+1):(side+ep),(ep+1):(side+ep),(ep+1):(h+ep)] <- ch_t 
     
     # Smooth
-    if(kern.smooth[1] %% 1 == 0 & kern.smooth[1] %% 2 != 0 &
-       kern.smooth[2] %% 1 == 0 & kern.smooth[2] %% 2 != 0 &
-       kern.smooth[3] %% 1 == 0 & kern.smooth[3] %% 2 != 0) {
-      kern.s <- kernelArray(array(1,dim=kern.smooth))
-      ch_new <- medianFilter(ch_new,kern.s)
-      ch_new[ch_new > 0] <- 1 } else stop("Kernel smooth has to be an odd integers in all directions")
+    if(kern.smooth != NULL) {
+      if(kern.smooth[1] %% 1 == 0 & kern.smooth[1] %% 2 != 0 &
+         kern.smooth[2] %% 1 == 0 & kern.smooth[2] %% 2 != 0 &
+         kern.smooth[3] %% 1 == 0 & kern.smooth[3] %% 2 != 0) {
+        kern.s <- kernelArray(array(1,dim=kern.smooth))
+        ch_new <- medianFilter(ch_new,kern.s)
+        ch_new[ch_new > 0] <- 1 } else stop("Kernel smooth has to be odd integers in all directions")
+    }
     
     # Find aggregates
     kern.n <- kernelArray(array(1,dim=kern.neighbour))

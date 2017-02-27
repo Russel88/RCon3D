@@ -11,6 +11,7 @@
 #' @param pwidth Width of pixels in microns
 #' @param zstep z-step in microns
 #' @param freec The number of cores NOT to use.Defaults to 1
+#' @param kern.smooth Optional. Numeric vector indicating range of median smoothing in the x,y,z directions. Has to be odd intergers. c(1,1,1) means no smoothing.
 #' @param layers Optional. Should the function only look in a subset of layers. A list with lists of layers to use for each image. Can also be the output from ELayers 
 #' @param naming Optional. Add metadata to the output dataframe by looking through names of array files. Should be a list of character vectors, each list element will be added as a variable. Example: naming=list(Time=c("T0","T1","T2")). The function inserts a variable called Time, and then looks through the names of the array files and inserts characters mathcing either T0, T1 or T2
 #' @keywords array image cross-correlation
@@ -41,7 +42,7 @@ CrossCor <- function(...,R=NULL){
 #' @rdname CrossCor
 #' @export
 
-CrossCor.default <- function(imgs,channels,size,npixel,dstep=1,pwidth,zstep,freec=1,layers=NULL,naming=NULL) {
+CrossCor.default <- function(imgs,channels,size,npixel,dstep=1,pwidth,zstep,freec=1,kern.smooth=NULL,layers=NULL,naming=NULL) {
   
   if(size%%zstep != 0) if(all.equal(size%%zstep,zstep)!=TRUE) stop("size not a multiple of zstep")
   if(size%%pwidth != 0) if(all.equal(size%%pwidth,pwidth)!=TRUE) stop("size not a multiple of pwidth")
@@ -79,6 +80,18 @@ CrossCor.default <- function(imgs,channels,size,npixel,dstep=1,pwidth,zstep,free
     if(!is.null(layers[[i]])){
       ch1_t <- ch1_t[,,layers[[i]]]
       ch2_t <- ch2_t[,,layers[[i]]]
+    }
+    
+    # Smooth
+    if(kern.smooth != NULL) {
+      if(kern.smooth[1] %% 1 == 0 & kern.smooth[1] %% 2 != 0 &
+         kern.smooth[2] %% 1 == 0 & kern.smooth[2] %% 2 != 0 &
+         kern.smooth[3] %% 1 == 0 & kern.smooth[3] %% 2 != 0) {
+        kern.s <- kernelArray(array(1,dim=kern.smooth))
+        ch1_t <- medianFilter(ch1_t,kern.s)
+        ch1_t[ch1_t > 0] <- 1
+        ch2_t <- medianFilter(ch2_t,kern.s)
+        ch2_t[ch2_t > 0] <- 1} else stop("Kernel smooth has to be odd integers in all directions")
     }
     
     # Densities of channels

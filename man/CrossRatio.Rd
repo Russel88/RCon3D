@@ -8,7 +8,8 @@
 CrossRatio(..., R = NULL)
 
 CrossRatio.default(imgs, focal.channel, target.channels, size, npixel,
-  dstep = 1, pwidth, zstep, freec = 1, layers = NULL, naming = NULL)
+  dstep = 1, pwidth, zstep, freec = 1, kern.smooth = NULL,
+  layers = NULL, naming = NULL)
 }
 \arguments{
 \item{...}{Arguments for the CrossRatio.default function}
@@ -32,6 +33,8 @@ CrossRatio.default(imgs, focal.channel, target.channels, size, npixel,
 \item{zstep}{z-step in microns}
 
 \item{freec}{The number of cores NOT to use.Defaults to 1}
+
+\item{kern.smooth}{Optional. Numeric vector indicating range of median smoothing in the x,y,z directions. Has to be odd intergers. c(1,1,1) means no smoothing.}
 
 \item{layers}{Optional. Should the function only look in a subset of layers. A list with lists of layers to use for each image. Can also be the output from ELayers}
 
