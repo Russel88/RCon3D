@@ -2,20 +2,12 @@ RCon3D: Analyzing confocal images of microbial biofilms
 -------------------------------------------------------
 #### Acknowledgment note: 
 
-<<<<<<< HEAD
 
 An internal function, tiffToArray, is partly borrowed from <https://github.com/rmnppt/iMage>. 
 
 Furthermore, some of the algorithmic framework for the CrossCor and CrossRatio analysis is also borrowed from this repository.
 
 
-
-### Loading packages
-=======
-#### Acknowledgment note: 
-An internal function, tiffToArray, is partly borrowed from <https://github.com/rmnppt/iMage>. 
-Furthermore, some of the algorithmic framework for the CrossCor and CrossRatio analysis is also borrowed from this repository.
->>>>>>> 84951c11a0dbafcc123de0d2cb38f4a44142a852
 
 ### Loading packages
 
