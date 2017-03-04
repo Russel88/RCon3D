@@ -14,7 +14,7 @@ loadIMG <- function(path, channels, split=FALSE){
   setwd(path)
 
   # Convert images to arrays
-  tiffToArray(channels,split=split)
+  tiff_to_array(channels,split=split)
 
   # Find the files
   files <- list.files(getwd(), "_Array.R", full.names = T)

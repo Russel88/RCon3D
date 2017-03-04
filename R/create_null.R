@@ -7,7 +7,7 @@
 #' @return Creates arrays as RDS files in the specified path, and outputs the paths for these files
 #' @export
 
-CreateNulls <- function(path, channels){
+create_nulls <- function(path, channels){
 
   setwd(path)
   

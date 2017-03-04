@@ -2,7 +2,7 @@
 % Please edit documentation in R/findIMG.R
 \name{findIMG}
 \alias{findIMG}
-\title{Find arrays created with loadIMG or tiffToArray}
+\title{Find arrays created with \code{loadIMG} or \code{tiff_to_array}}
 \usage{
 findIMG(path)
 }
@@ -13,7 +13,7 @@ findIMG(path)
 The paths for the array files
 }
 \description{
-Find arrays already created by the loadIMG or tiffToArray functions
+Find arrays already created by the \code{loadIMG} or \code{tiff_to_array} functions
 }
 \keyword{array}
 \keyword{image}

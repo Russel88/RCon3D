@@ -10,7 +10,7 @@
 #' @return Creates arrays as RDS files in the specified path, and outputs the paths for these files
 #' @export
 
-CreateRandom <- function(path, overlap, side, h, probs){
+create_random <- function(path, overlap, side, h, probs){
 
   # Create empty array
   ch0 <- array(0, c(side, side, h))

@@ -1,13 +1,12 @@
 RCon3D: Analyzing confocal images of microbial biofilms
 -------------------------------------------------------
-#### Acknowledgment note: 
 
+#### Acknowledgment note:
 
-An internal function, tiffToArray, is partly borrowed from <https://github.com/rmnppt/iMage>. 
-
-Furthermore, some of the algorithmic framework for the CrossCor and CrossRatio analysis is also borrowed from this repository.
-
-
+An internal function, `tiff_to_array`, is partly borrowed from
+<https://github.com/rmnppt/iMage>. Furthermore, some of the algorithmic
+framework for the `cross_agg` and `cross_ratio` analysis is also
+borrowed from this repository.
 
 ### Loading packages
 
@@ -26,25 +25,27 @@ Then lets load the package and some packages for plotting
 ### Load the images
 
 The example image has four channels (named "xan","pan","ste" and "mic").
-It is available here (ExampleData.zip)
+It is available here (github/Russel88/RCon3D/ExampleData.zip)
 
 The images have to be binary, and are assumed to have been thresholded
 already
 
-If the images have already been loaded we can use findIMG to load in the
-images.
+If the images have already been loaded we can use `findIMG` to load in
+the images.
 
 The path should lead to folder with a .tif for each image (with all
 z-stacks in one), or a folder with subfolders in which the images is
 split in z-stacks and channels.
 
-    myimg <- loadIMG("/ExampleData",c("xan","pan","ste","mic"),split=TRUE)
+    myimg <- loadIMG("//a00143.science.domain/cmf483/Documents/PhD/Projects/xPackages/RCon3D/Data",c("xan","pan","ste","mic"),split=TRUE)
 
     ## Loading image 1
 
-    myimg <- findIMG("/ExampleData")
+    myimg <- findIMG("//a00143.science.domain/cmf483/Documents/PhD/Projects/xPackages/RCon3D/Data")
 
 ### Quantify pixels for each layer for each channel
+
+First, lets quantify the pixels for each layer, channel and image
 
 The naming argument is optional but can be used to look through the
 names of the images and add corresponding variables Here it looks for
@@ -52,7 +53,7 @@ names of the images and add corresponding variables Here it looks for
 course only useful when there are several images with different
 metadata. (Eg. Time=c("12h","24h"))
 
-    myq <- Quantify(myimg,channels=c("xan","pan","mic","ste"),naming=list(Time=c("24h")))
+    myq <- quant(myimg,channels=c("xan","pan","mic","ste"),naming=list(Time=c("24h")))
     head(myq)
 
     ##                          Img Channel Count Layer Time
@@ -80,7 +81,7 @@ Note that trim=TRUE. This is because we think the layer with most fill
 is the actual bottom of the specimen, and we therefore trim away all
 that is below that layer
 
-    myq.std <- LayerStd(myq,layer.start = "Top",trim=TRUE)
+    myq.std <- layer_stand(myq,layer.start = "Top",trim=TRUE)
 
     p <- ggplot(data=myq.std,aes(x=NewLayer,y=Count,colour=Channel,group=Channel)) +
       theme_classic() +
@@ -90,14 +91,14 @@ that is below that layer
 
 ![](README_files/figure-markdown_strict/unnamed-chunk-6-1.png)
 
-### 3D Cross-correlation (Co-aggregation)
+### 3D Co-aggregation (Cross-correlation)
 
-Lets calculate 3D cross-correlation between channels "ste" and "xan".
+Lets calculate 3D co-aggregation between channels "ste" and "xan".
 
 This analysis is for determining how two channels are positioned
 relative to each other
 
-A cross-correlation of 1 equals random positioning at that specific
+A co-aggregation of 1 equals random positioning at that specific
 distance, &lt;1 means segregation and &gt;1 means aggregation.
 
 It is similar to co-aggregation implemented in daime
@@ -121,7 +122,7 @@ Ok. lets try 21 microns then. As an example we pick 200 random pixels
 times to see how picking random pixels affect the variability of the
 result
 
-    mycc <- CrossCor(imgs=myimg,channels=c("xan","ste"),size=21,npixel=200,dstep=1,pwidth=0.75,zstep=0.25,R=5)
+    mycc <- co_agg(imgs=myimg,channels=c("xan","ste"),size=21,npixel=200,dstep=1,pwidth=0.75,zstep=0.25,R=5)
 
     ## 
       |                                                                       
@@ -139,7 +140,7 @@ result
 
 Plot the result
 
-    p <- ggplot(mycc,aes(x=Distance,y=CC,group=R)) +
+    p <- ggplot(mycc,aes(x=Distance,y=CA,group=R)) +
       theme_classic() +
       geom_hline(yintercept=1) +
       geom_line() 
@@ -162,7 +163,7 @@ whether pixels are in the same aggregate or not. c(3,3,3) is immediate
 neighbours. c(5,5,5) would extend a pixel further in all directions.
 c(3,3,1) would find aggregates for each x,y 2D plane
 
-    my.agg <- Agg(myimg,"mic",kern.smooth=c(3,3,3),kern.neighbour=c(3,3,3),pwidth=0.75,zstep=0.25)
+    my.agg <- clumps(myimg,"mic",kern.smooth=c(3,3,3),kern.neighbour=c(3,3,3),pwidth=0.75,zstep=0.25)
 
     ## Running replica 1
 
@@ -195,7 +196,7 @@ expected given random chance. A cross-ratio above 1 at some distance
 means that target channel 1 is more likely to be found than target
 channel 2 at that distance.
 
-    mycr <- CrossRatio(imgs=myimg,focal.channel="pan",target.channels=c("xan","ste"),size=21,npixel=200,dstep=1,pwidth=0.75,zstep=0.25,R=5)
+    mycr <- cross_ratio(imgs=myimg,focal.channel="pan",target.channels=c("xan","ste"),size=21,npixel=200,dstep=1,pwidth=0.75,zstep=0.25,R=5)
 
     ## 
       |                                                                       
