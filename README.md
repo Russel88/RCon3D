@@ -37,11 +37,11 @@ The path should lead to folder with a .tif for each image (with all
 z-stacks in one), or a folder with subfolders in which the images is
 split in z-stacks and channels.
 
-    myimg <- loadIMG("//a00143.science.domain/cmf483/Documents/PhD/Projects/xPackages/RCon3D/Data",c("xan","pan","ste","mic"),split=TRUE)
+    myimg <- loadIMG("/ExampleData",c("xan","pan","ste","mic"),split=TRUE)
 
     ## Loading image 1
 
-    myimg <- findIMG("//a00143.science.domain/cmf483/Documents/PhD/Projects/xPackages/RCon3D/Data")
+    myimg <- findIMG("/ExampleData")
 
 ### Quantify pixels for each layer for each channel
 
