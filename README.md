@@ -1,12 +1,51 @@
-RCon3D: Analyzing confocal images of microbial biofilms
--------------------------------------------------------
+RCon3D: Analyzing 3D confocal images of microbial biofilms
+----------------------------------------------------------
+
+#### Functions
+
+`loadIMG` Load .tif files and turn them into arrays, and save them as
+RDS files ready for downstream analysis
+
+`findIMG` Find already loaded images in a set directory
+
+`quant` Quantifies the number of pixels in each image, for each channel
+at each layer.
+
+`layer_stand` Standardize layers based on fill. Relevant if the bottom
+of the specimen is the layer with highest fill
+
+`layer_split` Splits quantification in Top, Middle and Bottom based on
+fill and/or a set number of layers
+
+`occupancy` Estimates the proportion a (target) channel occupy around a
+(focal) channel
+
+`co_agg` Estimates the co-aggregation between two channels. An
+undirected version of `occupancy`
+
+`cross_ratio` Estimates the ratio between two channels (targets), at
+some distance from a focal channel
+
+`clumps` Find 3D clumps (aggregates) based on clumping together
+neighbouring pixels.
+
+`create_random` Create random images for testing
+
+`create_nulls` Create image files for the empty spaces in an image, such
+that this can be used in the analysis. For example, it can then be
+calculated how much empty space there is a around a certain channel with
+`occupancy`
+
+`extract_layers` With the output from `layer_split` it makes a list of
+what layers to analyze in `occupancy`, `clumps`, `co_agg` and
+`cross_ratio`
 
 #### Acknowledgment note:
 
 An internal function, `tiff_to_array`, is partly borrowed from
 <https://github.com/rmnppt/iMage>. Furthermore, some of the algorithmic
-framework for the `cross_agg` and `cross_ratio` analysis is also
-borrowed from this repository.
+framework for the `co_agg`,`occupancy` and `cross_ratio` analysis is
+also borrowed from this repository.
 
 ### Loading packages
 
@@ -91,6 +130,22 @@ that is below that layer
 
 ![](README_files/figure-markdown_strict/unnamed-chunk-6-1.png)
 
+We can also split the image in top, middle and bottom based on various
+criteria. Here we define the Top as all layers from the very top until
+75 percent of the image is filled (pt=0.75). The bottom is the bottom 20
+layers (add.b=20). The middle is the rest.
+
+    myq.split <- layer_split(myq,layer.start = "Top",trim=TRUE,side=512,pt=0.75,add.b=20,add.t=0)
+
+    p <- ggplot(data=myq.split,aes(x=Layer,y=Count,colour=Split,group=Split)) +
+      theme_classic() +
+      geom_freqpoly(stat="identity",position=position_dodge(width = 0),size=1) +
+      coord_flip() +
+      facet_grid(.~Channel)
+    p
+
+![](README_files/figure-markdown_strict/unnamed-chunk-7-1.png)
+
 ### 3D Co-aggregation (Cross-correlation)
 
 Lets calculate 3D co-aggregation between channels "ste" and "xan".
@@ -146,10 +201,50 @@ Plot the result
       geom_line() 
     p
 
-![](README_files/figure-markdown_strict/unnamed-chunk-9-1.png)
+![](README_files/figure-markdown_strict/unnamed-chunk-10-1.png)
 
 At small distances "xan" and "ste" appear to be intermixed more than
 expected from random chance
+
+### 3D Occupancy
+
+We can also quantify how much space a channel (target) occupy at certain
+distances from another channel (focal). This is similar to
+co-aggregation, although this is directed. With set number of random
+pixels, `occupancy` is more precise than the `co_agg`, especially in
+images with low fill.
+
+Lets run it until 21 microns. As an example we pick 200 random pixels,
+and we run the whole thing 5 times to see how picking random pixels
+affect the variability of the result
+
+    myocc <- occupancy(imgs=myimg,focal.channel="ste",target.channel="xan",size=21,npixel=200,dstep=1,pwidth=0.75,zstep=0.25,R=5)
+
+    ## 
+      |                                                                       
+      |                                                                 |   0%
+      |                                                                       
+      |=============                                                    |  20%
+      |                                                                       
+      |==========================                                       |  40%
+      |                                                                       
+      |=======================================                          |  60%
+      |                                                                       
+      |====================================================             |  80%
+      |                                                                       
+      |=================================================================| 100%
+
+Plot the result. The red line is the actual proportion occupied, the
+black line is normalized such that random equals 1
+
+    p <- ggplot(myocc,aes(x=Distance,y=Occupancy,group=R)) +
+      theme_classic() +
+      geom_hline(yintercept=1) +
+      geom_line(colour="Red") +
+      geom_line(data=myocc,aes(x=Distance,y=Occupancy.Normalized,group=R))
+    p
+
+![](README_files/figure-markdown_strict/unnamed-chunk-12-1.png)
 
 ### 3D aggregates
 
@@ -183,7 +278,7 @@ Lets plot the 3D image of aggregates larger than 20000 pixels
     # Plot it
     scatterplot3d(M$Var1,M$Var2,M$Var3,color=M$value)
 
-![](README_files/figure-markdown_strict/unnamed-chunk-11-1.png)
+![](README_files/figure-markdown_strict/unnamed-chunk-14-1.png)
 
 ### 3D Cross-ratio
 
@@ -220,4 +315,4 @@ Plot the result
       geom_line() 
     p
 
-![](README_files/figure-markdown_strict/unnamed-chunk-13-1.png)
+![](README_files/figure-markdown_strict/unnamed-chunk-16-1.png)
