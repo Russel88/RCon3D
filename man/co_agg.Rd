@@ -38,7 +38,7 @@ co_agg.default(imgs, channels, size, npixel, dstep = 1, pwidth, zstep,
 \item{naming}{Optional. Add metadata to the output dataframe by looking through names of array files. Should be a list of character vectors, each list element will be added as a variable. Example: naming=list(Time=c("T0","T1","T2")). The function inserts a variable called Time, and then looks through the names of the array files and inserts characters mathcing either T0, T1 or T2}
 }
 \value{
-A dataframe with the co-aggregation vaules for each distance
+A dataframe with the co-aggregation values for each distance
 }
 \description{
 Function to calculate the pairwise 3D co-aggregation between two channels

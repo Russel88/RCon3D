@@ -1,11 +1,11 @@
 #' Extract layers 
 #'
-#' Function to extract layers from the \code{layer_split} function for use in the \code{co_agg} or \code{clumps} analysis
+#' Function to extract layers from the \code{layer_split} function for use in the \code{co_agg}, \code{occupancy} or \code{clumps} analysis
 #' @param splitdf A dataframe from the \code{layer_split} function
 #' @param part What part should be extracted? Example: part="Top"
 #' @param ... Arguments for subsetting the splitdf dataframe first
 #' @keywords array image split
-#' @return A list with lists of the extracted layers, for use in the \code{co_agg} or \code{clumps} functions
+#' @return A list with lists of the extracted layers, for use in the \code{co_agg}, \code{occupancy} or \code{clumps} functions
 #' @export
 
 extract_layers <- function(splitdf,part,...){

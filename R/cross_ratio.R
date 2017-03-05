@@ -16,7 +16,7 @@
 #' @param layers Optional. Should the function only look in a subset of layers. A list with lists of layers to use for each image. Can also be the output from \code{extract_layers} 
 #' @param naming Optional. Add metadata to the output dataframe by looking through names of array files. Should be a list of character vectors, each list element will be added as a variable. Example: naming=list(Time=c("T0","T1","T2")). The function inserts a variable called Time, and then looks through the names of the array files and inserts characters mathcing either T0, T1 or T2
 #' @keywords array image cross-ratio
-#' @return A dataframe with the cross-ratio vaules for each distance
+#' @return A dataframe with the cross-ratio values for each distance
 #' @import doParallel
 #' @import parallel
 #' @import foreach

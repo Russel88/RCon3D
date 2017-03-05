@@ -14,10 +14,10 @@ extract_layers(splitdf, part, ...)
 \item{...}{Arguments for subsetting the splitdf dataframe first}
 }
 \value{
-A list with lists of the extracted layers, for use in the \code{co_agg} or \code{clumps} functions
+A list with lists of the extracted layers, for use in the \code{co_agg}, \code{occupancy} or \code{clumps} functions
 }
 \description{
-Function to extract layers from the \code{layer_split} function for use in the \code{co_agg} or \code{clumps} analysis
+Function to extract layers from the \code{layer_split} function for use in the \code{co_agg}, \code{occupancy} or \code{clumps} analysis
 }
 \keyword{array}
 \keyword{image}
