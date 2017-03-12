@@ -4,6 +4,7 @@
 #' @param channels Character vector with name(s) of channels. Channel names should be in the names of the .tif files
 #' @param split Logical indicating if all z-stacks are in one .tif (FALSE) or in a folder with a .tif for each z-stack (TRUE)
 #' @keywords tif array
+#' @details If the .tif file has a color.space attribute saying "white is zero" (and split=FALSE) the binary coding of the image is reversed 
 #' @return Arrays as RDS files in working directory
 #' @importFrom tiff readTIFF
 #' @export

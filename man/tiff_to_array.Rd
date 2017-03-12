@@ -17,5 +17,8 @@ Arrays as RDS files in working directory
 \description{
 Create an array from one or more .tif files. Looks for .tif in the working directory
 }
+\details{
+If the .tif file has a color.space attribute saying "white is zero" (and split=FALSE) the binary coding of the image is reversed
+}
 \keyword{array}
 \keyword{tif}

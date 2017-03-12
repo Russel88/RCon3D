@@ -14,10 +14,13 @@ loadIMG(path, channels, split = FALSE)
 \item{split}{Logical indicating if all z-stacks are in one .tif (FALSE) or in a folder with a .tif for each z-stack (TRUE)}
 }
 \value{
-Creates arrays as RDS files in working directory, and outputs the paths for these files
+Creates arrays as RDS files in the set path, and outputs the paths for these files
 }
 \description{
-Create an array from one or more .tif files. Looks for .tif in the working directory
+Create an array from one or more .tif files.
+}
+\details{
+If the .tif file has a color.space attribute saying "white is zero" (and split=FALSE) the binary coding of the image is reversed
 }
 \keyword{array}
 \keyword{image}
