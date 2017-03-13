@@ -94,9 +94,13 @@ co_agg.default <- function(imgs,channels,size,npixel,dstep=1,pwidth,zstep,freec=
         ch2_t[ch2_t > 0] <- 1} else stop("Kernel smooth has to be odd integers in all directions")
     }
     
+    # Sum channels
+    sumch <- ch1_t+ch2_t
+    
     # Densities of channels
     d1 <- length(which(ch1_t == 1))/length(ch1_t)
     d2 <- length(which(ch2_t == 1))/length(ch2_t)
+    d12 <- length(which(sumch > 0))/length(sumch)
     
     # Addresses in array (pixels)
     side <- dim(ch1_t)[1]
@@ -104,37 +108,37 @@ co_agg.default <- function(imgs,channels,size,npixel,dstep=1,pwidth,zstep,freec=
                            c(side, side, dim(ch1_t)[3]))
     
     # Coordinates of pixels in channel1 (pixels)
-    ch1_add <- data.frame(which(ch1_t == 1, T))
+    ch1_add <- data.frame(which(ch1_t > 0, T))
     colnames(ch1_add) <- c("x", "y", "z")
     
     # Coordinates of pixels in channel2 (pixels)
-    ch2_add <- data.frame(which(ch2_t == 1, T))
+    ch2_add <- data.frame(which(ch2_t > 0, T))
     colnames(ch2_add) <- c("x", "y", "z")
     
-    # Coordinates of all pixels (pixels)
-    ch_add <- data.frame(which(ch1_t == 1 | ch1_t == 0, T))
-    colnames(ch_add) <- c("x", "y", "z")
+    # Coordinates of pixels in either channel (pixels)
+    ch_sum <- data.frame(which(sumch > 0, T))
+    colnames(ch_sum) <- c("x", "y", "z")
     
     # Randomly sample pixels (pixels)
-    these <- sample(1:dim(ch_add)[1], size = npixel)
+    these <- sample(1:dim(ch_sum)[1], size = npixel)
     
     # Get their addresses
-    ch_pix <- ch_add[these,]
+    ch_pix <- ch_sum[these,]
     
     # Matrix to collect results
     hits <- matrix(NA, length(ds), npixel)
     totals <- matrix(NA, length(ds), npixel)
-    
+
     # Loop through pixels
     for(j in 1:npixel){
       
       # Focal pixel position
       p <- ch_pix[j,]
-      
-      # Does the focal pixel have a colour?
+
+      # What colour is the focal pixel
       test1 <- ch1_add[ch1_add$x == p$x & ch1_add$y == p$y & ch1_add$z == p$z,]
       test2 <- ch2_add[ch2_add$x == p$x & ch2_add$y == p$y & ch2_add$z == p$z,]
-      
+
       # Coordinates of the box (pixels)
       xrange <- c(p$x-(size/pwidth), p$x+(size/pwidth))
       yrange <- c(p$y-(size/pwidth), p$y+(size/pwidth))
@@ -181,14 +185,10 @@ co_agg.default <- function(imgs,channels,size,npixel,dstep=1,pwidth,zstep,freec=
       }
       
       # Hits
-      if((nrow(test1)+nrow(test2))==0) {hits[,j] <- 0} else {
-        
-        for(l in 1:(length(ds))){
-          if(nrow(test1)>0 & nrow(test2)==0) hits[l,j] <- length(which(id2[positions[[l]]]==1))
-          if(nrow(test2)>0 & nrow(test1)==0) hits[l,j] <- length(which(id1[positions[[l]]]==1))
-          if(nrow(test1)>0 & nrow(test2)>0) hits[l,j] <- length(which(id1[positions[[l]]]==1))+length(which(id2[positions[[l]]]==1))      
-        }
-        
+      for(l in 1:(length(ds))){
+          if(nrow(test1)==1 && nrow(test2)==0) hits[l,j] <- length(which(id2[positions[[l]]]==1))
+          if(nrow(test2)==1 && nrow(test1)==0) hits[l,j] <- length(which(id1[positions[[l]]]==1))
+          if(nrow(test1)==1 && nrow(test2)==1) hits[l,j] <- length(which(id1[positions[[l]]]==1))+length(which(id2[positions[[l]]]==1))      
       }
       
     }
@@ -199,8 +199,8 @@ co_agg.default <- function(imgs,channels,size,npixel,dstep=1,pwidth,zstep,freec=
     
     # Calculate probability and co-aggregation
     Prop <- hits.sum/totals.sum
-    CA <- Prop/(2*d1*d2)
-    
+    CA <- Prop/(2*(d1*d2/d12))
+
     theseCC <- cbind(gsub(channels[1],"",sub(".*/", "", ch1_files[i])),ds, CA)
     theseCC <- as.data.frame(theseCC)
     colnames(theseCC) <- c("Img", "Distance", "CA")

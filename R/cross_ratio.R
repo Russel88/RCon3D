@@ -99,37 +99,25 @@ cross_ratio.default <- function(imgs,focal.channel,target.channels,size,npixel,d
         ch.f <- medianFilter(ch.f,kern.s)
         ch.f[ch.f > 0] <- 1} else stop("Kernel smooth has to be odd integers in all directions")
     }
-    
+
     # Densities of channels
     d1 <- length(which(ch.t1 == 1))/length(ch.t1)
     d2 <- length(which(ch.t2 == 1))/length(ch.t2)
-    
+
     # Addresses in array (pixels)
     side <- dim(ch.t1)[1]
     address_array <- array(1:(side*side*dim(ch.t1)[3]), 
                            c(side, side, dim(ch.t1)[3]))
     
-    # Coordinates of pixels in channel1 (pixels)
-    ch1_add <- data.frame(which(ch.t1 == 1, T))
-    colnames(ch1_add) <- c("x", "y", "z")
-    
-    # Coordinates of pixels in channel2 (pixels)
-    ch2_add <- data.frame(which(ch.t2 == 1, T))
-    colnames(ch2_add) <- c("x", "y", "z")
-    
     # Coordinates of pixels in focal channel (pixels)
     chf_add <- data.frame(which(ch.f == 1, T))
     colnames(chf_add) <- c("x", "y", "z")
-    
-    # Coordinates of all pixels (pixels)
-    ch_add <- data.frame(which(ch.t1 == 1 | ch.t1 == 0, T))
-    colnames(ch_add) <- c("x", "y", "z")
-    
+   
     # Randomly sample pixels (pixels)
-    these <- sample(1:dim(ch_add)[1], size = npixel)
+    these <- sample(1:dim(chf_add)[1], size = npixel)
     
     # Get their addresses
-    ch_pix <- ch_add[these,]
+    ch_pix <- chf_add[these,]
     
     # Matrix to collect results
     hits1 <- matrix(NA, length(ds), npixel)
@@ -140,11 +128,6 @@ cross_ratio.default <- function(imgs,focal.channel,target.channels,size,npixel,d
       
       # Focal pixel position
       p <- ch_pix[j,]
-      
-      # Does the focal pixel have a colour?
-      test1 <- ch1_add[ch1_add$x == p$x & ch1_add$y == p$y & ch1_add$z == p$z,]
-      test2 <- ch2_add[ch2_add$x == p$x & ch2_add$y == p$y & ch2_add$z == p$z,]
-      testf <- chf_add[chf_add$x == p$x & chf_add$y == p$y & chf_add$z == p$z,]
       
       # Coordinates of the box (pixels)
       xrange <- c(p$x-(size/pwidth), p$x+(size/pwidth))
@@ -187,16 +170,11 @@ cross_ratio.default <- function(imgs,focal.channel,target.channels,size,npixel,d
       }
       
       # Count hits
-      if(nrow(testf)==0) {
-        for(l in 1:(length(ds))){
-          hits1[l,j] <- length(which(id1[positions[[l]]]==1))
-          hits2[l,j] <- length(which(id2[positions[[l]]]==1))
-        }
-      } else {
-        hits1[,j] <- 0
-        hits2[,j] <- 0
+      for(l in 1:(length(ds))){
+        hits1[l,j] <- length(which(id1[positions[[l]]]==1))
+        hits2[l,j] <- length(which(id2[positions[[l]]]==1))
+
       }
-      
     }
     
     # Sum hits for all pixels
@@ -206,7 +184,7 @@ cross_ratio.default <- function(imgs,focal.channel,target.channels,size,npixel,d
     # Calculate ratio and cross-ratio
     Ratio <- hits1.sum/hits2.sum
     CR <- Ratio/(d1/d2)
-    
+
     theseCR <- cbind(gsub(target.channels[1],"",sub(".*/", "", ch.t1_files[i])),ds, CR)
     theseCR <- as.data.frame(theseCR)
     colnames(theseCR) <- c("Img","Distance", "CR")

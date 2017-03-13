@@ -172,10 +172,9 @@ of both zstep and pwidth
     ##  [1]  0.0  1.5  3.0  4.5  6.0  7.5  9.0 10.5 12.0 13.5 15.0 16.5 18.0 19.5
     ## [15] 21.0 22.5 24.0 25.5 27.0 28.5 30.0
 
-Ok. lets try 21 microns then. As an example we pick 200 random pixels
-(should be higher for actual analysis), and we run the whole thing 5
-times to see how picking random pixels affect the variability of the
-result
+Ok. lets try 21 microns then. As an example we pick 200 random pixels,
+and we run the whole thing 5 times to see how picking random pixels
+affect the variability of the result
 
     mycc <- co_agg(imgs=myimg,channels=c("xan","ste"),size=21,npixel=200,dstep=1,pwidth=0.75,zstep=0.25,R=5)
 
@@ -210,9 +209,7 @@ expected from random chance
 
 We can also quantify how much space a channel (target) occupy at certain
 distances from another channel (focal). This is similar to
-co-aggregation, although this is directed. With set number of random
-pixels, `occupancy` is more precise than the `co_agg`, especially in
-images with low fill.
+co-aggregation, although this is directed.
 
 Lets run it until 21 microns. As an example we pick 200 random pixels,
 and we run the whole thing 5 times to see how picking random pixels
@@ -291,7 +288,7 @@ expected given random chance. A cross-ratio above 1 at some distance
 means that target channel 1 is more likely to be found than target
 channel 2 at that distance.
 
-    mycr <- cross_ratio(imgs=myimg,focal.channel="pan",target.channels=c("xan","ste"),size=21,npixel=200,dstep=1,pwidth=0.75,zstep=0.25,R=5)
+    mycr <- cross_ratio(imgs=myimg,focal.channel="mic",target.channels=c("xan","pan"),size=21,npixel=200,dstep=1,pwidth=0.75,zstep=0.25,R=5)
 
     ## 
       |                                                                       
