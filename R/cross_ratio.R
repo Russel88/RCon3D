@@ -20,6 +20,7 @@
 #' @import doParallel
 #' @import parallel
 #' @import foreach
+#' @import fastmatch
 #' @export
 
 cross_ratio <- function(...,R=NULL){
@@ -60,6 +61,11 @@ cross_ratio.default <- function(imgs,focal.channel,target.channels,size,npixel,d
   
   # Bind positions in box with distances
   boxd <- cbind(null_box,d)
+  
+  # Fix problems with rounding tolerance
+  boxd$x <- as.integer(boxd$x)
+  boxd$y <- as.integer(boxd$y)
+  boxd$z <- as.integer(boxd$z)
   
   # Bins of distances (microns)
   ds <- seq(0, size, by = dstep)
@@ -155,9 +161,7 @@ cross_ratio.default <- function(imgs,focal.channel,target.channels,size,npixel,d
                              z = (seq(zrange[1], zrange[2], by = 1)-p$z))
       
       # Find distances to positions in new box
-      sub_box <- boxd[boxd$x %in% new_box$x & boxd$y %in% new_box$y & boxd$z %in% new_box$z,]
-      
-      new_d <- sub_box$d
+      new_d <- boxd[boxd$x %fin% new_box$x & boxd$y %fin% new_box$y & boxd$z %fin% new_box$z,"d"]
       
       # Presence absence data for the box (pixels)
       id1 <- ch.t1[box]

@@ -20,6 +20,7 @@
 #' @import doParallel
 #' @import parallel
 #' @import foreach
+#' @import fastmatch
 #' @export
 
 occupancy <- function(...,R=NULL){
@@ -60,6 +61,11 @@ occupancy.default <- function(imgs,focal.channel,target.channel,size,npixel,dste
   
   # Bind positions in box with distances
   boxd <- cbind(null_box,d)
+  
+  # Fix problems with rounding tolerance
+  boxd$x <- round(boxd$x)
+  boxd$y <- round(boxd$y)
+  boxd$z <- round(boxd$z)
   
   # Bins of distances (microns)
   ds <- seq(0, size, by = dstep)
@@ -149,10 +155,8 @@ occupancy.default <- function(imgs,focal.channel,target.channel,size,npixel,dste
                              z = (seq(zrange[1], zrange[2], by = 1)-p$z))
       
       # Find distances to positions in new box
-      sub_box <- boxd[boxd$x %in% new_box$x & boxd$y %in% new_box$y & boxd$z %in% new_box$z,]
-      
-      new_d <- sub_box$d
-      
+      new_d <- boxd[boxd$x %fin% new_box$x & boxd$y %fin% new_box$y & boxd$z %fin% new_box$z,"d"]
+
       # Presence absence data for the box (pixels)
       id <- ch.t[box]
       
@@ -162,15 +166,13 @@ occupancy.default <- function(imgs,focal.channel,target.channel,size,npixel,dste
         positions[[p]] <- which(new_d <= ds[p]+dstep/2 & new_d > ds[p]-dstep/2)
       }
       
-      # Total counts
+      # Totals and hits
       for(l in 1:(length(ds))){
         totals[l,j] <- length(which(id[positions[[l]]]==0))+length(which(id[positions[[l]]]==1))
-      }
-      
-      # Hits
-      for(l in 1:(length(ds))){
         hits[l,j] <- length(which(id[positions[[l]]]==1))
       }
+      
+
     }
     
     # Sum totals and hits for all pixels
@@ -180,7 +182,7 @@ occupancy.default <- function(imgs,focal.channel,target.channel,size,npixel,dste
     # Calculate occupancy
     occup <- hits.sum/totals.sum
     occup.norm <- occup/dens
-    
+
     theseOCC <- cbind(gsub(focal.channel,"",sub(".*/", "", ch.f_files[i])),ds, occup, occup.norm)
     theseOCC <- as.data.frame(theseOCC)
     colnames(theseOCC) <- c("Img", "Distance", "Occupancy","Occupancy.Normalized")

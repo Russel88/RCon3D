@@ -19,6 +19,7 @@
 #' @import doParallel
 #' @import parallel
 #' @import foreach
+#' @import fastmatch
 #' @export
 
 co_agg <- function(...,R=NULL){
@@ -59,6 +60,11 @@ co_agg.default <- function(imgs,channels,size,npixel,dstep=1,pwidth,zstep,freec=
   
   # Bind positions in box with distances
   boxd <- cbind(null_box,d)
+  
+  # Fix problems with rounding tolerance
+  boxd$x <- as.integer(boxd$x)
+  boxd$y <- as.integer(boxd$y)
+  boxd$z <- as.integer(boxd$z)
   
   # Bins of distances (microns)
   ds <- seq(0, size, by = dstep)
@@ -165,9 +171,7 @@ co_agg.default <- function(imgs,channels,size,npixel,dstep=1,pwidth,zstep,freec=
                              z = (seq(zrange[1], zrange[2], by = 1)-p$z))
       
       # Find distances to positions in new box
-      sub_box <- boxd[boxd$x %in% new_box$x & boxd$y %in% new_box$y & boxd$z %in% new_box$z,]
-      
-      new_d <- sub_box$d
+      new_d <- boxd[boxd$x %fin% new_box$x & boxd$y %fin% new_box$y & boxd$z %fin% new_box$z,"d"]
       
       # Presence absence data for the box (pixels)
       id1 <- ch1_t[box]
@@ -179,13 +183,9 @@ co_agg.default <- function(imgs,channels,size,npixel,dstep=1,pwidth,zstep,freec=
         positions[[p]] <- which(new_d <= ds[p]+dstep/2 & new_d > ds[p]-dstep/2)
       }
       
-      # Total counts
+      # Hits and totals
       for(l in 1:(length(ds))){
-        totals[l,j] <- length(which(id1[positions[[l]]]==0))+length(which(id1[positions[[l]]]==1))
-      }
-      
-      # Hits
-      for(l in 1:(length(ds))){
+          totals[l,j] <- length(which(id1[positions[[l]]]==0))+length(which(id1[positions[[l]]]==1))
           if(nrow(test1)==1 && nrow(test2)==0) hits[l,j] <- length(which(id2[positions[[l]]]==1))
           if(nrow(test2)==1 && nrow(test1)==0) hits[l,j] <- length(which(id1[positions[[l]]]==1))
           if(nrow(test1)==1 && nrow(test2)==1) hits[l,j] <- length(which(id1[positions[[l]]]==1))+length(which(id2[positions[[l]]]==1))      
