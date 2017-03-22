@@ -5,16 +5,13 @@
 \alias{co_agg.default}
 \title{3D co-aggregation}
 \usage{
-co_agg(..., R = NULL)
+co_agg(imgs, channels, size, npixel, R = 10, dstep = 1, pwidth, zstep,
+  cores = 1, kern.smooth = NULL, layers = NULL, naming = NULL)
 
 co_agg.default(imgs, channels, size, npixel, dstep = 1, pwidth, zstep,
-  freec = 1, kern.smooth = NULL, layers = NULL, naming = NULL)
+  cores = 1, kern.smooth = NULL, layers = NULL, naming = NULL)
 }
 \arguments{
-\item{...}{Arguments for the \code{co_agg.default} function}
-
-\item{R}{Number of times to run the co-aggregation analysis}
-
 \item{imgs}{The paths of array files; i.e. output from \code{loadIMG} or \code{findIMG} functions.}
 
 \item{channels}{Character vector with names of the two channels to calculate co-aggregation for. Should be in the names of the array files}
@@ -23,13 +20,15 @@ co_agg.default(imgs, channels, size, npixel, dstep = 1, pwidth, zstep,
 
 \item{npixel}{Number of random pixels to examine. Increasing this will increase precision (and runtime in a linear fashion)}
 
+\item{R}{Number of times to run the co-aggregation analysis}
+
 \item{dstep}{The interval between examined distances (microns). Increasing this decreases resolution but speeds up function linearly. Defaults to 1}
 
 \item{pwidth}{Width of pixels in microns}
 
 \item{zstep}{z-step in microns}
 
-\item{freec}{The number of cores NOT to use. Defaults to 1}
+\item{cores}{The number of cores to use. Defaults to 1}
 
 \item{kern.smooth}{Optional. Numeric vector indicating range of median smoothing in the x,y,z directions. Has to be odd intergers. c(1,1,1) means no smoothing.}
 

@@ -5,17 +5,15 @@
 \alias{cross_ratio.default}
 \title{3D cross-ratio}
 \usage{
-cross_ratio(..., R = NULL)
+cross_ratio(imgs, focal.channel, target.channels, size, npixel, R = 10,
+  dstep = 1, pwidth, zstep, cores = 1, kern.smooth = NULL,
+  layers = NULL, naming = NULL)
 
 cross_ratio.default(imgs, focal.channel, target.channels, size, npixel,
-  dstep = 1, pwidth, zstep, freec = 1, kern.smooth = NULL,
+  dstep = 1, pwidth, zstep, cores = 1, kern.smooth = NULL,
   layers = NULL, naming = NULL)
 }
 \arguments{
-\item{...}{Arguments for the \code{cross_ratio.default} function}
-
-\item{R}{Number of times to run the cross-ratio analysis}
-
 \item{imgs}{The paths of array files; i.e. output from \code{loadIMG} or \code{findIMG} functions.}
 
 \item{focal.channel}{Character of name of channel of focus.}
@@ -26,13 +24,15 @@ cross_ratio.default(imgs, focal.channel, target.channels, size, npixel,
 
 \item{npixel}{Number of random pixels to examine. Increasing this will increase precision (and runtime in a linear fashion)}
 
+\item{R}{Number of times to run the cross-ratio analysis}
+
 \item{dstep}{The interval between examined distances (microns). Increasing this decreases resolution but speeds up function linearly. Defaults to 1}
 
 \item{pwidth}{Width of pixels in microns}
 
 \item{zstep}{z-step in microns}
 
-\item{freec}{The number of cores NOT to use.Defaults to 1}
+\item{cores}{The number of cores to use.Defaults to 1}
 
 \item{kern.smooth}{Optional. Numeric vector indicating range of median smoothing in the x,y,z directions. Has to be odd intergers. c(1,1,1) means no smoothing.}
 

@@ -5,17 +5,15 @@
 \alias{occupancy.default}
 \title{3D Occupancy}
 \usage{
-occupancy(..., R = NULL)
+occupancy(imgs, focal.channel, target.channel, size, npixel, R = 10,
+  dstep = 1, pwidth, zstep, cores = 1, kern.smooth = NULL,
+  layers = NULL, naming = NULL)
 
 occupancy.default(imgs, focal.channel, target.channel, size, npixel,
-  dstep = 1, pwidth, zstep, freec = 1, kern.smooth = NULL,
+  dstep = 1, pwidth, zstep, cores = 1, kern.smooth = NULL,
   layers = NULL, naming = NULL)
 }
 \arguments{
-\item{...}{Arguments for the \code{occupancy.default} function}
-
-\item{R}{Number of times to run the occupancy analysis}
-
 \item{imgs}{The paths of array files; i.e. output from \code{loadIMG} or \code{findIMG} functions.}
 
 \item{focal.channel}{Name of the channel from which the distance is calculated. Should be in the names of the array files}
@@ -26,13 +24,15 @@ occupancy.default(imgs, focal.channel, target.channel, size, npixel,
 
 \item{npixel}{Number of random pixels to examine. Increasing this will increase precision (and runtime in a linear fashion)}
 
+\item{R}{Number of times to run the occupancy analysis}
+
 \item{dstep}{The interval between examined distances (microns). Increasing this decreases resolution but speeds up function linearly. Defaults to 1}
 
 \item{pwidth}{Width of pixels in microns}
 
 \item{zstep}{z-step in microns}
 
-\item{freec}{The number of cores NOT to use. Defaults to 1}
+\item{cores}{The number of cores to use. Defaults to 1}
 
 \item{kern.smooth}{Optional. Numeric vector indicating range of median smoothing in the x,y,z directions. Has to be odd intergers. c(1,1,1) means no smoothing.}
 

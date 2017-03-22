@@ -1,16 +1,15 @@
 #' 3D co-aggregation
 #'
 #' Function to calculate the pairwise 3D co-aggregation between two channels
-#' @param ... Arguments for the \code{co_agg.default} function
-#' @param R Number of times to run the co-aggregation analysis
 #' @param imgs The paths of array files; i.e. output from \code{loadIMG} or \code{findIMG} functions.
 #' @param channels Character vector with names of the two channels to calculate co-aggregation for. Should be in the names of the array files
 #' @param size The maximum distance (microns) to examine. Has to be a multiple of both pwidth and zstep. Beware, increasing size will increase runtime exponetially!
 #' @param npixel Number of random pixels to examine. Increasing this will increase precision (and runtime in a linear fashion)
+#' @param R Number of times to run the co-aggregation analysis
 #' @param dstep The interval between examined distances (microns). Increasing this decreases resolution but speeds up function linearly. Defaults to 1
 #' @param pwidth Width of pixels in microns
 #' @param zstep z-step in microns
-#' @param freec The number of cores NOT to use. Defaults to 1
+#' @param cores The number of cores to use. Defaults to 1
 #' @param kern.smooth Optional. Numeric vector indicating range of median smoothing in the x,y,z directions. Has to be odd intergers. c(1,1,1) means no smoothing.
 #' @param layers Optional. Should the function only look in a subset of layers. A list with lists of layers to use for each image. Can also be the output from \code{extract_layers} 
 #' @param naming Optional. Add metadata to the output dataframe by looking through names of array files. Should be a list of character vectors, each list element will be added as a variable. Example: naming=list(Time=c("T0","T1","T2")). The function inserts a variable called Time, and then looks through the names of the array files and inserts characters mathcing either T0, T1 or T2
@@ -22,14 +21,19 @@
 #' @import fastmatch
 #' @export
 
-co_agg <- function(...,R=NULL){
+co_agg <- function(imgs,channels,size,npixel,R=10,dstep=1,pwidth,zstep,cores=1,kern.smooth=NULL,layers=NULL,naming=NULL){
   
+  if(size%%zstep != 0) if(all.equal(size%%zstep,zstep)!=TRUE) stop("size not a multiple of zstep")
+  if(size%%pwidth != 0) if(all.equal(size%%pwidth,pwidth)!=TRUE) stop("size not a multiple of pwidth")
+  
+  stopifnot(length(channels)==2)
+
   # Create progress bar
   pb <- txtProgressBar(min = 0, max = R, style = 3)
   
   CC.all <- list()
   for(r in 1:R){
-    CC <- co_agg.default(...)
+    CC <- co_agg.default(imgs,channels,size,npixel,dstep,pwidth,zstep,cores,kern.smooth,layers,naming)
     CC$R <- r
     CC.all[[r]] <- CC
     # Update progress bar
@@ -43,10 +47,7 @@ co_agg <- function(...,R=NULL){
 #' @rdname co_agg
 #' @export
 
-co_agg.default <- function(imgs,channels,size,npixel,dstep=1,pwidth,zstep,freec=1,kern.smooth=NULL,layers=NULL,naming=NULL) {
-  
-  if(size%%zstep != 0) if(all.equal(size%%zstep,zstep)!=TRUE) stop("size not a multiple of zstep")
-  if(size%%pwidth != 0) if(all.equal(size%%pwidth,pwidth)!=TRUE) stop("size not a multiple of pwidth")
+co_agg.default <- function(imgs,channels,size,npixel,dstep=1,pwidth,zstep,cores=1,kern.smooth=NULL,layers=NULL,naming=NULL) {
   
   # Null box (pixels)
   null_box <- expand.grid(x = seq((-size/pwidth), (size/pwidth), by = 1), 
@@ -74,7 +75,7 @@ co_agg.default <- function(imgs,channels,size,npixel,dstep=1,pwidth,zstep,freec=
   ch2_files <- imgs[grep(channels[2], imgs)]
   
   # Start parallel for each replica
-  cl <- makeCluster(detectCores()-freec)
+  cl <- makeCluster(cores)
   registerDoParallel(cl)  
   cc_results <- foreach(i=1:length(ch1_files),.combine=rbind) %dopar% {
     

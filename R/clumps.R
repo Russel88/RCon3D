@@ -16,6 +16,8 @@
 
 clumps <- function(imgs,channel,kern.neighbour=c(3,3,3),kern.smooth=NULL,layers=NULL,pwidth=NULL,zstep=NULL,naming=NULL) {
   
+  stopifnot(length(channel)==1)
+  
   # Load image
   ch_files <- imgs[grep(channel, imgs)]
   
