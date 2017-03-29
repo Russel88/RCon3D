@@ -35,7 +35,7 @@ occupancy <- function(imgs,focal.channel,target.channel,size,npixel,R=10,dstep=1
   
   OCC.all <- list()
   for(r in 1:R){
-    OCC <- occupancy.default(imgs,focal.channel,target.channel,size,npixel,dstep,pwidth,zstep,cores,kern.smootL,layers,naming)
+    OCC <- occupancy.default(imgs,focal.channel,target.channel,size,npixel,dstep,pwidth,zstep,cores,kern.smooth,layers,naming)
     OCC$R <- r
     OCC.all[[r]] <- OCC
     # Update progress bar
