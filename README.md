@@ -1,7 +1,10 @@
 RCon3D: Analyzing 3D confocal images of microbial biofilms
 ----------------------------------------------------------
 
-#### Functions
+This is an R package for various 3D analyses confocal images of
+microbial biofilms. Below is a tutorial explaining the main functions
+
+#### All functions
 
 `loadIMG` Load .tif files and turn them into arrays, and save them as
 RDS files ready for downstream analysis
@@ -40,6 +43,9 @@ calculated how much empty space there is a around a certain channel with
 what layers to analyze in `occupancy`, `clumps`, `co_agg` and
 `cross_ratio`
 
+`xy_splits` Splits the image in each xy position and then run an
+analysis
+
 #### Acknowledgment note:
 
 An internal function, `tiff_to_array`, is partly borrowed from
@@ -49,7 +55,7 @@ also borrowed from this repository.
 
 ### Loading packages
 
-First install the package
+First install the package.
 
     library(devtools)
     install_github("Russel88/RCon3D")
@@ -63,18 +69,17 @@ Then lets load the package and some packages for plotting
 
 ### Load the images
 
-The example image has four channels (named "xan","pan","ste" and "mic").
-It is available here (github/Russel88/RCon3D/ExampleData.zip)
-
-The images have to be binary, and are assumed to have been thresholded
-already
+First we need to load the images. Images have to be .tif files, and have
+to be binary, and are thus assumed to have been thresholded already. The
+example image has four channels (named "xan","pan","ste" and "mic"). It
+is available here (github/Russel88/RCon3D/ExampleData.zip)
 
 If the images have already been loaded we can use `findIMG` to load in
 the images.
 
 The path should lead to folder with a .tif for each image (with all
-z-stacks in one), or a folder with subfolders in which the images is
-split in z-stacks and channels.
+z-stacks in one .tif file), or a folder with subfolders in which the
+images are split in z-stacks and channels.
 
     myimg <- loadIMG("/ExampleData",c("xan","pan","ste","mic"),split=TRUE)
 
@@ -84,13 +89,8 @@ split in z-stacks and channels.
 
 ### Quantify pixels for each layer for each channel
 
-First, lets quantify the pixels for each layer, channel and image
-
-The naming argument is optional but can be used to look through the
-names of the images and add corresponding variables Here it looks for
-"24h" in the image name, and makes a variable called Time. This is of
-course only useful when there are several images with different
-metadata. (Eg. Time=c("12h","24h"))
+When images are loaded, we start downstream analysis. First, lets simply
+quantify the pixels for each layer, channel and image
 
     myq <- quant(myimg,channels=c("xan","pan","mic","ste"),naming=list(Time=c("24h")))
     head(myq)
@@ -103,6 +103,12 @@ metadata. (Eg. Time=c("12h","24h"))
     ## 5 FourSpecies24h_xan_Array.R     xan  3012     5  24h
     ## 6 FourSpecies24h_xan_Array.R     xan  3508     6  24h
 
+The naming argument is optional but can be used to look through the
+names of the images and add corresponding variables Here it looks for
+"24h" in the image name, and makes a variable called Time. This is of
+course only useful when there are several images with different
+metadata. (Eg. Time=c("12h","24h"))
+
 Plot quantification
 
     p <- ggplot(data=myq,aes(x=Layer,y=Count,colour=Channel,group=Channel)) +
@@ -113,29 +119,16 @@ Plot quantification
 
 ![](README_files/figure-markdown_strict/unnamed-chunk-5-1.png)
 
-As the bottom of the specimen is in the high numbers of the layers, lets
-reverse layers and plot again.
-
-Note that trim=TRUE. This is because we think the layer with most fill
-is the actual bottom of the specimen, and we therefore trim away all
-that is below that layer
-
-    myq.std <- layer_stand(myq,layer.start = "Top",trim=TRUE)
-
-    p <- ggplot(data=myq.std,aes(x=NewLayer,y=Count,colour=Channel,group=Channel)) +
-      theme_classic() +
-      geom_freqpoly(stat="identity",position=position_dodge(width = 0),size=1) +
-      coord_flip()
-    p
-
-![](README_files/figure-markdown_strict/unnamed-chunk-6-1.png)
+### Sectioning
 
 We can also split the image in top, middle and bottom based on various
 criteria. Here we define the Top as all layers from the very top until
 75 percent of the image is filled (pt=0.75). The bottom is the bottom 20
-layers (add.b=20). The middle is the rest.
+layers (add.b=20). The middle is the rest. Note that the top of the
+specimen is in the layers with the low numbers, hence layer.start =
+"Top".
 
-    myq.split <- layer_split(myq,layer.start = "Top",trim=TRUE,side=512,pt=0.75,add.b=20,add.t=0)
+    myq.split <- layer_split(myq,layer.start = "Top",trim=FALSE,side=512,pt=0.75,add.b=20,add.t=0)
 
     p <- ggplot(data=myq.split,aes(x=Layer,y=Count,colour=Split,group=Split)) +
       theme_classic() +
@@ -144,22 +137,73 @@ layers (add.b=20). The middle is the rest.
       facet_grid(.~Channel)
     p
 
-![](README_files/figure-markdown_strict/unnamed-chunk-7-1.png)
+![](README_files/figure-markdown_strict/unnamed-chunk-6-1.png)
+
+Another way to section the image in an upper and lower part is to split
+the layers for each xy-position. The `xy_splits` function runs an
+analysis for each xy-position. If we for example sum for each
+xy-position we will get a biomass distribution. We can also use the
+function to section the image and then sum. As the sectioning is done
+for each xy-position it will take a variable biomass distribution into
+account. Here we say that the upper part is the upper 50% for each
+xy-position.
+
+    my.xy.split <- xy_splits(myimg,channels=c("xan","pan","ste","mic"),do="section",upper.part=0.5,layer.start = "Top")
+
+The result is a recursive list with matrices of results for each
+xy-position as elements
+
+    str(my.xy.split)
+
+    ## List of 1
+    ##  $ FourSpecies24h_:List of 2
+    ##   ..$ Upper:List of 4
+    ##   .. ..$ xan: int [1:512, 1:512] 5 10 27 33 31 36 37 32 26 32 ...
+    ##   .. ..$ pan: int [1:512, 1:512] 60 51 42 39 36 30 36 21 29 16 ...
+    ##   .. ..$ ste: int [1:512, 1:512] 6 5 1 1 1 1 1 1 15 3 ...
+    ##   .. ..$ mic: int [1:512, 1:512] NA 55 NA NA NA NA NA 52 NA 38 ...
+    ##   ..$ Lower:List of 4
+    ##   .. ..$ xan: int [1:512, 1:512] 0 0 4 9 2 1 0 2 5 3 ...
+    ##   .. ..$ pan: int [1:512, 1:512] 60 66 73 74 75 81 70 76 74 78 ...
+    ##   .. ..$ ste: int [1:512, 1:512] 6 0 22 34 24 21 10 10 0 0 ...
+    ##   .. ..$ mic: int [1:512, 1:512] NA 72 NA NA NA NA NA 80 NA 85 ...
+
+A 'NA' denote that the channel was absent in the entire xy-position, but
+a 0 denote that the channel is only missing in the given section. But
+lets replace NAs with 0s for further analysis.
+
+    my.xy.split.new <- rapply(my.xy.split,function(x) ifelse(is.na(x),0,x),how="replace")
+
+Lets plot heatmaps to check the distributions. From the quantification
+"xan" appeared to be only in the top, lets see if it is consistent.
+
+    heatmap(my.xy.split[[1]][["Lower"]][["xan"]],Rowv = NA,Colv = NA,main="Lower part",col=colorRampPalette(c("white","blue"))(10))
+
+![](README_files/figure-markdown_strict/unnamed-chunk-10-1.png)
+
+    heatmap(my.xy.split[[1]][["Upper"]][["xan"]],Rowv = NA,Colv = NA,main="Upper part",col=colorRampPalette(c("white","blue"))(10))
+
+![](README_files/figure-markdown_strict/unnamed-chunk-10-2.png)
+
+Do we have more in the upper part than the lower part?
+
+    sum(my.xy.split[[1]][["Upper"]][["xan"]])/sum(my.xy.split[[1]][["Lower"]][["xan"]])
+
+    ## [1] 10.03896
+
+10 times more it seems
 
 ### 3D Co-aggregation (Cross-correlation)
 
+It might be of interest to analyze how two different channels are
+positioned relative to each other. We do this with 3D co-aggregation. A
+co-aggregation of 1 equals random positioning at that specific distance,
+&lt;1 means segregation and &gt;1 means aggregation.
+
+It is similar to 2D co-aggregation implemented in daime
+(<http://dome.csb.univie.ac.at/daime>), but this function works in 3D.
+
 Lets calculate 3D co-aggregation between channels "ste" and "xan".
-
-This analysis is for determining how two channels are positioned
-relative to each other
-
-A co-aggregation of 1 equals random positioning at that specific
-distance, &lt;1 means segregation and &gt;1 means aggregation.
-
-It is similar to co-aggregation implemented in daime
-(<http://dome.csb.univie.ac.at/daime>), although this function
-calculates on randomly subsetted number of pixels which decreases
-runtime.
 
 First we find out how many microns we can scan. It has to be a multiple
 of both zstep and pwidth
@@ -172,25 +216,16 @@ of both zstep and pwidth
     ##  [1]  0.0  1.5  3.0  4.5  6.0  7.5  9.0 10.5 12.0 13.5 15.0 16.5 18.0 19.5
     ## [15] 21.0 22.5 24.0 25.5 27.0 28.5 30.0
 
-Ok. lets try 21 microns then. As an example we pick 200 random pixels,
-and we run the whole thing 5 times to see how picking random pixels
-affect the variability of the result
+When more microns are scanned runtime increases exponetially. Therefore,
+choose the lowest number of microns that is biologically meaningful, and
+increase them carefully if needed.
+
+Lets try 21 microns. As an example we pick 200 random pixels, and we run
+the whole thing 5 times to see how picking random pixels affect the
+variability of the result
 
     mycc <- co_agg(imgs=myimg,channels=c("xan","ste"),size=21,npixel=200,dstep=1,pwidth=0.75,zstep=0.25,R=5)
 
-    ## 
-      |                                                                       
-      |                                                                 |   0%
-      |                                                                       
-      |=============                                                    |  20%
-      |                                                                       
-      |==========================                                       |  40%
-      |                                                                       
-      |=======================================                          |  60%
-      |                                                                       
-      |====================================================             |  80%
-      |                                                                       
-      |=================================================================| 100%
 
 Plot the result
 
@@ -200,7 +235,7 @@ Plot the result
       geom_line() 
     p
 
-![](README_files/figure-markdown_strict/unnamed-chunk-10-1.png)
+![](README_files/figure-markdown_strict/unnamed-chunk-14-1.png)
 
 At small distances "xan" and "ste" appear to be intermixed more than
 expected from random chance
@@ -215,21 +250,12 @@ Lets run it until 21 microns. As an example we pick 200 random pixels,
 and we run the whole thing 5 times to see how picking random pixels
 affect the variability of the result
 
+When more microns are scanned runtime increases exponetially. Therefore,
+choose the lowest number of microns that is biologically meaningful, and
+increase them carefully if needed.
+
     myocc <- occupancy(imgs=myimg,focal.channel="ste",target.channel="xan",size=21,npixel=200,dstep=1,pwidth=0.75,zstep=0.25,R=5)
 
-    ## 
-      |                                                                       
-      |                                                                 |   0%
-      |                                                                       
-      |=============                                                    |  20%
-      |                                                                       
-      |==========================                                       |  40%
-      |                                                                       
-      |=======================================                          |  60%
-      |                                                                       
-      |====================================================             |  80%
-      |                                                                       
-      |=================================================================| 100%
 
 Plot the result. The red line is the actual proportion occupied, the
 black line is normalized such that random equals 1
@@ -241,7 +267,7 @@ black line is normalized such that random equals 1
       geom_line(data=myocc,aes(x=Distance,y=Occupancy.Normalized,group=R))
     p
 
-![](README_files/figure-markdown_strict/unnamed-chunk-12-1.png)
+![](README_files/figure-markdown_strict/unnamed-chunk-16-1.png)
 
 ### 3D aggregates
 
@@ -275,7 +301,7 @@ Lets plot the 3D image of aggregates larger than 20000 pixels
     # Plot it
     scatterplot3d(M$Var1,M$Var2,M$Var3,color=M$value)
 
-![](README_files/figure-markdown_strict/unnamed-chunk-14-1.png)
+![](README_files/figure-markdown_strict/unnamed-chunk-18-1.png)
 
 ### 3D Cross-ratio
 
@@ -288,21 +314,12 @@ expected given random chance. A cross-ratio above 1 at some distance
 means that target channel 1 is more likely to be found than target
 channel 2 at that distance.
 
+When more microns are scanned runtime increases exponetially. Therefore,
+choose the lowest number of microns that is biologically meaningful, and
+increase them carefully if needed.
+
     mycr <- cross_ratio(imgs=myimg,focal.channel="mic",target.channels=c("xan","pan"),size=21,npixel=200,dstep=1,pwidth=0.75,zstep=0.25,R=5)
 
-    ## 
-      |                                                                       
-      |                                                                 |   0%
-      |                                                                       
-      |=============                                                    |  20%
-      |                                                                       
-      |==========================                                       |  40%
-      |                                                                       
-      |=======================================                          |  60%
-      |                                                                       
-      |====================================================             |  80%
-      |                                                                       
-      |=================================================================| 100%
 
 Plot the result
 
@@ -312,4 +329,4 @@ Plot the result
       geom_line() 
     p
 
-![](README_files/figure-markdown_strict/unnamed-chunk-16-1.png)
+![](README_files/figure-markdown_strict/unnamed-chunk-20-1.png)
