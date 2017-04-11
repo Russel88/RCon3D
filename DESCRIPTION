@@ -8,7 +8,8 @@ Imports:
    foreach,
    doParallel,
    mmand,
-   tiff
+   tiff,
+   fastmatch
 Suggests:
    rootSolve
 License: GPL-3.0
