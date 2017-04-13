@@ -82,9 +82,6 @@ z-stacks in one .tif file), or a folder with subfolders in which the
 images are split in z-stacks and channels.
 
     myimg <- loadIMG("/ExampleData",c("xan","pan","ste","mic"),split=TRUE)
-
-    ## Loading image 1
-
     myimg <- findIMG("/ExampleData")
 
 ### Quantify pixels for each layer for each channel
@@ -142,13 +139,14 @@ specimen is in the layers with the low numbers, hence layer.start =
 Another way to section the image in an upper and lower part is to split
 the layers for each xy-position. The `xy_splits` function runs an
 analysis for each xy-position. If we for example sum for each
-xy-position we will get a biomass distribution. We can also use the
-function to section the image and then sum. As the sectioning is done
-for each xy-position it will take a variable biomass distribution into
-account. Here we say that the upper part is the upper 50% for each
-xy-position.
+xy-position we will get a biomass distribution across the image. We can
+also use the function to section the image and then sum. As the
+sectioning is done for each xy-position it will take a variable biomass
+distribution into account. Here we say that the upper part is the upper
+50% for each xy-position.
 
-    my.xy.split <- xy_splits(myimg,channels=c("xan","pan","ste","mic"),do="section",upper.part=0.5,layer.start = "Top")
+    my.xy.split <- xy_splits(myimg,channels=c("xan","pan","ste","mic"),do="section",upper.part=0.5,layer.start = "Top",cores = 1)
+
 
 The result is a recursive list with matrices of results for each
 xy-position as elements
@@ -158,40 +156,78 @@ xy-position as elements
     ## List of 1
     ##  $ FourSpecies24h_:List of 2
     ##   ..$ Upper:List of 4
-    ##   .. ..$ xan: int [1:512, 1:512] 5 10 27 33 31 36 37 32 26 32 ...
+    ##   .. ..$ xan: num [1:512, 1:512] 5 10 27 33 31 36 37 32 26 32 ...
     ##   .. ..$ pan: int [1:512, 1:512] 60 51 42 39 36 30 36 21 29 16 ...
-    ##   .. ..$ ste: int [1:512, 1:512] 6 5 1 1 1 1 1 1 15 3 ...
-    ##   .. ..$ mic: int [1:512, 1:512] NA 55 NA NA NA NA NA 52 NA 38 ...
+    ##   .. ..$ ste: num [1:512, 1:512] 6 9 8 9 10 16 12 23 35 31 ...
+    ##   .. ..$ mic: num [1:512, 1:512] 0 2 0 0 0 0 0 1 0 8 ...
     ##   ..$ Lower:List of 4
-    ##   .. ..$ xan: int [1:512, 1:512] 0 0 4 9 2 1 0 2 5 3 ...
+    ##   .. ..$ xan: num [1:512, 1:512] 0 0 4 9 2 1 0 2 5 3 ...
     ##   .. ..$ pan: int [1:512, 1:512] 60 66 73 74 75 81 70 76 74 78 ...
-    ##   .. ..$ ste: int [1:512, 1:512] 6 0 22 34 24 21 10 10 0 0 ...
-    ##   .. ..$ mic: int [1:512, 1:512] NA 72 NA NA NA NA NA 80 NA 85 ...
-
-A 'NA' denote that the channel was absent in the entire xy-position, but
-a 0 denote that the channel is only missing in the given section. But
-lets replace NAs with 0s for further analysis.
-
-    my.xy.split.new <- rapply(my.xy.split,function(x) ifelse(is.na(x),0,x),how="replace")
+    ##   .. ..$ ste: num [1:512, 1:512] 11 6 2 0 0 1 16 2 11 7 ...
+    ##   .. ..$ mic: num [1:512, 1:512] 0 0 0 0 0 0 0 0 0 0 ...
 
 Lets plot heatmaps to check the distributions. From the quantification
 "xan" appeared to be only in the top, lets see if it is consistent.
 
     heatmap(my.xy.split[[1]][["Lower"]][["xan"]],Rowv = NA,Colv = NA,main="Lower part",col=colorRampPalette(c("white","blue"))(10))
 
-![](README_files/figure-markdown_strict/unnamed-chunk-10-1.png)
+![](README_files/figure-markdown_strict/unnamed-chunk-9-1.png)
 
     heatmap(my.xy.split[[1]][["Upper"]][["xan"]],Rowv = NA,Colv = NA,main="Upper part",col=colorRampPalette(c("white","blue"))(10))
 
-![](README_files/figure-markdown_strict/unnamed-chunk-10-2.png)
+![](README_files/figure-markdown_strict/unnamed-chunk-9-2.png)
 
 Do we have more in the upper part than the lower part?
 
     sum(my.xy.split[[1]][["Upper"]][["xan"]])/sum(my.xy.split[[1]][["Lower"]][["xan"]])
 
-    ## [1] 10.03896
+    ## [1] 9.932445
 
 10 times more it seems
+
+We can also try the same, but instead define the top as the upper 25
+layers.
+
+    my.xy.split2 <- xy_splits(myimg,channels=c("xan","pan","ste","mic"),do="section",upper.part=25L,layer.start = "Top",cores = 1)
+
+    sum(my.xy.split2[[1]][["Upper"]][["xan"]])/sum(my.xy.split2[[1]][["Lower"]][["xan"]])
+
+    ## [1] 2.087536
+
+    heatmap(my.xy.split2[[1]][["Lower"]][["xan"]],Rowv = NA,Colv = NA,main="Lower part",col=colorRampPalette(c("white","blue"))(10))
+
+![](README_files/figure-markdown_strict/unnamed-chunk-13-1.png)
+
+    heatmap(my.xy.split2[[1]][["Upper"]][["xan"]],Rowv = NA,Colv = NA,main="Upper part",col=colorRampPalette(c("white","blue"))(10))
+
+![](README_files/figure-markdown_strict/unnamed-chunk-13-2.png)
+
+And lets check out the biomass distribution of "pan"
+
+    my.xy.split3 <- xy_splits(myimg,channels="pan",do="sum",cores = 1)
+    heatmap(my.xy.split3[[1]][["pan"]],Rowv = NA,Colv = NA,col=colorRampPalette(c("white","blue"))(10))
+
+![](README_files/figure-markdown_strict/unnamed-chunk-14-1.png)
+
+We can use any function to apply for each xy-position. E.g. for the
+median z-position for "mic":
+
+    myfun <- function(x) median(which(x > 0))
+    my.xy.split4 <- xy_splits(myimg,channels="mic",do=myfun,cores = 1)
+    heatmap(my.xy.split4[[1]][["mic"]],Rowv = NA,Colv = NA,col=colorRampPalette(c("white","blue"))(10))
+
+![](README_files/figure-markdown_strict/unnamed-chunk-15-1.png)
+
+Or number of layers it spans:
+
+    myfun <- function(x) {
+      y <- max(which(x > 0)) - min(which(x > 0))
+      if(is.infinite(y)) y <- 0
+      return(y) }
+    my.xy.split5 <- xy_splits(myimg,channels="mic",do=myfun,cores = 1)
+    heatmap(my.xy.split5[[1]][["mic"]],Rowv = NA,Colv = NA,col=colorRampPalette(c("white","blue"))(10))
+
+![](README_files/figure-markdown_strict/unnamed-chunk-16-1.png)
 
 ### 3D Co-aggregation (Cross-correlation)
 
@@ -235,7 +271,7 @@ Plot the result
       geom_line() 
     p
 
-![](README_files/figure-markdown_strict/unnamed-chunk-14-1.png)
+![](README_files/figure-markdown_strict/unnamed-chunk-19-1.png)
 
 At small distances "xan" and "ste" appear to be intermixed more than
 expected from random chance
@@ -267,7 +303,7 @@ black line is normalized such that random equals 1
       geom_line(data=myocc,aes(x=Distance,y=Occupancy.Normalized,group=R))
     p
 
-![](README_files/figure-markdown_strict/unnamed-chunk-16-1.png)
+![](README_files/figure-markdown_strict/unnamed-chunk-21-1.png)
 
 ### 3D aggregates
 
@@ -283,7 +319,6 @@ c(3,3,1) would find aggregates for each x,y 2D plane
 
     my.agg <- clumps(myimg,"mic",kern.smooth=c(3,3,3),kern.neighbour=c(3,3,3),pwidth=0.75,zstep=0.25)
 
-    ## Running replica 1
 
 Lets plot the 3D image of aggregates larger than 20000 pixels
 
@@ -301,7 +336,7 @@ Lets plot the 3D image of aggregates larger than 20000 pixels
     # Plot it
     scatterplot3d(M$Var1,M$Var2,M$Var3,color=M$value)
 
-![](README_files/figure-markdown_strict/unnamed-chunk-18-1.png)
+![](README_files/figure-markdown_strict/unnamed-chunk-23-1.png)
 
 ### 3D Cross-ratio
 
@@ -329,4 +364,6 @@ Plot the result
       geom_line() 
     p
 
-![](README_files/figure-markdown_strict/unnamed-chunk-20-1.png)
+![](README_files/figure-markdown_strict/unnamed-chunk-25-1.png)
+
+Close to "mic" we are more likely to find "xan" than "pan"
