@@ -4,7 +4,8 @@
 \alias{xy_splits}
 \title{Analyses for each xy position}
 \usage{
-xy_splits(imgs, channels, do, upper.part = 0.5, layer.start = NULL)
+xy_splits(imgs, channels, do, upper.part = 0.5, layer.start = NULL,
+  cores = 1)
 }
 \arguments{
 \item{imgs}{The paths of array files; i.e. output from \code{loadIMG} or \code{findIMG} functions.}
@@ -22,6 +23,8 @@ xy_splits(imgs, channels, do, upper.part = 0.5, layer.start = NULL)
 \item{upper.part}{Only if do="section". Either the fraction to assign to the upper section (between 0 and 1), or a fixed number of layers that are assigned to the upper part (an integer, 1L, 2L, 3L etc.. Remember the L!). The upper fraction is inclusive (i.e. x >= upper.part)}
 
 \item{layer.start}{Only if do="section". Are first layers the "Top" or the "Bottom" of the specimen?}
+
+\item{cores}{Cores to use for parallel computing. Defaults to 1, i.e. not parallel.}
 }
 \value{
 A recursive list. First layer are the images, within those are the channels. Each element is a matrix with a value for each xy position. If do="section" an extra layer is added denoting the upper and lower section.

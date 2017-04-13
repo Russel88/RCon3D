@@ -12,12 +12,14 @@
 #'  } 
 #' @param upper.part Only if do="section". Either the fraction to assign to the upper section (between 0 and 1), or a fixed number of layers that are assigned to the upper part (an integer, 1L, 2L, 3L etc.. Remember the L!). The upper fraction is inclusive (i.e. x >= upper.part)
 #' @param layer.start Only if do="section". Are first layers the "Top" or the "Bottom" of the specimen?
+#' @param cores Cores to use for parallel computing. Defaults to 1, i.e. not parallel.
 #' @details For sectioning, NA is returned if a channel is absent at a specific xy-position, but a zero is returned if the channel is present at that xy-position but absent in the section.
 #' @keywords array image
 #' @return A recursive list. First layer are the images, within those are the channels. Each element is a matrix with a value for each xy position. If do="section" an extra layer is added denoting the upper and lower section.
+#' @import doSNOW
 #' @export
 
-xy_splits <- function(imgs,channels,do,upper.part=0.5,layer.start=NULL) {
+xy_splits <- function(imgs,channels,do,upper.part=0.5,layer.start=NULL,cores=1) {
   
   # Check
   if(do == "section") {
@@ -38,11 +40,9 @@ xy_splits <- function(imgs,channels,do,upper.part=0.5,layer.start=NULL) {
     # Load images
     ch_files <- imgs[grep(channels[ch], imgs)]
     
-    # Results
-    result.image <- list()
-    
-    # Loop for each image
-    for(k in 1:length(ch_files)){
+    cl <- makeCluster(cores)
+    registerDoSNOW(cl)
+    result.image <- foreach(k = 1:length(ch_files)) %dopar% {
       
       # Load RDS
       ch_t <- readRDS(ch_files[k])
@@ -62,22 +62,26 @@ xy_splits <- function(imgs,channels,do,upper.part=0.5,layer.start=NULL) {
       } else {
         res <- apply(ch_t,c(1,2),do)
       }
-      
-      # Collect results
-      result.image[[k]] <- res
-      
+      return(res)
     }
+    stopCluster(cl)
+
     results[[ch]] <- result.image
   }
-
+  
   # Sectioning
   if(is.function(do)) do <- FALSE
   if(do == "section"){
     
-    section.results <- list()
+    message("Starting sectioning")
     
-    for(s in 1:length(ch_files)){
-      
+    pb <- txtProgressBar(max = length(ch_files), style = 3)
+    progress <- function(n) setTxtProgressBar(pb, n)
+    opts <- list(progress = progress)
+    cl <- makeCluster(cores)
+    registerDoSNOW(cl)
+    section.results <- foreach(s = 1:length(ch_files), .options.snow = opts) %dopar% {
+
       # Extract
       chs <- lapply(1:length(channels),function(ch){
         results[[ch]][[s]]
@@ -87,7 +91,7 @@ xy_splits <- function(imgs,channels,do,upper.part=0.5,layer.start=NULL) {
       chs.l <- simplify2array(lapply(1:length(channels),function(ch){
         apply(chs[[ch]],c(1,2),function(x) length(unlist(x)))
       }))
-
+      
       # Combine the channels
       chs.combined <- apply(simplify2array(chs),c(1,2),unlist)
       
@@ -123,20 +127,20 @@ xy_splits <- function(imgs,channels,do,upper.part=0.5,layer.start=NULL) {
         }
         
         if(layer.start == "Bottom") {
-
+          
           chs.upper <- apply(chs.combined,c(1,2),function(x) {
             unlist(x) %in% top(unlist(x))})
-
+          
           chs.lower <- apply(chs.combined,c(1,2),function(x) {
             !unlist(x) %in% top(unlist(x))})
-         
+          
         }
         
         if(layer.start == "Top") {
           
           chs.upper <- apply(chs.combined,c(1,2),function(x) {
             unlist(x) %in% bottom(unlist(x))})
-
+          
           chs.lower <- apply(chs.combined,c(1,2),function(x) {
             !unlist(x) %in% bottom(unlist(x))})
           
@@ -153,9 +157,9 @@ xy_splits <- function(imgs,channels,do,upper.part=0.5,layer.start=NULL) {
             unlist(x) < quantile(unlist(x),(1-upper.part))})
           
         } 
-        
-        if(layer.start == "Top") {
 
+        if(layer.start == "Top") {
+          
           chs.upper <- apply(chs.combined,c(1,2),function(x) {
             unlist(x) < quantile(unlist(x),upper.part)})
           
@@ -163,14 +167,14 @@ xy_splits <- function(imgs,channels,do,upper.part=0.5,layer.start=NULL) {
             unlist(x) >= quantile(unlist(x),upper.part)})
           
         }
-
+        
       }
-      
+
       # Sums
       upper.sums <- lapply(1:length(channels),function(ch){
         sapply(1:dim(chs.upper)[1],function(x){
           sapply(1:dim(chs.upper)[2],function(y){
-            sum(chs.upper[x,y][[1]][(sum(chs.l[x,y,0:(ch-1)])+1):sum(chs.l[x,y,(ch-1):ch])])
+            if(chs.l[x,y,ch] > 0) sum(chs.upper[x,y][[1]][(sum(chs.l[x,y,0:(ch-1)])+1):sum(chs.l[x,y,1:ch])]) else 0
           })
         })
       })
@@ -178,19 +182,20 @@ xy_splits <- function(imgs,channels,do,upper.part=0.5,layer.start=NULL) {
       lower.sums <- lapply(1:length(channels),function(ch){
         sapply(1:dim(chs.lower)[1],function(x){
           sapply(1:dim(chs.lower)[2],function(y){
-            sum(chs.lower[x,y][[1]][(sum(chs.l[x,y,0:(ch-1)])+1):sum(chs.l[x,y,(ch-1):ch])])
+            if(chs.l[x,y,ch] > 0) sum(chs.lower[x,y][[1]][(sum(chs.l[x,y,0:(ch-1)])+1):sum(chs.l[x,y,1:ch])]) else 0
           })
         })
       })
-    
+
       names(upper.sums) <- channels
       names(lower.sums) <- channels
       
-      # Collect
-      section.results[[s]] <- list(Upper=upper.sums,Lower=lower.sums)
+      # Results
+      results.sub <- list(Upper=upper.sums,Lower=lower.sums)
+      return(results.sub)
       
     }
-    
+
     final <- section.results
     
   } else {
@@ -217,6 +222,3 @@ xy_splits <- function(imgs,channels,do,upper.part=0.5,layer.start=NULL) {
   return(final)
   
 }
-
-
-
