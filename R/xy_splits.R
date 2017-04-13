@@ -22,10 +22,12 @@
 xy_splits <- function(imgs,channels,do,upper.part=0.5,layer.start=NULL,cores=1) {
   
   # Check
-  if(do == "section") {
-    if(!layer.start %in% c("Bottom","Top")) stop("Set layer.start to either Top or Bottom")
+  if(!is.function(do)){
+    if(do == "section") {
+      if(!layer.start %in% c("Bottom","Top")) stop("Set layer.start to either Top or Bottom")
+    }
   }
-  
+
   # Results
   results <- list()
 
