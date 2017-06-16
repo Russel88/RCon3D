@@ -87,8 +87,8 @@ The path should lead to folder with a .tif for each image (with all
 z-stacks in one .tif file), or a folder with subfolders in which the
 images are split in z-stacks and channels.
 
-    #myimg <- loadIMG("//a00143.science.domain/cmf483/Documents/PhD/Projects/xPackages/RCon3D/Data",c("xan","pan","ste","mic"),split=TRUE)
-    myimg <- findIMG("//a00143.science.domain/cmf483/Documents/PhD/Projects/xPackages/RCon3D/Data")
+    #myimg <- loadIMG("/Data",c("xan","pan","ste","mic"),split=TRUE)
+    myimg <- findIMG("/Data")
 
 ### Quantify pixels for each layer for each channel
 
@@ -203,16 +203,6 @@ layers.
 
     my.xy.split2 <- xy_splits(myimg,channels=c("xan","pan","ste","mic"),do="section",upper.part=25L,layer.start = "Top",cores = 1)
 
-    ## Warning: lukker ubrugt forbindelse 5 (<-BB11554.science.domain:11849)
-
-    ## Starting sectioning
-
-    ## 
-      |                                                                       
-      |                                                                 |   0%
-      |                                                                       
-      |=================================================================| 100%
-
     sum(my.xy.split2[[1]][["Upper"]][["xan"]])/sum(my.xy.split2[[1]][["Lower"]][["xan"]])
 
     ## [1] 2.087536
@@ -285,24 +275,6 @@ variability of the result
 
     mycc <- co_agg(imgs=myimg,channels=c("xan","ste"),size=21,npixel=200,dstep=1,pwidth=0.75,zstep=0.25,R=5)
 
-    ## 
-      |                                                                       
-      |                                                                 |   0%
-
-    ## Warning: lukker ubrugt forbindelse 5 (<-BB11554.science.domain:11849)
-
-    ## 
-      |                                                                       
-      |=============                                                    |  20%
-      |                                                                       
-      |==========================                                       |  40%
-      |                                                                       
-      |=======================================                          |  60%
-      |                                                                       
-      |====================================================             |  80%
-      |                                                                       
-      |=================================================================| 100%
-
 Plot the result
 
     p <- ggplot(mycc,aes(x=Distance,y=CA,group=R)) +
@@ -332,19 +304,6 @@ increase them carefully if needed.
 
     myocc <- occupancy(imgs=myimg,focal.channel="ste",target.channel="xan",size=21,npixel=200,dstep=1,pwidth=0.75,zstep=0.25,R=5)
 
-    ## 
-      |                                                                       
-      |                                                                 |   0%
-      |                                                                       
-      |=============                                                    |  20%
-      |                                                                       
-      |==========================                                       |  40%
-      |                                                                       
-      |=======================================                          |  60%
-      |                                                                       
-      |====================================================             |  80%
-      |                                                                       
-      |=================================================================| 100%
 
 Plot the result. The red line is the actual proportion occupied, the
 black line is normalized such that random equals 1
@@ -409,19 +368,6 @@ increase them carefully if needed.
 
     mycr <- cross_ratio(imgs=myimg,focal.channel="mic",target.channels=c("xan","pan"),size=21,npixel=200,dstep=1,pwidth=0.75,zstep=0.25,R=5)
 
-    ## 
-      |                                                                       
-      |                                                                 |   0%
-      |                                                                       
-      |=============                                                    |  20%
-      |                                                                       
-      |==========================                                       |  40%
-      |                                                                       
-      |=======================================                          |  60%
-      |                                                                       
-      |====================================================             |  80%
-      |                                                                       
-      |=================================================================| 100%
 
 Plot the result
 
