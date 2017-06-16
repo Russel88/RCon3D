@@ -153,14 +153,6 @@ distribution into account. Here we say that the upper part is the upper
 
     my.xy.split <- xy_splits(myimg,channels=c("xan","pan","ste","mic"),do="section",upper.part=0.5,layer.start = "Top",cores = 1)
 
-    ## Starting sectioning
-
-    ## 
-      |                                                                       
-      |                                                                 |   0%
-      |                                                                       
-      |=================================================================| 100%
-
 The result is a recursive list with matrices of results for each
 xy-position as elements
 
@@ -249,8 +241,7 @@ positioned relative to each other. We do this with 3D co-aggregation. A
 co-aggregation of 1 equals random positioning at that specific distance,
 &lt;1 means segregation and &gt;1 means aggregation.
 
-It is similar to 2D co-aggregation implemented in daime
-(<http://dome.csb.univie.ac.at/daime>), but this function works in 3D.
+It is similar to 2D co-aggregation implemented in [daime](http://dome.csb.univie.ac.at/daime), but this function works in 3D.
 
 Lets calculate 3D co-aggregation between channels "ste" and "xan".
 
@@ -330,8 +321,6 @@ neighbours. c(5,5,5) would extend a pixel further in all directions.
 c(3,3,1) would find aggregates for each x,y 2D plane
 
     my.agg <- clumps(myimg,"mic",kern.smooth=c(3,3,3),kern.neighbour=c(3,3,3),pwidth=0.75,zstep=0.25)
-
-    ## Running replica 1
 
 Lets plot the 3D image of aggregates larger than 20000 pixels
 
