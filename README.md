@@ -53,12 +53,18 @@ An internal function, `tiff_to_array`, is partly borrowed from
 framework for the `co_agg`,`occupancy` and `cross_ratio` analysis is
 also borrowed from this repository.
 
+### Citation
+If you use the `quant` and `layer_split` functions please cite:
+[Liu et al. (2017) Low-abundant species facilitates specific spatial
+organisation that promotes multispecies biofilm formation. *Envir.
+Microbiol.*](http://onlinelibrary.wiley.com/doi/10.1111/1462-2920.13816/abstract)
+
 ### Loading packages
 
 First install the package.
 
     library(devtools)
-    install_github("Russel88/RCon3D")
+    #install_github("Russel88/RCon3D")
 
 Then lets load the package and some packages for plotting
 
@@ -81,8 +87,8 @@ The path should lead to folder with a .tif for each image (with all
 z-stacks in one .tif file), or a folder with subfolders in which the
 images are split in z-stacks and channels.
 
-    myimg <- loadIMG("/ExampleData",c("xan","pan","ste","mic"),split=TRUE)
-    myimg <- findIMG("/ExampleData")
+    #myimg <- loadIMG("//a00143.science.domain/cmf483/Documents/PhD/Projects/xPackages/RCon3D/Data",c("xan","pan","ste","mic"),split=TRUE)
+    myimg <- findIMG("//a00143.science.domain/cmf483/Documents/PhD/Projects/xPackages/RCon3D/Data")
 
 ### Quantify pixels for each layer for each channel
 
@@ -147,6 +153,13 @@ distribution into account. Here we say that the upper part is the upper
 
     my.xy.split <- xy_splits(myimg,channels=c("xan","pan","ste","mic"),do="section",upper.part=0.5,layer.start = "Top",cores = 1)
 
+    ## Starting sectioning
+
+    ## 
+      |                                                                       
+      |                                                                 |   0%
+      |                                                                       
+      |=================================================================| 100%
 
 The result is a recursive list with matrices of results for each
 xy-position as elements
@@ -189,6 +202,16 @@ We can also try the same, but instead define the top as the upper 25
 layers.
 
     my.xy.split2 <- xy_splits(myimg,channels=c("xan","pan","ste","mic"),do="section",upper.part=25L,layer.start = "Top",cores = 1)
+
+    ## Warning: lukker ubrugt forbindelse 5 (<-BB11554.science.domain:11849)
+
+    ## Starting sectioning
+
+    ## 
+      |                                                                       
+      |                                                                 |   0%
+      |                                                                       
+      |=================================================================| 100%
 
     sum(my.xy.split2[[1]][["Upper"]][["xan"]])/sum(my.xy.split2[[1]][["Lower"]][["xan"]])
 
@@ -262,6 +285,23 @@ variability of the result
 
     mycc <- co_agg(imgs=myimg,channels=c("xan","ste"),size=21,npixel=200,dstep=1,pwidth=0.75,zstep=0.25,R=5)
 
+    ## 
+      |                                                                       
+      |                                                                 |   0%
+
+    ## Warning: lukker ubrugt forbindelse 5 (<-BB11554.science.domain:11849)
+
+    ## 
+      |                                                                       
+      |=============                                                    |  20%
+      |                                                                       
+      |==========================                                       |  40%
+      |                                                                       
+      |=======================================                          |  60%
+      |                                                                       
+      |====================================================             |  80%
+      |                                                                       
+      |=================================================================| 100%
 
 Plot the result
 
@@ -292,6 +332,19 @@ increase them carefully if needed.
 
     myocc <- occupancy(imgs=myimg,focal.channel="ste",target.channel="xan",size=21,npixel=200,dstep=1,pwidth=0.75,zstep=0.25,R=5)
 
+    ## 
+      |                                                                       
+      |                                                                 |   0%
+      |                                                                       
+      |=============                                                    |  20%
+      |                                                                       
+      |==========================                                       |  40%
+      |                                                                       
+      |=======================================                          |  60%
+      |                                                                       
+      |====================================================             |  80%
+      |                                                                       
+      |=================================================================| 100%
 
 Plot the result. The red line is the actual proportion occupied, the
 black line is normalized such that random equals 1
@@ -319,6 +372,7 @@ c(3,3,1) would find aggregates for each x,y 2D plane
 
     my.agg <- clumps(myimg,"mic",kern.smooth=c(3,3,3),kern.neighbour=c(3,3,3),pwidth=0.75,zstep=0.25)
 
+    ## Running replica 1
 
 Lets plot the 3D image of aggregates larger than 20000 pixels
 
@@ -355,6 +409,19 @@ increase them carefully if needed.
 
     mycr <- cross_ratio(imgs=myimg,focal.channel="mic",target.channels=c("xan","pan"),size=21,npixel=200,dstep=1,pwidth=0.75,zstep=0.25,R=5)
 
+    ## 
+      |                                                                       
+      |                                                                 |   0%
+      |                                                                       
+      |=============                                                    |  20%
+      |                                                                       
+      |==========================                                       |  40%
+      |                                                                       
+      |=======================================                          |  60%
+      |                                                                       
+      |====================================================             |  80%
+      |                                                                       
+      |=================================================================| 100%
 
 Plot the result
 
