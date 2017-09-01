@@ -16,7 +16,7 @@
 #' @param naming Optional. Add metadata to the output dataframe by looking through names of array files. Should be a list of character vectors, each list element will be added as a variable. Example: naming=list(Time=c("T0","T1","T2")). The function inserts a variable called Time, and then looks through the names of the array files and inserts characters mathcing either T0, T1 or T2
 #' @keywords array image occupancy
 #' @return A dataframe with the occupancy values for each distance
-#' @import doParallel
+#' @import doSNOW
 #' @import parallel
 #' @import foreach
 #' @import fastmatch
@@ -30,19 +30,14 @@ occupancy <- function(imgs,focal.channel,target.channel,size,npixel,R=10,dstep=1
   stopifnot(length(target.channel)==1,
             length(focal.channel)==1)
   
-  # Create progress bar
-  pb <- txtProgressBar(min = 0, max = R, style = 3)
-  
   OCC.all <- list()
   for(r in 1:R){
+    message(paste("Starting run"),r)
     OCC <- occupancy.default(imgs,focal.channel,target.channel,size,npixel,dstep,pwidth,zstep,cores,kern.smooth,layers,naming)
     OCC$R <- r
     OCC.all[[r]] <- OCC
-    # Update progress bar
-    setTxtProgressBar(pb, r)
   }
   OCCall <- do.call("rbind", OCC.all)
-  close(pb)
   return(OCCall)
 }
 
@@ -76,10 +71,20 @@ occupancy.default <- function(imgs,focal.channel,target.channel,size,npixel,dste
   ch.f_files <- imgs[grep(focal.channel, imgs)]
   ch.t_files <- imgs[grep(target.channel, imgs)]
   
-  # Start parallel for each replica
-  cl <- makeCluster(cores)
-  registerDoParallel(cl)  
-  OCC_results <- foreach(i=1:length(ch.f_files),.combine=rbind) %dopar% {
+  # Progress bar
+  pb <- txtProgressBar(max = length(ch.f_files), style = 3)
+  progress <- function(n) setTxtProgressBar(pb, n)
+  opts <- list(progress = progress)
+  
+  # Start parallel
+  if(cores == 1) {
+    registerDoSEQ() 
+  } else {
+    cl <- makeCluster(cores)
+    registerDoSNOW(cl)
+  }
+  
+  OCC_results <- foreach(i=1:length(ch.f_files),.combine=rbind, .options.snow = opts) %dopar% {
     
     # Load
     ch.f <- readRDS(ch.f_files[i])
@@ -190,7 +195,7 @@ occupancy.default <- function(imgs,focal.channel,target.channel,size,npixel,dste
     colnames(theseOCC) <- c("Img", "Distance", "Occupancy","Occupancy.Normalized")
     return(theseOCC)
   }
-  stopCluster(cl)
+  if(cores != 1) stopCluster(cl)
   
   # Final polishing
   colnames(OCC_results) <- c("Img", "Distance", "Occupancy","Occupancy.Normalized")

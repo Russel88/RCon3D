@@ -15,7 +15,7 @@
 #' @param naming Optional. Add metadata to the output dataframe by looking through names of array files. Should be a list of character vectors, each list element will be added as a variable. Example: naming=list(Time=c("T0","T1","T2")). The function inserts a variable called Time, and then looks through the names of the array files and inserts characters mathcing either T0, T1 or T2
 #' @keywords array image co-aggregation
 #' @return A dataframe with the co-aggregation values for each distance
-#' @import doParallel
+#' @import doSNOW
 #' @import parallel
 #' @import foreach
 #' @import fastmatch
@@ -28,19 +28,15 @@ co_agg <- function(imgs,channels,size,npixel,R=10,dstep=1,pwidth,zstep,cores=1,k
   
   stopifnot(length(channels)==2)
 
-  # Create progress bar
-  pb <- txtProgressBar(min = 0, max = R, style = 3)
-  
   CC.all <- list()
   for(r in 1:R){
+    message(paste("Starting run"),r)
     CC <- co_agg.default(imgs,channels,size,npixel,dstep,pwidth,zstep,cores,kern.smooth,layers,naming)
     CC$R <- r
     CC.all[[r]] <- CC
-    # Update progress bar
-    setTxtProgressBar(pb, r)
   }
   CCall <- do.call("rbind", CC.all)
-  close(pb)
+
   return(CCall)
 }
 
@@ -74,10 +70,20 @@ co_agg.default <- function(imgs,channels,size,npixel,dstep=1,pwidth,zstep,cores=
   ch1_files <- imgs[grep(channels[1], imgs)]
   ch2_files <- imgs[grep(channels[2], imgs)]
   
-  # Start parallel for each replica
-  cl <- makeCluster(cores)
-  registerDoParallel(cl)  
-  cc_results <- foreach(i=1:length(ch1_files),.combine=rbind) %dopar% {
+  # Progress bar
+  pb <- txtProgressBar(max = length(ch1_files), style = 3)
+  progress <- function(n) setTxtProgressBar(pb, n)
+  opts <- list(progress = progress)
+  
+  # Start parallel
+  if(cores == 1) {
+    registerDoSEQ() 
+  } else {
+    cl <- makeCluster(cores)
+    registerDoSNOW(cl)
+  }
+  
+  cc_results <- foreach(i=1:length(ch1_files),.combine=rbind, .options.snow = opts) %dopar% {
     
     # Load
     ch1_t <- readRDS(ch1_files[i])
@@ -207,7 +213,7 @@ co_agg.default <- function(imgs,channels,size,npixel,dstep=1,pwidth,zstep,cores=
     colnames(theseCC) <- c("Img", "Distance", "CA")
     return(theseCC)
   }
-  stopCluster(cl)
+  if(cores != 1) stopCluster(cl)
   
   # Final polishing
   colnames(cc_results) <- c("Img", "Distance", "CA")

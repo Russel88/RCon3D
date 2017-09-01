@@ -16,7 +16,7 @@
 #' @param naming Optional. Add metadata to the output dataframe by looking through names of array files. Should be a list of character vectors, each list element will be added as a variable. Example: naming=list(Time=c("T0","T1","T2")). The function inserts a variable called Time, and then looks through the names of the array files and inserts characters mathcing either T0, T1 or T2
 #' @keywords array image cross-ratio
 #' @return A dataframe with the cross-ratio values for each distance
-#' @import doParallel
+#' @import doSNOW
 #' @import parallel
 #' @import foreach
 #' @import fastmatch
@@ -30,19 +30,15 @@ cross_ratio <- function(imgs,focal.channel,target.channels,size,npixel,R=10,dste
   stopifnot(length(target.channels)==2,
             length(focal.channel)==1)
   
-  # Create progress bar
-  pb <- txtProgressBar(min = 0, max = R, style = 3)
-  
   CR.all <- list()
   for(r in 1:R){
+    message(paste("Starting run"),r)
     CR <- cross_ratio.default(imgs,focal.channel,target.channels,size,npixel,dstep,pwidth,zstep,cores,kern.smooth,layers,naming)
     CR$R <- r
     CR.all[[r]] <- CR
-    # Update progress bar
-    setTxtProgressBar(pb, r)
   }
   CRall <- do.call("rbind", CR.all)
-  close(pb)
+
   return(CRall)
 }
 
@@ -77,10 +73,20 @@ cross_ratio.default <- function(imgs,focal.channel,target.channels,size,npixel,d
   ch.t2_files <- imgs[grep(target.channels[2], imgs)]
   ch.f_files <- imgs[grep(focal.channel, imgs)]
   
-  # Start parallel for each replica
-  cl <- makeCluster(cores)
-  registerDoParallel(cl)  
-  cr_results <- foreach(i=1:length(ch.t1_files),.combine=rbind) %dopar% {
+  # Progress bar
+  pb <- txtProgressBar(max = length(ch.t1_files), style = 3)
+  progress <- function(n) setTxtProgressBar(pb, n)
+  opts <- list(progress = progress)
+  
+  # Start parallel
+  if(cores == 1) {
+    registerDoSEQ() 
+  } else {
+    cl <- makeCluster(cores)
+    registerDoSNOW(cl)
+  }
+  
+  cr_results <- foreach(i=1:length(ch.t1_files),.combine=rbind, .options.snow = opts) %dopar% {
     
     # Load
     ch.t1 <- readRDS(ch.t1_files[i])
@@ -198,7 +204,7 @@ cross_ratio.default <- function(imgs,focal.channel,target.channels,size,npixel,d
     return(theseCR)
     
   }
-  stopCluster(cl)
+  if(cores != 1) stopCluster(cl)
   
   # Final polishing
   colnames(cr_results) <- c("Img", "Distance", "CR")
