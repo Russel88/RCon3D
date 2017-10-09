@@ -4,7 +4,9 @@
 #' @param imgs The paths of array files; i.e. output from \code{loadIMG} or \code{findIMG} functions.
 #' @param channel Name of the channel to find aggregates in. Should be in the names of the array files
 #' @param kern.neighbour Numeric vector indicating range of neighbouring pixels to aggregate in the x,y,z directions. Has to be odd intergers. c(1,1,1) means no aggregating.
+#' @param type.neighbor Type of kernel for neighborhood. "box" includes diagonals, "diamond" is without diagonals
 #' @param kern.smooth Optional. Numeric vector indicating range of median smoothing in the x,y,z directions. Has to be odd intergers. c(1,1,1) means no smoothing.
+#' @param type.smooth Optional. Type of kernel for smooth "box" includes diagonals, "diamond" is without diagonals
 #' @param layers Optional. Should the function only look in a subset of layers. A list with lists of layers to use for each image. Can also be the output from \code{extract_layers} 
 #' @param pwidth Optional. Width of pixels in microns to calculate aggregate size in microns instead of pixels
 #' @param zstep Optional. z-step in microns to calculate aggregate size in microns instead of pixels
@@ -15,7 +17,7 @@
 #' @import mmand
 #' @export
 
-clumps <- function(imgs,channel,kern.neighbour=c(3,3,3),kern.smooth=NULL,layers=NULL,pwidth=NULL,zstep=NULL,naming=NULL,coords=FALSE) {
+clumps <- function(imgs,channel,kern.neighbour=c(3,3,3),type.neighbor="box",kern.smooth=NULL,type.smooth="box",layers=NULL,pwidth=NULL,zstep=NULL,naming=NULL,coords=FALSE) {
   
   stopifnot(length(channel)==1)
   
@@ -41,45 +43,35 @@ clumps <- function(imgs,channel,kern.neighbour=c(3,3,3),kern.smooth=NULL,layers=
       ch_t <- ch_t[,,layers[[k]]]
     }
     
-    # Extend parameter
-    ep <- max(c(kern.neighbour,kern.smooth))
-    
-    # Extend
-    ch_new <- array(NA, dim=c(side+(2*ep), side+(2*ep), h+(2*ep)))
-    ch_new[(ep+1):(side+ep),(ep+1):(side+ep),(ep+1):(h+ep)] <- ch_t 
-    
     # Smooth
     if(!is.null(kern.smooth)) {
       if(kern.smooth[1] %% 1 == 0 & kern.smooth[1] %% 2 != 0 &
          kern.smooth[2] %% 1 == 0 & kern.smooth[2] %% 2 != 0 &
          kern.smooth[3] %% 1 == 0 & kern.smooth[3] %% 2 != 0) {
-        kern.s <- kernelArray(array(1,dim=kern.smooth))
-        ch_new <- medianFilter(ch_new,kern.s)
-        ch_new[ch_new > 0] <- 1 } else stop("Kernel smooth has to be odd integers in all directions")
+        kern.s <- shapeKernel(kern.smooth, type = type.neighbor)
+        ch_t <- medianFilter(ch_t,kern.s)
+        ch_t[ch_t > 0] <- 1 } else stop("Kernel smooth has to be odd integers in all directions")
     }
     
     # Find aggregates
-    kern.n <- kernelArray(array(1,dim=kern.neighbour))
-    ch_agg <- components(ch_new,kern.n)
+    kern.n <- shapeKernel(kern.neighbour, type = type.smooth)
+    ch_agg <- components(ch_t,kern.n)
     
-    # Crop
-    ch_fin <- ch_agg[(ep+1):(side+ep),(ep+1):(side+ep),(ep+1):(h+ep)]
-    
-    afr <- as.data.frame(table(ch_fin))
+    afr <- as.data.frame(table(ch_agg))
     colnames(afr) <- c("ID","Size")
     if(!is.null(pwidth) & !is.null(zstep)) afr$Size.micron <- afr$Size * pwidth^2 * zstep
     afr$Img <- sub(paste0("_.*"),"",sub(".*/", "", ch_files[k]))
     
     if(coords){
-      coords <- lapply(as.numeric(as.character(afr$ID)),function(x) which(ch_fin == x, arr.ind = TRUE))
+      coords <- lapply(as.numeric(as.character(afr$ID)),function(x) which(ch_agg == x, arr.ind = TRUE))
       centroids <- t(sapply(coords, function(x) apply(x, 2, median)))
       colnames(centroids) <- c("x","y","z")
       afr <- as.data.frame(cbind(afr, centroids))
       
       # Touch edge?
-      edge.x <- c(1,dim(ch_fin)[1])
-      edge.y <- c(1,dim(ch_fin)[2])
-      edge.z <- c(1,dim(ch_fin)[3])
+      edge.x <- c(1,dim(ch_agg)[1])
+      edge.y <- c(1,dim(ch_agg)[2])
+      edge.z <- c(1,dim(ch_agg)[3])
       
       touch <- sapply(coords, function(ac) any(any(sapply(ac[,1], function(x) x %in% edge.x)),
                                                any(sapply(ac[,2], function(x) x %in% edge.y)),
@@ -89,7 +81,7 @@ clumps <- function(imgs,channel,kern.neighbour=c(3,3,3),kern.smooth=NULL,layers=
     }
     
     results[[k]] <- afr
-    arrays[[k]] <- ch_fin
+    arrays[[k]] <- ch_agg
   }
   
   afrx <- do.call(rbind,results)
