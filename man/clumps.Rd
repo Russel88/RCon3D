@@ -4,7 +4,7 @@
 \alias{clumps}
 \title{Find 3D aggregates/clumps}
 \usage{
-clumps(imgs, channel, kern.neighbour = c(3, 3, 3), type.neighbor = "box",
+clumps(imgs, channel, kern.neighbour = c(3, 3, 3), type.neighbour = "box",
   kern.smooth = NULL, type.smooth = "box", layers = NULL, pwidth = NULL,
   zstep = NULL, naming = NULL, coords = FALSE)
 }
@@ -15,7 +15,7 @@ clumps(imgs, channel, kern.neighbour = c(3, 3, 3), type.neighbor = "box",
 
 \item{kern.neighbour}{Numeric vector indicating range of neighbouring pixels to aggregate in the x,y,z directions. Has to be odd intergers. c(1,1,1) means no aggregating.}
 
-\item{type.neighbor}{Type of kernel for neighborhood. "box" includes diagonals, "diamond" is without diagonals}
+\item{type.neighbour}{Type of kernel for neighbourhood. "box" includes diagonals, "diamond" is without diagonals}
 
 \item{kern.smooth}{Optional. Numeric vector indicating range of median smoothing in the x,y,z directions. Has to be odd intergers. c(1,1,1) means no smoothing.}
 

@@ -4,7 +4,7 @@
 #' @param imgs The paths of array files; i.e. output from \code{loadIMG} or \code{findIMG} functions.
 #' @param channel Name of the channel to find aggregates in. Should be in the names of the array files
 #' @param kern.neighbour Numeric vector indicating range of neighbouring pixels to aggregate in the x,y,z directions. Has to be odd intergers. c(1,1,1) means no aggregating.
-#' @param type.neighbor Type of kernel for neighborhood. "box" includes diagonals, "diamond" is without diagonals
+#' @param type.neighbour Type of kernel for neighbourhood. "box" includes diagonals, "diamond" is without diagonals
 #' @param kern.smooth Optional. Numeric vector indicating range of median smoothing in the x,y,z directions. Has to be odd intergers. c(1,1,1) means no smoothing.
 #' @param type.smooth Optional. Type of kernel for smooth "box" includes diagonals, "diamond" is without diagonals
 #' @param layers Optional. Should the function only look in a subset of layers. A list with lists of layers to use for each image. Can also be the output from \code{extract_layers} 
@@ -17,7 +17,7 @@
 #' @import mmand
 #' @export
 
-clumps <- function(imgs,channel,kern.neighbour=c(3,3,3),type.neighbor="box",kern.smooth=NULL,type.smooth="box",layers=NULL,pwidth=NULL,zstep=NULL,naming=NULL,coords=FALSE) {
+clumps <- function(imgs,channel,kern.neighbour=c(3,3,3),type.neighbour="box",kern.smooth=NULL,type.smooth="box",layers=NULL,pwidth=NULL,zstep=NULL,naming=NULL,coords=FALSE) {
   
   stopifnot(length(channel)==1)
   
@@ -48,13 +48,13 @@ clumps <- function(imgs,channel,kern.neighbour=c(3,3,3),type.neighbor="box",kern
       if(kern.smooth[1] %% 1 == 0 & kern.smooth[1] %% 2 != 0 &
          kern.smooth[2] %% 1 == 0 & kern.smooth[2] %% 2 != 0 &
          kern.smooth[3] %% 1 == 0 & kern.smooth[3] %% 2 != 0) {
-        kern.s <- shapeKernel(kern.smooth, type = type.neighbor)
+        kern.s <- shapeKernel(kern.smooth, type = type.smooth)
         ch_t <- medianFilter(ch_t,kern.s)
         ch_t[ch_t > 0] <- 1 } else stop("Kernel smooth has to be odd integers in all directions")
     }
     
     # Find aggregates
-    kern.n <- shapeKernel(kern.neighbour, type = type.smooth)
+    kern.n <- shapeKernel(kern.neighbour, type = type.neighbour)
     ch_agg <- components(ch_t,kern.n)
     
     afr <- as.data.frame(table(ch_agg))
