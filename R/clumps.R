@@ -9,12 +9,13 @@
 #' @param pwidth Optional. Width of pixels in microns to calculate aggregate size in microns instead of pixels
 #' @param zstep Optional. z-step in microns to calculate aggregate size in microns instead of pixels
 #' @param naming Optional. Add metadata to the output dataframe by looking through names of array files. Should be a list of character vectors, each list element will be added as a variable. Example: naming=list(Time=c("T0","T1","T2")). The function inserts a variable called Time, and then looks through the names of the array files and inserts characters mathcing either T0, T1 or T2
+#' @param coords Logical. Return coordinates of the centroids of each aggregate. This can be somewhat time-consuming if there are many aggregates
 #' @keywords array image aggregate
-#' @return A list with two parts. First part is a dataframe with ID and size of aggregates and name of image, second part is a list of the arrays in which pixels are NA if empty or given a number indicating the aggregate ID
+#' @return A list with two parts. First part is a dataframe with ID, size of aggregates in pixels, size of aggregates in microns if pwidth and zstep are provided, coordinates if coords is TRUE, if coords is TRUE also a logical variable, Edge, indicating whether the aggregate touches the edge, and name of image. Second part is a list of the arrays in which pixels are NA if empty or given a number indicating the aggregate ID
 #' @import mmand
 #' @export
 
-clumps <- function(imgs,channel,kern.neighbour=c(3,3,3),kern.smooth=NULL,layers=NULL,pwidth=NULL,zstep=NULL,naming=NULL) {
+clumps <- function(imgs,channel,kern.neighbour=c(3,3,3),kern.smooth=NULL,layers=NULL,pwidth=NULL,zstep=NULL,naming=NULL,coords=FALSE) {
   
   stopifnot(length(channel)==1)
   
@@ -68,7 +69,26 @@ clumps <- function(imgs,channel,kern.neighbour=c(3,3,3),kern.smooth=NULL,layers=
     colnames(afr) <- c("ID","Size")
     if(!is.null(pwidth) & !is.null(zstep)) afr$Size.micron <- afr$Size * pwidth^2 * zstep
     afr$Img <- sub(paste0("_.*"),"",sub(".*/", "", ch_files[k]))
-    results[[k]] <- afr  
+    
+    if(coords){
+      coords <- lapply(as.numeric(as.character(afr$ID)),function(x) which(ch_fin == x, arr.ind = TRUE))
+      centroids <- t(sapply(coords, function(x) apply(x, 2, median)))
+      colnames(centroids) <- c("x","y","z")
+      afr <- as.data.frame(cbind(afr, centroids))
+      
+      # Touch edge?
+      edge.x <- c(1,dim(ch_fin)[1])
+      edge.y <- c(1,dim(ch_fin)[2])
+      edge.z <- c(1,dim(ch_fin)[3])
+      
+      touch <- sapply(coords, function(ac) any(any(sapply(ac[,1], function(x) x %in% edge.x)),
+                                               any(sapply(ac[,2], function(x) x %in% edge.y)),
+                                               any(sapply(ac[,3], function(x) x %in% edge.z))))
+      
+      afr$Edge <- touch
+    }
+    
+    results[[k]] <- afr
     arrays[[k]] <- ch_fin
   }
   
@@ -92,6 +112,8 @@ clumps <- function(imgs,channel,kern.neighbour=c(3,3,3),kern.smooth=NULL,layers=
   
   return(All)
 }
+
+
 
 
 

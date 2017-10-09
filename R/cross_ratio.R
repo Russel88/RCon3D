@@ -32,7 +32,7 @@ cross_ratio <- function(imgs,focal.channel,target.channels,size,npixel,R=10,dste
   
   CR.all <- list()
   for(r in 1:R){
-    message(paste("Starting run"),r)
+    message(paste("Starting run "),r)
     CR <- cross_ratio.default(imgs,focal.channel,target.channels,size,npixel,dstep,pwidth,zstep,cores,kern.smooth,layers,naming)
     CR$R <- r
     CR.all[[r]] <- CR

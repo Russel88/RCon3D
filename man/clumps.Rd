@@ -5,7 +5,8 @@
 \title{Find 3D aggregates/clumps}
 \usage{
 clumps(imgs, channel, kern.neighbour = c(3, 3, 3), kern.smooth = NULL,
-  layers = NULL, pwidth = NULL, zstep = NULL, naming = NULL)
+  layers = NULL, pwidth = NULL, zstep = NULL, naming = NULL,
+  coords = FALSE)
 }
 \arguments{
 \item{imgs}{The paths of array files; i.e. output from \code{loadIMG} or \code{findIMG} functions.}
@@ -23,9 +24,11 @@ clumps(imgs, channel, kern.neighbour = c(3, 3, 3), kern.smooth = NULL,
 \item{zstep}{Optional. z-step in microns to calculate aggregate size in microns instead of pixels}
 
 \item{naming}{Optional. Add metadata to the output dataframe by looking through names of array files. Should be a list of character vectors, each list element will be added as a variable. Example: naming=list(Time=c("T0","T1","T2")). The function inserts a variable called Time, and then looks through the names of the array files and inserts characters mathcing either T0, T1 or T2}
+
+\item{coords}{Logical. Return coordinates of the centroids of each aggregate. This can be somewhat time-consuming if there are many aggregates}
 }
 \value{
-A list with two parts. First part is a dataframe with ID and size of aggregates and name of image, second part is a list of the arrays in which pixels are NA if empty or given a number indicating the aggregate ID
+A list with two parts. First part is a dataframe with ID, size of aggregates in pixels, size of aggregates in microns if pwidth and zstep are provided, coordinates if coords is TRUE, if coords is TRUE also a logical variable, Edge, indicating whether the aggregate touches the edge, and name of image. Second part is a list of the arrays in which pixels are NA if empty or given a number indicating the aggregate ID
 }
 \description{
 Function to group adjacent pixels in aggregates/clumps

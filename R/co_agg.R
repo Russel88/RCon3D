@@ -30,7 +30,7 @@ co_agg <- function(imgs,channels,size,npixel,R=10,dstep=1,pwidth,zstep,cores=1,k
 
   CC.all <- list()
   for(r in 1:R){
-    message(paste("Starting run"),r)
+    message(paste("Starting run "),r)
     CC <- co_agg.default(imgs,channels,size,npixel,dstep,pwidth,zstep,cores,kern.smooth,layers,naming)
     CC$R <- r
     CC.all[[r]] <- CC
