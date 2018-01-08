@@ -54,8 +54,9 @@ framework for the `co_agg`,`occupancy` and `cross_ratio` analysis is
 also borrowed from this repository.
 
 ### Citation
-If you use the `quant` and `layer_split` functions please cite:
-[Liu et al. (2017) Low-abundant species facilitates specific spatial
+
+If you use the `quant` and `layer_split` functions please cite: [Liu et
+al. (2017) Low-abundant species facilitates specific spatial
 organisation that promotes multispecies biofilm formation. *Envir.
 Microbiol.*](http://onlinelibrary.wiley.com/doi/10.1111/1462-2920.13816/abstract)
 
@@ -98,14 +99,6 @@ quantify the pixels for each layer, channel and image
     myq <- quant(myimg,channels=c("xan","pan","mic","ste"),naming=list(Time=c("24h")))
     head(myq)
 
-    ##                          Img Channel Count Layer Time
-    ## 1 FourSpecies24h_xan_Array.R     xan  1583     1  24h
-    ## 2 FourSpecies24h_xan_Array.R     xan  1985     2  24h
-    ## 3 FourSpecies24h_xan_Array.R     xan  2225     3  24h
-    ## 4 FourSpecies24h_xan_Array.R     xan  2542     4  24h
-    ## 5 FourSpecies24h_xan_Array.R     xan  3012     5  24h
-    ## 6 FourSpecies24h_xan_Array.R     xan  3508     6  24h
-
 The naming argument is optional but can be used to look through the
 names of the images and add corresponding variables Here it looks for
 "24h" in the image name, and makes a variable called Time. This is of
@@ -142,6 +135,8 @@ specimen is in the layers with the low numbers, hence layer.start =
 
 ![](README_files/figure-markdown_strict/unnamed-chunk-6-1.png)
 
+#### xy-sectioning
+
 Another way to section the image in an upper and lower part is to split
 the layers for each xy-position. The `xy_splits` function runs an
 analysis for each xy-position. If we for example sum for each
@@ -152,6 +147,14 @@ distribution into account. Here we say that the upper part is the upper
 50% for each xy-position.
 
     my.xy.split <- xy_splits(myimg,channels=c("xan","pan","ste","mic"),do="section",upper.part=0.5,layer.start = "Top",cores = 1)
+
+    ## Starting sectioning
+
+    ## 
+      |                                                                       
+      |                                                                 |   0%
+      |                                                                       
+      |=================================================================| 100%
 
 The result is a recursive list with matrices of results for each
 xy-position as elements
@@ -194,6 +197,14 @@ We can also try the same, but instead define the top as the upper 25
 layers.
 
     my.xy.split2 <- xy_splits(myimg,channels=c("xan","pan","ste","mic"),do="section",upper.part=25L,layer.start = "Top",cores = 1)
+
+    ## Starting sectioning
+
+    ## 
+      |                                                                       
+      |                                                                 |   0%
+      |                                                                       
+      |=================================================================| 100%
 
     sum(my.xy.split2[[1]][["Upper"]][["xan"]])/sum(my.xy.split2[[1]][["Lower"]][["xan"]])
 
@@ -241,7 +252,8 @@ positioned relative to each other. We do this with 3D co-aggregation. A
 co-aggregation of 1 equals random positioning at that specific distance,
 &lt;1 means segregation and &gt;1 means aggregation.
 
-It is similar to 2D co-aggregation implemented in [daime](http://dome.csb.univie.ac.at/daime), but this function works in 3D.
+It is similar to 2D co-aggregation implemented in daime
+(<http://dome.csb.univie.ac.at/daime>), but this function works in 3D.
 
 Lets calculate 3D co-aggregation between channels "ste" and "xan".
 
@@ -265,6 +277,16 @@ the whole thing 5 times to see how picking random pixels affect the
 variability of the result
 
     mycc <- co_agg(imgs=myimg,channels=c("xan","ste"),size=21,npixel=200,dstep=1,pwidth=0.75,zstep=0.25,R=5)
+
+    ## Starting run 1
+
+    ## Starting run 2
+
+    ## Starting run 3
+
+    ## Starting run 4
+
+    ## Starting run 5
 
 Plot the result
 
@@ -295,6 +317,15 @@ increase them carefully if needed.
 
     myocc <- occupancy(imgs=myimg,focal.channel="ste",target.channel="xan",size=21,npixel=200,dstep=1,pwidth=0.75,zstep=0.25,R=5)
 
+    ## Starting run 1
+
+    ## Starting run 2
+
+    ## Starting run 3
+
+    ## Starting run 4
+
+    ## Starting run 5
 
 Plot the result. The red line is the actual proportion occupied, the
 black line is normalized such that random equals 1
@@ -307,38 +338,6 @@ black line is normalized such that random equals 1
     p
 
 ![](README_files/figure-markdown_strict/unnamed-chunk-21-1.png)
-
-### 3D aggregates
-
-Lets find 3D aggregates of "mic"
-
-kern.smooth=c(3,3,3) means that we median smooth the image with a 3x3x3
-filter (x,y,z)
-
-kern.neighbour=c(3,3,3) means that a 3x3x3 box is used to determine
-whether pixels are in the same aggregate or not. c(3,3,3) is immediate
-neighbours. c(5,5,5) would extend a pixel further in all directions.
-c(3,3,1) would find aggregates for each x,y 2D plane
-
-    my.agg <- clumps(myimg,"mic",kern.smooth=c(3,3,3),kern.neighbour=c(3,3,3),pwidth=0.75,zstep=0.25)
-
-Lets plot the 3D image of aggregates larger than 20000 pixels
-
-    # Find positions
-    M <- melt(my.agg[[2]][[1]])
-
-    # Remove NA's (former zeroes)
-    M <- M[!is.na(M$value),]
-
-    # Check out sizes and subset for the ones above 20000 pixels
-    tabl <- as.data.frame(table(M$value))
-    subtable <- tabl[tabl$Freq>20000,]
-    M <- M[M$value %in% subtable$Var1,]
-
-    # Plot it
-    scatterplot3d(M$Var1,M$Var2,M$Var3,color=M$value)
-
-![](README_files/figure-markdown_strict/unnamed-chunk-23-1.png)
 
 ### 3D Cross-ratio
 
@@ -357,6 +356,15 @@ increase them carefully if needed.
 
     mycr <- cross_ratio(imgs=myimg,focal.channel="mic",target.channels=c("xan","pan"),size=21,npixel=200,dstep=1,pwidth=0.75,zstep=0.25,R=5)
 
+    ## Starting run 1
+
+    ## Starting run 2
+
+    ## Starting run 3
+
+    ## Starting run 4
+
+    ## Starting run 5
 
 Plot the result
 
@@ -366,6 +374,70 @@ Plot the result
       geom_line() 
     p
 
-![](README_files/figure-markdown_strict/unnamed-chunk-25-1.png)
+![](README_files/figure-markdown_strict/unnamed-chunk-23-1.png)
 
 Close to "mic" we are more likely to find "xan" than "pan"
+
+### 3D aggregates
+
+Lets find 3D aggregates of "mic"
+
+kern.smooth=c(3,3,3) means that we median smooth the image with a 3x3x3
+filter (x,y,z)
+
+kern.neighbour=c(3,3,3) means that a 3x3x3 box is used to determine
+whether pixels are in the same aggregate or not. c(3,3,3) is immediate
+neighbours. c(5,5,5) would extend a pixel further in all directions.
+c(3,3,1) would find aggregates for each x,y 2D plane
+
+    my.agg <- clumps(myimg,"mic",kern.neighbour = c(3,3,3), type.neighbour = "box", kern.smooth = c(3,3,3), type.smooth = "box",
+                     pwidth = 0.75, zstep = 0.25)
+
+    ## Running replica 1
+
+The output is a list with two parts. First part is a dataframe with ID,
+size of aggregates in pixels, size of aggregates in microns if pwidth
+and zstep are provided, and the name of the image. Second part is a list
+of the arrays in which pixels are NA if empty or given a number
+indicating the aggregate ID
+
+Lets plot the 3D image of aggregates larger than 20000 pixels
+
+    # Find positions
+    M <- melt(my.agg[[2]][[1]]) # "[[2]]" means get arrays. "[[1]]" means for the first image
+
+    # Remove NA's (former zeroes)
+    M <- M[!is.na(M$value),]
+
+    # Check out sizes and subset for the ones above 20000 pixels
+    tabl <- as.data.frame(table(M$value))
+    subtable <- tabl[tabl$Freq>20000,]
+    M <- M[M$value %in% subtable$Var1,]
+
+    # Plot it
+    scatterplot3d(M$Var1,M$Var2,M$Var3,color=M$value)
+
+![](README_files/figure-markdown_strict/unnamed-chunk-25-1.png)
+
+We can get the `clumps` function to output the coordinates of the
+aggregates, by setting `coords = TRUE`. This takes some time, and is
+therefore disabled by default.
+
+    my.agg2 <- clumps(myimg,"mic",kern.neighbour = c(3,3,3), type.neighbour = "box", kern.smooth = c(3,3,3), type.smooth = "box",
+                     pwidth = 0.75, zstep = 0.25, coords = TRUE)
+
+    ## Running replica 1
+
+If `coords = TRUE` x,y,x coordinates are added to the output data.frame,
+including a logical variable, Edge, indicating whether the aggregate
+touches the edge
+
+    head(my.agg2[[1]])
+
+    ##   ID   Size  Size.micron            Img   x   y     z  Edge
+    ## 1  1     31     4.359375 FourSpecies24h 392 150 110.0 FALSE
+    ## 2  2     40     5.625000 FourSpecies24h 439 167 109.0 FALSE
+    ## 3  3      2     0.281250 FourSpecies24h 175 213 111.5 FALSE
+    ## 4  4     36     5.062500 FourSpecies24h 447 176 108.0 FALSE
+    ## 5  5 636154 89459.156250 FourSpecies24h 250 134  44.0  TRUE
+    ## 6  6      2     0.281250 FourSpecies24h 232 135 109.5 FALSE
