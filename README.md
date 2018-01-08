@@ -99,6 +99,14 @@ quantify the pixels for each layer, channel and image
     myq <- quant(myimg,channels=c("xan","pan","mic","ste"),naming=list(Time=c("24h")))
     head(myq)
 
+    ##                          Img Channel Count Layer Time
+    ## 1 FourSpecies24h_xan_Array.R     xan  1583     1  24h
+    ## 2 FourSpecies24h_xan_Array.R     xan  1985     2  24h
+    ## 3 FourSpecies24h_xan_Array.R     xan  2225     3  24h
+    ## 4 FourSpecies24h_xan_Array.R     xan  2542     4  24h
+    ## 5 FourSpecies24h_xan_Array.R     xan  3012     5  24h
+    ## 6 FourSpecies24h_xan_Array.R     xan  3508     6  24h
+
 The naming argument is optional but can be used to look through the
 names of the images and add corresponding variables Here it looks for
 "24h" in the image name, and makes a variable called Time. This is of
@@ -148,8 +156,6 @@ distribution into account. Here we say that the upper part is the upper
 
     my.xy.split <- xy_splits(myimg,channels=c("xan","pan","ste","mic"),do="section",upper.part=0.5,layer.start = "Top",cores = 1)
 
-    ## Starting sectioning
-
     ## 
       |                                                                       
       |                                                                 |   0%
@@ -197,8 +203,6 @@ We can also try the same, but instead define the top as the upper 25
 layers.
 
     my.xy.split2 <- xy_splits(myimg,channels=c("xan","pan","ste","mic"),do="section",upper.part=25L,layer.start = "Top",cores = 1)
-
-    ## Starting sectioning
 
     ## 
       |                                                                       
@@ -278,15 +282,6 @@ variability of the result
 
     mycc <- co_agg(imgs=myimg,channels=c("xan","ste"),size=21,npixel=200,dstep=1,pwidth=0.75,zstep=0.25,R=5)
 
-    ## Starting run 1
-
-    ## Starting run 2
-
-    ## Starting run 3
-
-    ## Starting run 4
-
-    ## Starting run 5
 
 Plot the result
 
@@ -317,15 +312,6 @@ increase them carefully if needed.
 
     myocc <- occupancy(imgs=myimg,focal.channel="ste",target.channel="xan",size=21,npixel=200,dstep=1,pwidth=0.75,zstep=0.25,R=5)
 
-    ## Starting run 1
-
-    ## Starting run 2
-
-    ## Starting run 3
-
-    ## Starting run 4
-
-    ## Starting run 5
 
 Plot the result. The red line is the actual proportion occupied, the
 black line is normalized such that random equals 1
@@ -356,15 +342,6 @@ increase them carefully if needed.
 
     mycr <- cross_ratio(imgs=myimg,focal.channel="mic",target.channels=c("xan","pan"),size=21,npixel=200,dstep=1,pwidth=0.75,zstep=0.25,R=5)
 
-    ## Starting run 1
-
-    ## Starting run 2
-
-    ## Starting run 3
-
-    ## Starting run 4
-
-    ## Starting run 5
 
 Plot the result
 
@@ -390,10 +367,9 @@ whether pixels are in the same aggregate or not. c(3,3,3) is immediate
 neighbours. c(5,5,5) would extend a pixel further in all directions.
 c(3,3,1) would find aggregates for each x,y 2D plane
 
-    my.agg <- clumps(myimg,"mic",kern.neighbour = c(3,3,3), type.neighbour = "box", kern.smooth = c(3,3,3), type.smooth = "box",
+    my.agg <- clumps(myimg,"mic",kern.neighbour = c(3,3,3), type.neighbour = "box", 
+                     kern.smooth = c(3,3,3), type.smooth = "box",
                      pwidth = 0.75, zstep = 0.25)
-
-    ## Running replica 1
 
 The output is a list with two parts. First part is a dataframe with ID,
 size of aggregates in pixels, size of aggregates in microns if pwidth
@@ -423,10 +399,9 @@ We can get the `clumps` function to output the coordinates of the
 aggregates, by setting `coords = TRUE`. This takes some time, and is
 therefore disabled by default.
 
-    my.agg2 <- clumps(myimg,"mic",kern.neighbour = c(3,3,3), type.neighbour = "box", kern.smooth = c(3,3,3), type.smooth = "box",
+    my.agg2 <- clumps(myimg,"mic",kern.neighbour = c(3,3,3), type.neighbour = "box", 
+                      kern.smooth = c(3,3,3), type.smooth = "box",
                      pwidth = 0.75, zstep = 0.25, coords = TRUE)
-
-    ## Running replica 1
 
 If `coords = TRUE` x,y,x coordinates are added to the output data.frame,
 including a logical variable, Edge, indicating whether the aggregate
