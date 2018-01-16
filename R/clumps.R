@@ -13,7 +13,7 @@
 #' @param naming Optional. Add metadata to the output dataframe by looking through names of array files. Should be a list of character vectors, each list element will be added as a variable. Example: naming=list(Time=c("T0","T1","T2")). The function inserts a variable called Time, and then looks through the names of the array files and inserts characters mathcing either T0, T1 or T2
 #' @param coords Logical. Return coordinates of the centroids of each aggregate. This can be somewhat time-consuming if there are many aggregates
 #' @keywords array image aggregate
-#' @return A list with two parts. First part is a dataframe with ID, size of aggregates in pixels, size of aggregates in microns if pwidth and zstep are provided, coordinates if coords is TRUE, if coords is TRUE also a logical variable, Edge, indicating whether the aggregate touches the edge, and name of image. Second part is a list of the arrays in which pixels are NA if empty or given a number indicating the aggregate ID
+#' @return A list with two parts. First part is a dataframe with ID, size of aggregates in pixels, size of aggregates in microns if pwidth and zstep are provided, coordinates if coords is TRUE, if coords is TRUE also a variable, Edge, indicating how many pixels of each aggregate is on the edge of the image, and name of image. Second part is a list of the arrays in which pixels are NA if empty or given a number indicating the aggregate ID
 #' @import mmand
 #' @export
 
@@ -73,9 +73,9 @@ clumps <- function(imgs,channel,kern.neighbour=c(3,3,3),type.neighbour="box",ker
       edge.y <- c(1,dim(ch_agg)[2])
       edge.z <- c(1,dim(ch_agg)[3])
       
-      touch <- sapply(coordsl, function(ac) any(any(sapply(ac[,1], function(x) x %in% edge.x)),
-                                               any(sapply(ac[,2], function(x) x %in% edge.y)),
-                                               any(sapply(ac[,3], function(x) x %in% edge.z))))
+      touch <- sapply(coordsl, function(ac) sum(sum(sapply(ac[,1], function(x) x %in% edge.x)),
+                                               sum(sapply(ac[,2], function(x) x %in% edge.y)),
+                                               sum(sapply(ac[,3], function(x) x %in% edge.z))))
       
       afr$Edge <- touch
     }
