@@ -63,8 +63,8 @@ clumps <- function(imgs,channel,kern.neighbour=c(3,3,3),type.neighbour="box",ker
     afr$Img <- sub(paste0("_.*"),"",sub(".*/", "", ch_files[k]))
     
     if(coords){
-      coords <- lapply(as.numeric(as.character(afr$ID)),function(x) which(ch_agg == x, arr.ind = TRUE))
-      centroids <- t(sapply(coords, function(x) apply(x, 2, median)))
+      coordsl <- lapply(as.numeric(as.character(afr$ID)),function(x) which(ch_agg == x, arr.ind = TRUE))
+      centroids <- t(sapply(coordsl, function(x) apply(x, 2, median)))
       colnames(centroids) <- c("x","y","z")
       afr <- as.data.frame(cbind(afr, centroids))
       
@@ -73,7 +73,7 @@ clumps <- function(imgs,channel,kern.neighbour=c(3,3,3),type.neighbour="box",ker
       edge.y <- c(1,dim(ch_agg)[2])
       edge.z <- c(1,dim(ch_agg)[3])
       
-      touch <- sapply(coords, function(ac) any(any(sapply(ac[,1], function(x) x %in% edge.x)),
+      touch <- sapply(coordsl, function(ac) any(any(sapply(ac[,1], function(x) x %in% edge.x)),
                                                any(sapply(ac[,2], function(x) x %in% edge.y)),
                                                any(sapply(ac[,3], function(x) x %in% edge.z))))
       
