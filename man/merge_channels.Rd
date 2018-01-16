@@ -11,7 +11,7 @@ merge_channels(path, channels, method)
 
 \item{channels}{Character vector with names of the channels. Channel names should be in the names of the .tif files}
 
-\item{method}{How to merge. Either "union" (presence is coded of at least one channel is present), "intersect" (presence is coded only if all channels are present), or "subtract" (presence is coded as those in the first channel but not in the second channel).}
+\item{method}{How to merge. Either "union" (presence is coded if at least one channel is present), "intersect" (presence is coded only if all channels are present), or "subtract" (presence is coded as those in the first channel but not in the second channel).}
 }
 \value{
 Creates arrays as RDS files in the specified path, and outputs the paths for these files

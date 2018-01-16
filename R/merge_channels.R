@@ -2,18 +2,21 @@
 #'
 #' @param path The path of the _Array.R files
 #' @param channels Character vector with names of the channels. Channel names should be in the names of the .tif files
-#' @param method How to merge. Either "union" (presence is coded of at least one channel is present), "intersect" (presence is coded only if all channels are present), or "subtract" (presence is coded as those in the first channel but not in the second channel).  
+#' @param method How to merge. Either "union" (presence is coded if at least one channel is present), "intersect" (presence is coded only if all channels are present), or "subtract" (presence is coded as those in the first channel but not in the second channel).  
 #' @keywords array image
 #' @return Creates arrays as RDS files in the specified path, and outputs the paths for these files
 #' @export
 
 merge_channels <- function(path, channels, method){
-
+  
   setwd(path)
   
   # Find the files
   files <- list.files(path, "_Array.R", full.names = T)
   files.l <- lapply(channels, function(x) files[grep(x, files)])
+  if(length(grep("RCon3D", files.l)) > 0){
+    files.l <- lapply(1:length(channels), function(x) files.l[[x]][-grep("RCon3D", files.l[[x]])])
+  }
   
   # For each image
   for(k in 1:length(files.l[[1]])){
@@ -41,9 +44,9 @@ merge_channels <- function(path, channels, method){
       saveRDS(img, file = gsub(channels[1],paste0("RCon3D.subtract.",channels[1],".",channels[2]),files.l[[1]][k]))
       files <- list.files(path, "RCon3D.subtract.", full.names = T)
     }
-
+    
   }
   
   return(files)
-
+  
 }
