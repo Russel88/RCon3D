@@ -30,7 +30,7 @@ quant <- function(imgs,channels,naming=NULL) {
         
         q <- length(which(ch_t[,,i] > 0))
         
-        temp <- cbind(sub(".*/", "", ch_files[k]),channels[c],q,i)
+        temp <- cbind(sub(paste0("_Array.*"),"",sub(".*/", "", ch_files[k])),channels[c],q,i)
         
         qua <- rbind(qua,temp)
       }

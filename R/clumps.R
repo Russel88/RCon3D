@@ -60,7 +60,7 @@ clumps <- function(imgs,channel,kern.neighbour=c(3,3,3),type.neighbour="box",ker
     afr <- as.data.frame(table(ch_agg))
     colnames(afr) <- c("ID","Size")
     if(!is.null(pwidth) & !is.null(zstep)) afr$Size.micron <- afr$Size * pwidth^2 * zstep
-    afr$Img <- sub(paste0("_.*"),"",sub(".*/", "", ch_files[k]))
+    afr$Img <- sub(paste0("_Array.*"),"",sub(".*/", "", ch_files[k]))
     
     if(coords){
       coordsl <- lapply(as.numeric(as.character(afr$ID)),function(x) which(ch_agg == x, arr.ind = TRUE))
