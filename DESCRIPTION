@@ -1,6 +1,6 @@
 Package: RCon3D
 Title: Analysis of Confocal Images of Microbial Biofilms
-Version: 1.2.1
+Version: 1.2.2
 Authors@R: person("Jakob", "Russel", email = "russel2620@gmail.com", role = c("aut", "cre"))
 Description: Various 3D analyses of confocal images. E.g. Quantification, co-aggregation and identifying 3D aggregates.
 Depends: R (>= 3.2.5)

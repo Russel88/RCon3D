@@ -4,17 +4,19 @@
 \alias{merge_channels}
 \title{Create RDS for a combination of channels}
 \usage{
-merge_channels(path, channels, method)
+merge_channels(path, imgs, channels, method)
 }
 \arguments{
-\item{path}{The path of the _Array.R files}
+\item{path}{The path of where to create the _Array.R files}
+
+\item{imgs}{The paths for the images to merge}
 
 \item{channels}{Character vector with names of the channels. Channel names should be in the names of the .tif files}
 
 \item{method}{How to merge. Either "union" (presence is coded if at least one channel is present), "intersect" (presence is coded only if all channels are present), or "subtract" (presence is coded as those in the first channel but not in the second channel).}
 }
 \value{
-Creates arrays as RDS files in the specified path, and outputs the paths for these files
+Creates arrays as RDS files in the specified path, and outputs the paths for image files containing the name of the method and channels
 }
 \description{
 Create RDS for a combination of channels

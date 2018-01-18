@@ -4,10 +4,12 @@
 \alias{findIMG}
 \title{Find arrays created with \code{loadIMG} or \code{tiff_to_array}}
 \usage{
-findIMG(path)
+findIMG(path, channels = NULL)
 }
 \arguments{
 \item{path}{The path of the _Array.R files}
+
+\item{channels}{Optional. Channel names to look for in the image files}
 }
 \value{
 The paths for the array files

@@ -32,7 +32,7 @@ clumps(imgs, channel, kern.neighbour = c(3, 3, 3), type.neighbour = "box",
 \item{coords}{Logical. Return coordinates of the centroids of each aggregate. This can be somewhat time-consuming if there are many aggregates}
 }
 \value{
-A list with two parts. First part is a dataframe with ID, size of aggregates in pixels, size of aggregates in microns if pwidth and zstep are provided, coordinates if coords is TRUE, if coords is TRUE also a variable, Edge, indicating how many pixels of each aggregate is on the edge of the image, and name of image. Second part is a list of the arrays in which pixels are NA if empty or given a number indicating the aggregate ID
+A list with two parts. First part is a dataframe with ID, size of aggregates in pixels, size of aggregates in microns if pwidth and zstep are provided, coordinates if coords is TRUE, if coords is TRUE also variables, Edge.x, Edge.y and Edge.z, indicating how many pixels of each aggregate is on the edge of the image, and name of image. Second part is a list of the arrays in which pixels are NA if empty or given a number indicating the aggregate ID
 }
 \description{
 Function to group adjacent pixels in aggregates/clumps
