@@ -99,13 +99,13 @@ quantify the pixels for each layer, channel and image
     myq <- quant(myimg,channels=c("xan","pan","mic","ste"),naming=list(Time=c("24h")))
     head(myq)
 
-    ##                          Img Channel Count Layer Time
-    ## 1 FourSpecies24h_xan_Array.R     xan  1583     1  24h
-    ## 2 FourSpecies24h_xan_Array.R     xan  1985     2  24h
-    ## 3 FourSpecies24h_xan_Array.R     xan  2225     3  24h
-    ## 4 FourSpecies24h_xan_Array.R     xan  2542     4  24h
-    ## 5 FourSpecies24h_xan_Array.R     xan  3012     5  24h
-    ## 6 FourSpecies24h_xan_Array.R     xan  3508     6  24h
+    ##                  Img Channel Count Layer Time
+    ## 1 FourSpecies24h_xan     xan  1583     1  24h
+    ## 2 FourSpecies24h_xan     xan  1985     2  24h
+    ## 3 FourSpecies24h_xan     xan  2225     3  24h
+    ## 4 FourSpecies24h_xan     xan  2542     4  24h
+    ## 5 FourSpecies24h_xan     xan  3012     5  24h
+    ## 6 FourSpecies24h_xan     xan  3508     6  24h
 
 The naming argument is optional but can be used to look through the
 names of the images and add corresponding variables Here it looks for
@@ -156,11 +156,6 @@ distribution into account. Here we say that the upper part is the upper
 
     my.xy.split <- xy_splits(myimg,channels=c("xan","pan","ste","mic"),do="section",upper.part=0.5,layer.start = "Top",cores = 1)
 
-    ## 
-      |                                                                       
-      |                                                                 |   0%
-      |                                                                       
-      |=================================================================| 100%
 
 The result is a recursive list with matrices of results for each
 xy-position as elements
@@ -204,11 +199,6 @@ layers.
 
     my.xy.split2 <- xy_splits(myimg,channels=c("xan","pan","ste","mic"),do="section",upper.part=25L,layer.start = "Top",cores = 1)
 
-    ## 
-      |                                                                       
-      |                                                                 |   0%
-      |                                                                       
-      |=================================================================| 100%
 
     sum(my.xy.split2[[1]][["Upper"]][["xan"]])/sum(my.xy.split2[[1]][["Lower"]][["xan"]])
 
@@ -385,34 +375,17 @@ Lets plot the 3D image of aggregates larger than 20000 pixels
     # Remove NA's (former zeroes)
     M <- M[!is.na(M$value),]
 
-    # Check out sizes and subset for the ones above 20000 pixels
+    # Check out sizes and subset for the ones above 10000 pixels
     tabl <- as.data.frame(table(M$value))
-    subtable <- tabl[tabl$Freq>20000,]
+    subtable <- tabl[tabl$Freq>10000,]
     M <- M[M$value %in% subtable$Var1,]
 
+    # Dimensions
+    img.dims <- dim(readRDS(myimg[1]))
+
     # Plot it
-    scatterplot3d(M$Var1,M$Var2,M$Var3,color=M$value)
+    scatterplot3d(M$Var1*pwidth,M$Var2*pwidth,M$Var3*pwidth,color=M$value,
+                  asp = c((img.dims[3]*zstep)/(img.dims[1]*pwidth)),
+                  xlab = "x", ylab = "y", zlab = "z")
 
 ![](README_files/figure-markdown_strict/unnamed-chunk-25-1.png)
-
-We can get the `clumps` function to output the coordinates of the
-aggregates, by setting `coords = TRUE`. This takes some time, and is
-therefore disabled by default.
-
-    my.agg2 <- clumps(myimg,"mic",kern.neighbour = c(3,3,3), type.neighbour = "box", 
-                      kern.smooth = c(3,3,3), type.smooth = "box",
-                     pwidth = 0.75, zstep = 0.25, coords = TRUE)
-
-If `coords = TRUE` x,y,x coordinates are added to the output data.frame,
-including a logical variable, Edge, indicating whether the aggregate
-touches the edge
-
-    head(my.agg2[[1]])
-
-    ##   ID   Size  Size.micron            Img   x   y     z  Edge
-    ## 1  1     31     4.359375 FourSpecies24h 392 150 110.0 FALSE
-    ## 2  2     40     5.625000 FourSpecies24h 439 167 109.0 FALSE
-    ## 3  3      2     0.281250 FourSpecies24h 175 213 111.5 FALSE
-    ## 4  4     36     5.062500 FourSpecies24h 447 176 108.0 FALSE
-    ## 5  5 636154 89459.156250 FourSpecies24h 250 134  44.0  TRUE
-    ## 6  6      2     0.281250 FourSpecies24h 232 135 109.5 FALSE
