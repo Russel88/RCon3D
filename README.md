@@ -20,13 +20,13 @@ Microbiol.*](http://onlinelibrary.wiley.com/doi/10.1111/1462-2920.13816/abstract
 ### Jupyter notebooks on different analyses:
 
 [Loading and preparing images, required for all
-analyses](https://github.com/Russel88/RCon3D/blob/master/Notebooks/Loading.ipynb)
+analyses](https://nbviewer.jupyter.org/github/Russel88/RCon3D/blob/master/Notebooks/Loading.ipynb)
 
 [Quantification of
-images](https://github.com/Russel88/RCon3D/blob/master/Notebooks/Quant.ipynb)
+images](https://nbviewer.jupyter.org/github/Russel88/RCon3D/blob/master/Notebooks/Quant.ipynb)
 
 [Dynamic sectioning of
-images](https://github.com/Russel88/RCon3D/blob/master/Notebooks/Section.ipynb)
+images](https://nbviewer.jupyter.org/github/Russel88/RCon3D/blob/master/Notebooks/Section.ipynb)
 
 ### All functions
 
