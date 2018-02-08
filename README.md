@@ -2,8 +2,7 @@ RCon3D: Analyzing 3D confocal images of microbial biofilms/communities
 ----------------------------------------------------------------------
 
 This is an R package for various 3D analyses confocal images of
-microbial biofilms, microcolonies and communities. Below is a tutorial
-explaining the main functions.
+microbial biofilms, microcolonies and communities.
 
 ### Citation
 
@@ -27,6 +26,9 @@ images](https://nbviewer.jupyter.org/github/Russel88/RCon3D/blob/master/Notebook
 
 [Dynamic sectioning of
 images](https://nbviewer.jupyter.org/github/Russel88/RCon3D/blob/master/Notebooks/Section.ipynb)
+
+[Co-aggregation and relative
+positioning](https://nbviewer.jupyter.org/github/Russel88/RCon3D/blob/master/Notebooks/Coagg.ipynb)
 
 ### All functions
 
