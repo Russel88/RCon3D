@@ -4,10 +4,12 @@
 \alias{create_nulls}
 \title{Create RDS for all empty pixels}
 \usage{
-create_nulls(path, channels)
+create_nulls(files, path, channels)
 }
 \arguments{
-\item{path}{The path of the _Array.R files}
+\item{files}{The paths of the _Array.R files}
+
+\item{path}{The path of where to save the created RDS files}
 
 \item{channels}{Character vector with name(s) of channels. Channel names should be in the names of the .tif files}
 }

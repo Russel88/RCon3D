@@ -1,18 +1,17 @@
 #' Create RDS for all empty pixels
 #'
 #' Create arrays which represents all the empty pixels in an image
-#' @param path The path of the _Array.R files
+#' @param files The paths of the _Array.R files
+#' @param path The path of where to save the created RDS files
 #' @param channels Character vector with name(s) of channels. Channel names should be in the names of the .tif files
 #' @keywords array image
 #' @return Creates arrays as RDS files in the specified path, and outputs the paths for these files
 #' @export
 
-create_nulls <- function(path, channels){
+create_nulls <- function(files, path, channels){
 
+  workdir <- getwd()
   setwd(path)
-  
-  # Find the files
-  files <- list.files(path, "_Array.R", full.names = T)
   
   # Remove channel names
   for(i in 1:length(channels)){
@@ -48,6 +47,8 @@ create_nulls <- function(path, channels){
   
   # Find the files
   files <- list.files(path, "RCon3D.Null", full.names = T)
+  
+  setwd(workdir)
   
   return(files)
   

@@ -1,7 +1,7 @@
 RCon3D: Analyzing 3D confocal images of microbial biofilms/communities
 ----------------------------------------------------------------------
 
-This is an R package for various 3D analyses confocal images of
+This is an R package for various 3D analyses on confocal images of
 microbial biofilms, microcolonies and communities.
 
 ### Citation
@@ -16,19 +16,19 @@ Microbiol.*](http://onlinelibrary.wiley.com/doi/10.1111/1462-2920.13816/abstract
     # devtools has to be installed (install.packages("devtools"))
     devtools::install_github("Russel88/RCon3D")
 
-### Jupyter notebooks on different analyses:
+### Notebooks on different analyses:
 
 [Loading and preparing images, required for all
-analyses](https://nbviewer.jupyter.org/github/Russel88/RCon3D/blob/master/Notebooks/Loading.ipynb)
+analyses](https://nbviewer.jupyter.org/github/Russel88/RCon3D/blob/master/Notebooks/Loading.html)
 
 [Quantification of
-images](https://nbviewer.jupyter.org/github/Russel88/RCon3D/blob/master/Notebooks/Quant.ipynb)
+images](https://nbviewer.jupyter.org/github/Russel88/RCon3D/blob/master/Notebooks/Quant.html)
 
 [Dynamic sectioning of
-images](https://nbviewer.jupyter.org/github/Russel88/RCon3D/blob/master/Notebooks/Section.ipynb)
+images](https://nbviewer.jupyter.org/github/Russel88/RCon3D/blob/master/Notebooks/Section.html)
 
 [Co-aggregation and relative
-positioning](https://nbviewer.jupyter.org/github/Russel88/RCon3D/blob/master/Notebooks/Coagg.ipynb)
+positioning](https://nbviewer.jupyter.org/github/Russel88/RCon3D/blob/master/Notebooks/Coagg.html)
 
 ### All functions
 

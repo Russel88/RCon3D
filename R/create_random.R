@@ -40,9 +40,8 @@ create_random <- function(path, overlap, side, h, probs){
     }
   
   # Save RDS
-  setwd(path)
   for(k in 1:length(probs)){
-    saveRDS(chs[[k]], file = paste0("RandomImage_Ch",k,".R"))
+    saveRDS(chs[[k]], file = paste0(path,"/RandomImage_Ch",k,".R"))
   }
   
   # Find the files
