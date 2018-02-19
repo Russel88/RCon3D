@@ -4,7 +4,7 @@
 \alias{loadIMG}
 \title{Load .tif images into R}
 \usage{
-loadIMG(path, channels, split = FALSE)
+loadIMG(path, channels, split = FALSE, multi = NULL, multi.name = NULL)
 }
 \arguments{
 \item{path}{The path of either a folder with all .tif files to be loaded (if split=FALSE), or a folder where each image is in a separate subfolder with all z-stacks and channels in that folder (if split=TRUE)}
@@ -12,6 +12,10 @@ loadIMG(path, channels, split = FALSE)
 \item{channels}{Character vector with name(s) of channels. Channel names should be in the names of the .tif files}
 
 \item{split}{Logical indicating if all z-stacks are in one .tif (FALSE) or in a folder with a .tif for each z-stack (TRUE)}
+
+\item{multi}{Integer. If the .tif contains multiple images this varible should indicate how to divide them up. Three images, each composed of 50, 100, and 150 layers: c(50,100,150). 10 images with each 50 layers. rep(50, 10). If NULL input is assumed to be a single 3D image}
+
+\item{multi.name}{If multi is not NULL, a vector with names for images.}
 }
 \value{
 Creates arrays as RDS files in the set path, and outputs the paths for these files

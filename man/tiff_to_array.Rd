@@ -4,12 +4,16 @@
 \alias{tiff_to_array}
 \title{Make Array from .tif file(s)}
 \usage{
-tiff_to_array(channels, split)
+tiff_to_array(channels, split, multi, multi.name)
 }
 \arguments{
 \item{channels}{Character vector with name(s) of channels. Channel names should be in the names of the .tif files}
 
 \item{split}{Logical indicating if all z-stacks are in one .tif (FALSE) or in a folder with a .tif for each z-stack (TRUE)}
+
+\item{multi}{Integer. If the .tif contains multiple images this varible should indicate how to divide them up. Three images, each composed of 50, 100, and 150 layers: c(50,100,150). 10 images with each 50 layers. rep(50, 10). If NULL, input is assumed to be a single 3D image}
+
+\item{multi.name}{If multi is not NULL, a vector with names for images.}
 }
 \value{
 Arrays as RDS files in working directory
@@ -21,4 +25,5 @@ Create an array from one or more .tif files. Looks for .tif in the working direc
 If the .tif file has a color.space attribute saying "white is zero" (and split=FALSE) the binary coding of the image is reversed
 }
 \keyword{array}
+\keyword{image}
 \keyword{tif}

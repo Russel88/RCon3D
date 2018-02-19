@@ -4,14 +4,15 @@
 \alias{clumps}
 \title{Find 3D aggregates/clumps}
 \usage{
-clumps(imgs, channel, kern.neighbour = c(3, 3, 3), type.neighbour = "box",
+clumps(imgs, channels, kern.neighbour = c(3, 3, 3), type.neighbour = "box",
   kern.smooth = NULL, type.smooth = "box", layers = NULL, pwidth = NULL,
-  zstep = NULL, naming = NULL, coords = FALSE)
+  zstep = NULL, naming = NULL, coords = FALSE, thresh = 0,
+  points = NULL, cores = 1)
 }
 \arguments{
 \item{imgs}{The paths of array files; i.e. output from \code{loadIMG} or \code{findIMG} functions.}
 
-\item{channel}{Name of the channel to find aggregates in. Should be in the names of the array files}
+\item{channels}{Name of the channel to find aggregates in. Should be in the names of the array files}
 
 \item{kern.neighbour}{Numeric vector indicating range of neighbouring pixels to aggregate in the x,y,z directions. Has to be odd intergers. c(1,1,1) means no aggregating.}
 
@@ -29,7 +30,13 @@ clumps(imgs, channel, kern.neighbour = c(3, 3, 3), type.neighbour = "box",
 
 \item{naming}{Optional. Add metadata to the output dataframe by looking through names of array files. Should be a list of character vectors, each list element will be added as a variable. Example: naming=list(Time=c("T0","T1","T2")). The function inserts a variable called Time, and then looks through the names of the array files and inserts characters mathcing either T0, T1 or T2}
 
-\item{coords}{Logical. Return coordinates of the centroids of each aggregate. This can be somewhat time-consuming if there are many aggregates}
+\item{coords}{Optional. Logical. Return coordinates of the centroids of each aggregate. This can be somewhat time-consuming if there are many aggregates}
+
+\item{thresh}{Optional. Numeric. Clumps containing fewer than this number of pixels are discarded. Default 0}
+
+\item{points}{Optional. List. 3D coordinates of points from which the distance to each aggregate should be calculated. The list should have an element for each image in imgs in the same order. Each element is a vector of length 3 with the coordinates. E.g. points = list(c(250,200,10),c(500,300,20))}
+
+\item{cores}{Integer. Number of cores to use for parallel computing.}
 }
 \value{
 A list with two parts. First part is a dataframe with ID, size of aggregates in pixels, size of aggregates in microns if pwidth and zstep are provided, coordinates if coords is TRUE, if coords is TRUE also variables, Edge.x, Edge.y and Edge.z, indicating how many pixels of each aggregate is on the edge of the image, and name of image. Second part is a list of the arrays in which pixels are NA if empty or given a number indicating the aggregate ID
