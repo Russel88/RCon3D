@@ -9,12 +9,11 @@
 #' @param center 3D coordinates (c(x,y,z)) of where to center circular outline
 #' @param radius Radius of the circular outline, in microns if pwidth and zstep are provided, else in pixels
 #' @keywords array image aggregate
-#' @import reshape2 rgl
 #' @export
 clumps_plot <- function(clumps.out, replica = 1, col = "agg", pwidth = NULL, zstep = NULL, center = NULL, radius = NULL){
   
   # Find positions
-  M <- melt(clumps.out[[2]][[replica]])
+  M <- reshape2::melt(clumps.out[[2]][[replica]])
   M <- M[!is.na(M$value),]
 
   img.dims <- dim(clumps.out[[2]][[replica]])
@@ -22,13 +21,13 @@ clumps_plot <- function(clumps.out, replica = 1, col = "agg", pwidth = NULL, zst
   # Colour by aggregate
   if(col == "agg"){
     if(!is.null(pwidth) & !is.null(zstep)){
-      plot3d(x = M$Var1*pwidth, y = M$Var2*pwidth, z = M$Var3*zstep, col = M$value, 
+      rgl::plot3d(x = M$Var1*pwidth, y = M$Var2*pwidth, z = M$Var3*zstep, col = M$value, 
              aspect = c(img.dims[1]*pwidth,img.dims[2]*pwidth,img.dims[3]*zstep),
              xlab = expression(paste("x (",mu,m,")")), 
              ylab = expression(paste("y (",mu,m,")")), 
              zlab = expression(paste("z (",mu,m,")")))
     } else {
-      plot3d(x = M$Var1, y = M$Var2, z = M$Var3, col = M$value,
+      rgl::plot3d(x = M$Var1, y = M$Var2, z = M$Var3, col = M$value,
              xlab = "x", ylab = "y", zlab = "z",
              aspect = c(img.dims[1],img.dims[2],img.dims[3]))
     }
@@ -58,13 +57,13 @@ clumps_plot <- function(clumps.out, replica = 1, col = "agg", pwidth = NULL, zst
     
     # Plot
     if(!is.null(pwidth) & !is.null(zstep)){
-      plot3d(x = dist.df$Var1*pwidth, y = dist.df$Var2*pwidth, z = dist.df$Var3*zstep, col = cols, 
+      rgl::plot3d(x = dist.df$Var1*pwidth, y = dist.df$Var2*pwidth, z = dist.df$Var3*zstep, col = cols, 
              aspect = c(img.dims[1]*pwidth,img.dims[2]*pwidth,img.dims[3]*zstep),
              xlab = expression(paste("x (",mu,m,")")), 
              ylab = expression(paste("y (",mu,m,")")), 
              zlab = expression(paste("z (",mu,m,")")))
     } else {
-      plot3d(x = dist.df$Var1, y = dist.df$Var2, z = dist.df$Var3, col = cols, 
+      rgl::plot3d(x = dist.df$Var1, y = dist.df$Var2, z = dist.df$Var3, col = cols, 
              xlab = "x", ylab = "y", zlab = "z",
              aspect = c(img.dims[1],img.dims[2],img.dims[3]))
       
@@ -74,14 +73,14 @@ clumps_plot <- function(clumps.out, replica = 1, col = "agg", pwidth = NULL, zst
   # Draw outline
   if(!is.null(pwidth) & !is.null(zstep)){
     if(!is.null(radius) & !is.null(center)){
-      plot3d(x = cos(1:img.dims[1])*radius+center[1]*pwidth,
+      rgl::plot3d(x = cos(1:img.dims[1])*radius+center[1]*pwidth,
              y = sin(1:img.dims[2])*radius+center[2]*pwidth,
              z = rep(1,img.dims[1]), add = TRUE,
              aspect = c(img.dims[1]*pwidth,img.dims[2]*pwidth,img.dims[3]*zstep))
     }
   } else {
     if(!is.null(radius) & !is.null(center)){
-      plot3d(x = cos(1:img.dims[1])*radius+center[1],
+      rgl::plot3d(x = cos(1:img.dims[1])*radius+center[1],
              y = sin(1:img.dims[2])*radius+center[2],
              z = rep(1,img.dims[1]), add = TRUE,
              aspect = c(img.dims[1],img.dims[2],img.dims[3]))
