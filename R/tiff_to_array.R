@@ -7,12 +7,14 @@
 #' @param multi.name If multi is not NULL, a vector with names for images.  
 #' @keywords tif array image
 #' @keywords tif array
-#' @details If the .tif file has a color.space attribute saying "white is zero" (and split=FALSE) the binary coding of the image is reversed 
+#' @details If the .tif file has a color.space attribute saying "white is zero" (and split=FALSE) the binary coding of the image is reversed. Not that \code{multi} indicates if the .tif files contains multiple 3D images, and \code{split} indicates if the .tif files contains multiple layers (z-direction). If \code{split} is TRUE, \code{multi} cannot be non-NULL.
 #' @return Arrays as RDS files in working directory
 #' @importFrom tiff readTIFF
 #' @export
 
 tiff_to_array <- function(channels,split,multi,multi.name) {
+  
+  if(split & !is.null(multi)) stop("When split is TRUE, multi cannot be non-NULL. When split is TRUE each .tif files is assumed to contain only 1 2D image.")
   
   if(split){
     
@@ -55,15 +57,17 @@ tiff_to_array <- function(channels,split,multi,multi.name) {
         # Load
         tiflist <- readTIFF(files[f],all=TRUE)
         check <- readTIFF(files[f],info=TRUE)
+        if(attributes(check)$color.space == "palette") stop("Colour should be black(0) & white(1), not RGB")
         for(k in 1:length(multi)){
            sub.list <- tiflist[(sum(multi[1:k])-multi[k]+1):sum(multi[1:k])]
            side <- dim(tiflist[[1]])[1]
-           cArray <- array(0, c(side, side, length(tiflist)))
+           cArray <- array(0, c(side, side, length(sub.list)))
            for(l in 1:length(sub.list)){
              cArray[,,l] <- sub.list[[l]]
            }
            # Fix reverse images
            if(attributes(check)$color.space == "white is zero") {
+             warning("White is zero in input. Binary digits will be reversed in output, such that black is zero")
              cArray[cArray == 0] <- NA
              cArray[cArray > 0] <- 0
              cArray[is.na(cArray)] <- 1
@@ -74,6 +78,8 @@ tiff_to_array <- function(channels,split,multi,multi.name) {
       } else {
         # Load
         tiflist <- readTIFF(files[f],all=TRUE)
+        check <- readTIFF(files[f],info=TRUE)
+        if(attributes(check)$color.space == "palette") stop("Colour should be black(0) & white(1), not RGB")
         side <- dim(tiflist[[1]])[1]
         cArray <- array(0, c(side, side, length(tiflist)))
         for(l in 1:length(tiflist)){
@@ -81,8 +87,8 @@ tiff_to_array <- function(channels,split,multi,multi.name) {
         }
         
         # Fix reverse images
-        check <- readTIFF(files[f],info=TRUE)
         if(attributes(check)$color.space == "white is zero") {
+          warning("White is zero in input. Binary digits will be reversed in output, such that black is zero")
           cArray[cArray == 0] <- NA
           cArray[cArray > 0] <- 0
           cArray[is.na(cArray)] <- 1

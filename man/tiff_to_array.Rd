@@ -22,7 +22,7 @@ Arrays as RDS files in working directory
 Create an array from one or more .tif files. Looks for .tif in the working directory
 }
 \details{
-If the .tif file has a color.space attribute saying "white is zero" (and split=FALSE) the binary coding of the image is reversed
+If the .tif file has a color.space attribute saying "white is zero" (and split=FALSE) the binary coding of the image is reversed. Not that \code{multi} indicates if the .tif files contains multiple 3D images, and \code{split} indicates if the .tif files contains multiple layers (z-direction). If \code{split} is TRUE, \code{multi} cannot be non-NULL.
 }
 \keyword{array}
 \keyword{image}
