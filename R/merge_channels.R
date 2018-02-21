@@ -10,6 +10,8 @@
 
 merge_channels <- function(path, imgs, channels, method){
   
+  # Save workdir and reset later
+  workdir <- getwd()
   setwd(path)
   
   # Find the files
@@ -44,6 +46,8 @@ merge_channels <- function(path, imgs, channels, method){
     }
     
   }
+  
+  setwd(workdir)
   
   return(files)
   
