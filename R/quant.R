@@ -14,12 +14,12 @@ quant <- function(imgs,channels,naming = NULL,cores = 1) {
   
   # Loop for each channel
   qua.fin <- list()
-  for(c in 1:length(channels)){
+  for(z in 1:length(channels)){
     
-    message(paste("Channel",channels[c]))
+    message(paste("Channel",channels[z]))
     
     # Images
-    ch_files <- imgs[grep(channels[c], imgs)]
+    ch_files <- imgs[grep(channels[z], imgs)]
     
     # Parallel
     if(cores > 1){
@@ -43,10 +43,10 @@ quant <- function(imgs,channels,naming = NULL,cores = 1) {
       q <- apply(ch_t, 3, sum)
       
       # Output
-      temp <- cbind(sub(paste0("_Array.*"),"",sub(".*/", "", ch_files[k])),channels[c],q,1:length(q))
+      temp <- cbind(sub(paste0("_Array.*"),"",sub(".*/", "", ch_files[k])),channels[z],q,1:length(q))
 
     }
-    qua.fin[[c]] <- qua
+    qua.fin[[z]] <- qua
   }
   
   qua.final <- as.data.frame(do.call(rbind, qua.fin))

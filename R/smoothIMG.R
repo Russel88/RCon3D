@@ -2,11 +2,11 @@
 #'
 #' Smooth images as a preparation for subsequent analyses
 #' @param imgs The paths of array files; i.e. output from \code{loadIMG} or \code{findIMG} functions.
-#' @param kern.smooth Numeric vector indicating range of median smoothing in the x,y,z directions. Has to be odd intergers.
+#' @param kern.smooth Numeric vector indicating range of median smoothing in the x,y,z directions. Has to be odd integers.
 #' @param type.smooth Type of kernel for smooth "box" includes diagonals, "diamond" is without diagonals
 #' @param cores Integer. Number of cores to use for parallel computing.
 #' @keywords array image
-#' @return Creates arrays as RDS files in the set path, and outputs the paths for these files
+#' @return Creates arrays as RDS files and outputs the paths for these files
 #' @import foreach doSNOW mmand
 #' @export
 
@@ -39,12 +39,12 @@ smoothIMG <- function(imgs,kern.smooth=c(3,3,3),type.smooth="box",cores=1) {
     ch_t[ch_t > 0] <- 1 } else stop("Kernel smooth has to be odd integers in all directions")
 
     # Save
-    saveRDS(ch_t, file = gsub("_Array.R","_SmoothArray.R",imgs[k]))
+    saveRDS(ch_t, file = gsub("Array.R","SmoothArray.R",imgs[k]))
     
     return(NULL)
   }
   
-  files <- gsub("_Array.R","_SmoothArray.R",imgs)
+  files <- gsub("Array.R","SmoothArray.R",imgs)
 
   return(files)
 }

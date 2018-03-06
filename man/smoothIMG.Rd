@@ -9,14 +9,14 @@ smoothIMG(imgs, kern.smooth = c(3, 3, 3), type.smooth = "box", cores = 1)
 \arguments{
 \item{imgs}{The paths of array files; i.e. output from \code{loadIMG} or \code{findIMG} functions.}
 
-\item{kern.smooth}{Numeric vector indicating range of median smoothing in the x,y,z directions. Has to be odd intergers.}
+\item{kern.smooth}{Numeric vector indicating range of median smoothing in the x,y,z directions. Has to be odd integers.}
 
 \item{type.smooth}{Type of kernel for smooth "box" includes diagonals, "diamond" is without diagonals}
 
 \item{cores}{Integer. Number of cores to use for parallel computing.}
 }
 \value{
-Creates arrays as RDS files in the set path, and outputs the paths for these files
+Creates arrays as RDS files and outputs the paths for these files
 }
 \description{
 Smooth images as a preparation for subsequent analyses

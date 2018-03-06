@@ -57,7 +57,7 @@ tiff_to_array <- function(channels,split,multi,multi.name) {
         # Load
         tiflist <- readTIFF(files[f],all=TRUE)
         check <- readTIFF(files[f],info=TRUE)
-        if(attributes(check)$color.space == "palette") stop("Colour should be black(0) & white(1), not RGB")
+        if(attributes(check)$color.space %in% c("RGB","palette")) stop("Colour should be black(0) & white(1), not RGB")
         for(k in 1:length(multi)){
            sub.list <- tiflist[(sum(multi[1:k])-multi[k]+1):sum(multi[1:k])]
            side <- dim(tiflist[[1]])[1]
@@ -79,7 +79,7 @@ tiff_to_array <- function(channels,split,multi,multi.name) {
         # Load
         tiflist <- readTIFF(files[f],all=TRUE)
         check <- readTIFF(files[f],info=TRUE)
-        if(attributes(check)$color.space == "palette") stop("Colour should be black(0) & white(1), not RGB")
+        if(attributes(check)$color.space %in% c("RGB","palette")) stop("Colour should be black(0) & white(1), not RGB")
         side <- dim(tiflist[[1]])[1]
         cArray <- array(0, c(side, side, length(tiflist)))
         for(l in 1:length(tiflist)){

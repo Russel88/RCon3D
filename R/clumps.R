@@ -5,7 +5,7 @@
 #' @param channels Name of the channel to find aggregates in. Should be in the names of the array files
 #' @param kern.neighbour Numeric vector indicating range of neighbouring pixels to aggregate in the x,y,z directions. Has to be odd intergers. c(1,1,1) means no aggregating.
 #' @param type.neighbour Type of kernel for neighbourhood. "box" includes diagonals, "diamond" is without diagonals
-#' @param kern.smooth Optional. Numeric vector indicating range of median smoothing in the x,y,z directions. Has to be odd intergers. c(1,1,1) means no smoothing.
+#' @param kern.smooth Optional. Numeric vector indicating range of median smoothing in the x,y,z directions. Has to be odd integers. c(1,1,1) means no smoothing.
 #' @param type.smooth Optional. Type of kernel for smooth "box" includes diagonals, "diamond" is without diagonals
 #' @param layers Optional. Should the function only look in a subset of layers. A list with lists of layers to use for each image. Can also be the output from \code{extract_layers} 
 #' @param pwidth Optional. Width of pixels in microns to calculate aggregate size in microns instead of pixels

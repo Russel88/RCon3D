@@ -18,7 +18,7 @@ clumps(imgs, channels, kern.neighbour = c(3, 3, 3), type.neighbour = "box",
 
 \item{type.neighbour}{Type of kernel for neighbourhood. "box" includes diagonals, "diamond" is without diagonals}
 
-\item{kern.smooth}{Optional. Numeric vector indicating range of median smoothing in the x,y,z directions. Has to be odd intergers. c(1,1,1) means no smoothing.}
+\item{kern.smooth}{Optional. Numeric vector indicating range of median smoothing in the x,y,z directions. Has to be odd integers. c(1,1,1) means no smoothing.}
 
 \item{type.smooth}{Optional. Type of kernel for smooth "box" includes diagonals, "diamond" is without diagonals}
 

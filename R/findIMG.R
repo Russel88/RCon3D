@@ -10,7 +10,7 @@
 findIMG <- function(path, channels = NULL){
   
   # Find the files
-  files <- list.files(path, "_Array.R", full.names = T)
+  files <- list.files(path, "Array.R", full.names = T)
 
   if(!is.null(channels)){
     files.new <- c()
