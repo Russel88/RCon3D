@@ -119,10 +119,9 @@ cross_ratio.default <- function(imgs,focal.channel,target.channels,size,npixel,d
     d2 <- length(which(ch.t2 == 1))/length(ch.t2)
 
     # Addresses in array (pixels)
-    side <- dim(ch.t1)[1]
-    address_array <- array(1:(side*side*dim(ch.t1)[3]), 
-                           c(side, side, dim(ch.t1)[3]))
-    
+    address_array <- array(1:(dim(ch.t1)[1]*dim(ch.t1)[2]*dim(ch.t1)[3]), 
+                           c(dim(ch.t1)[1], dim(ch.t1)[2], dim(ch.t1)[3]))
+
     # Coordinates of pixels in focal channel (pixels)
     chf_add <- data.frame(which(ch.f == 1, T))
     colnames(chf_add) <- c("x", "y", "z")

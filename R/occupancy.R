@@ -112,9 +112,8 @@ occupancy.default <- function(imgs,focal.channel,target.channel,size,npixel,dste
     dens <- length(which(ch.t == 1))/length(ch.t)
     
     # Addresses in array (pixels)
-    side <- dim(ch.f)[1]
-    address_array <- array(1:(side*side*dim(ch.f)[3]), 
-                           c(side, side, dim(ch.f)[3]))
+    address_array <- array(1:(dim(ch.f)[1]*dim(ch.f)[2]*dim(ch.f)[3]), 
+                           c(dim(ch.f)[1], dim(ch.f)[2], dim(ch.f)[3]))
     
     # Coordinates of pixels in focal channel (pixels)
     chf_add <- data.frame(which(ch.f == 1, T))

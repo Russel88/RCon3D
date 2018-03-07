@@ -4,13 +4,15 @@
 \alias{layer_split}
 \title{Split quantification in Top, Middle and Bottom}
 \usage{
-layer_split(qua, side, pt, add.t, add.b, channel = NULL, trim = FALSE,
-  layer.start = NULL)
+layer_split(qua, side.x, side.y, pt, add.t, add.b, channel = NULL,
+  trim = FALSE, layer.start = NULL)
 }
 \arguments{
 \item{qua}{A dataframe from the \code{quant} function}
 
-\item{side}{xy dimension of image in pixels}
+\item{side.x}{x dimension of image in pixels}
+
+\item{side.y}{y dimension of image in pixels}
 
 \item{pt}{The Top is defined from layer 1 (or max if layer.start="Bottom") until, but not including, the layer where the image is filled by the proportion pt (0.9 = 90 percent). If pt is set higher than found in any layer in the image then add.b specifies the Bottom and the rest is the Top. Note that if pt, add.t and add.b is set such that there is overlap between Bottom, Middle and Top, then Top will override the others}
 

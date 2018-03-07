@@ -116,9 +116,8 @@ co_agg.default <- function(imgs,channels,size,npixel,dstep=1,pwidth,zstep,cores=
     d12 <- length(which(sumch > 0))/length(sumch)
     
     # Addresses in array (pixels)
-    side <- dim(ch1_t)[1]
-    address_array <- array(1:(side*side*dim(ch1_t)[3]), 
-                           c(side, side, dim(ch1_t)[3]))
+    address_array <- array(1:(dim(ch1_t)[1]*dim(ch1_t)[2]*dim(ch1_t)[3]), 
+                           c(dim(ch1_t)[1], dim(ch1_t)[2], dim(ch1_t)[3]))
     
     # Coordinates of pixels in channel1 (pixels)
     ch1_add <- data.frame(which(ch1_t > 0, T))

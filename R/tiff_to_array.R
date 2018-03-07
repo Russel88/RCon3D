@@ -22,27 +22,28 @@ tiff_to_array <- function(channels,split,multi,multi.name) {
     subdirs <- list.dirs(getwd(), T, F)
     
     for(f in 1:length(subdirs)){
-    
-    message(paste("Loading image",f))
-    
-    # list the file paths
-    files <- dir(subdirs[f], ".tif", full.names = T)
-    
-    cFiles <- list()
-    
-    for(j in 1:length(channels)){
       
-      cFiles[[j]] <- files[grep(channels[j], files)]
+      message(paste("Loading image",f))
       
-      # load
-      side <- dim(readTIFF(cFiles[[j]]))[1]
-      cArray <- array(0, c(side, side, length(cFiles[[j]])))
-      for(i in 1:length(cFiles[[j]])){
-        cArray[,,i] <- readTIFF(cFiles[[j]][i])
+      # list the file paths
+      files <- dir(subdirs[f], ".tif", full.names = T)
+      
+      cFiles <- list()
+      
+      for(j in 1:length(channels)){
+        
+        cFiles[[j]] <- files[grep(channels[j], files)]
+        
+        # load
+        side1 <- dim(readTIFF(cFiles[[j]]))[1]
+        side2 <- dim(readTIFF(cFiles[[j]]))[2]
+        cArray <- array(0, c(side1, side2, length(cFiles[[j]])))
+        for(i in 1:length(cFiles[[j]])){
+          cArray[,,i] <- readTIFF(cFiles[[j]][i])
+        }
+        saveRDS(cArray, file = paste0(subdirs[f], "_", channels[j],"_Array.R"))
       }
-      saveRDS(cArray, file = paste0(subdirs[f], "_", channels[j],"_Array.R"))
     }
-  }
     
   } else {
     
@@ -59,20 +60,21 @@ tiff_to_array <- function(channels,split,multi,multi.name) {
         check <- readTIFF(files[f],info=TRUE)
         if(attributes(check)$color.space %in% c("RGB","palette")) stop("Colour should be black(0) & white(1), not RGB")
         for(k in 1:length(multi)){
-           sub.list <- tiflist[(sum(multi[1:k])-multi[k]+1):sum(multi[1:k])]
-           side <- dim(tiflist[[1]])[1]
-           cArray <- array(0, c(side, side, length(sub.list)))
-           for(l in 1:length(sub.list)){
-             cArray[,,l] <- sub.list[[l]]
-           }
-           # Fix reverse images
-           if(attributes(check)$color.space == "white is zero") {
-             warning("White is zero in input. Binary digits will be reversed in output, such that black is zero")
-             cArray[cArray == 0] <- NA
-             cArray[cArray > 0] <- 0
-             cArray[is.na(cArray)] <- 1
-           }
-           saveRDS(cArray, file = gsub(".tif",paste0("_",multi.name[k],"_Array.R"),files[f]))
+          sub.list <- tiflist[(sum(multi[1:k])-multi[k]+1):sum(multi[1:k])]
+          side1 <- dim(tiflist[[1]])[1]
+          side2 <- dim(tiflist[[1]])[2]
+          cArray <- array(0, c(side1, side2, length(sub.list)))
+          for(l in 1:length(sub.list)){
+            cArray[,,l] <- sub.list[[l]]
+          }
+          # Fix reverse images
+          if(attributes(check)$color.space == "white is zero") {
+            warning("White is zero in input. Binary digits will be reversed in output, such that black is zero")
+            cArray[cArray == 0] <- NA
+            cArray[cArray > 0] <- 0
+            cArray[is.na(cArray)] <- 1
+          }
+          saveRDS(cArray, file = gsub(".tif",paste0("_",multi.name[k],"_Array.R"),files[f]))
         }
         
       } else {
@@ -80,8 +82,9 @@ tiff_to_array <- function(channels,split,multi,multi.name) {
         tiflist <- readTIFF(files[f],all=TRUE)
         check <- readTIFF(files[f],info=TRUE)
         if(attributes(check)$color.space %in% c("RGB","palette")) stop("Colour should be black(0) & white(1), not RGB")
-        side <- dim(tiflist[[1]])[1]
-        cArray <- array(0, c(side, side, length(tiflist)))
+        side1 <- dim(tiflist[[1]])[1]
+        side2 <- dim(tiflist[[1]])[2]
+        cArray <- array(0, c(side1, side2, length(tiflist)))
         for(l in 1:length(tiflist)){
           cArray[,,l] <- tiflist[[l]]
         }

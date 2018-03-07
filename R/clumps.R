@@ -54,9 +54,6 @@ clumps <- function(imgs,channels,kern.neighbour=c(3,3,3),type.neighbour="box",ke
       ch_t <- readRDS(ch_files.x[k])
     }
 
-    side <- dim(ch_t)[1]
-    h <- dim(ch_t)[3]
-    
     # Subset layers
     if(!is.null(layers[[k]])){
       ch_t <- ch_t[,,layers[[k]]]

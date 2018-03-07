@@ -2,7 +2,8 @@
 #'
 #' Function to split quantification in Top, Middle and Bottom layer by proportion occupied
 #' @param qua A dataframe from the \code{quant} function
-#' @param side xy dimension of image in pixels
+#' @param side.x x dimension of image in pixels
+#' @param side.y y dimension of image in pixels
 #' @param pt The Top is defined from layer 1 (or max if layer.start="Bottom") until, but not including, the layer where the image is filled by the proportion pt (0.9 = 90 percent). If pt is set higher than found in any layer in the image then add.b specifies the Bottom and the rest is the Top. Note that if pt, add.t and add.b is set such that there is overlap between Bottom, Middle and Top, then Top will override the others 
 #' @param add.t How many layers to add to the top, after pt calculation (e.g. pt=0 and add.t=10 will specify the top as the top 10 layers)
 #' @param add.b How many layers are specified as the bottom
@@ -13,7 +14,7 @@
 #' @return The original qua dataframe including an Exp variable, with a unique name for each image (based on the naming given in the \code{quant} function). And a Split varaible denoting the split
 #' @export
 
-layer_split <- function(qua,side,pt,add.t,add.b,channel=NULL,trim=FALSE,layer.start=NULL){
+layer_split <- function(qua,side.x,side.y,pt,add.t,add.b,channel=NULL,trim=FALSE,layer.start=NULL){
   
   # Make Exp variable in qua dataframe
   if(length(colnames(qua)) > 4){
@@ -40,7 +41,7 @@ layer_split <- function(qua,side,pt,add.t,add.b,channel=NULL,trim=FALSE,layer.st
       if(trim==TRUE) Layerx <- Layer[1:Position(function(x) max(Layer$Count) == x,Layer$Count,right=TRUE),] else Layerx <- Layer
       
       # Calculate fill
-      Layerx$Fill <- Layerx$Count / side^2
+      Layerx$Fill <- Layerx$Count / side.x * side.y
       
       # Split in layers
       if(max(Layerx$Fill)>=pt){
@@ -67,7 +68,7 @@ layer_split <- function(qua,side,pt,add.t,add.b,channel=NULL,trim=FALSE,layer.st
       if(trim==TRUE) Layerx <- Layer[Position(function(x) max(Layer$Count) == x,Layer$Count,right=TRUE):nrow(Layer),] else Layerx <- Layer
       
       # Calculate fill
-      Layerx$Fill <- Layerx$Count / side^2
+      Layerx$Fill <- Layerx$Count / side.x * side.y
       
       # Split in layers
       if(max(Layerx$Fill)>=pt){
