@@ -3,8 +3,7 @@
 #' @param imgs The paths of array files; i.e. output from \code{loadIMG} or \code{findIMG} functions.
 #' @param channels Character vector with name(s) of channels. Channel names should be in the names of the array files
 #' @keywords array image quantify
-#' @return A dataframe with number of pixels for each layer
-#' @import foreach doSNOW
+#' @return A list with the centers of mass in x, y, z format for each image
 #' @export
 
 center_of_mass <- function(imgs,channels) {

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 
@@ -120,8 +120,8 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">RCon3D</h1>
 <h4 class="author"><em>Jakob Russel</em></h4>
-<h4 class="date"><em><ol start="9" style="list-style-type: decimal">
-<li>feb. 2017</li>
+<h4 class="date"><em><ol start="19" style="list-style-type: decimal">
+<li>mar. 2017</li>
 </ol></em></h4>
 
 </div>
@@ -130,7 +130,7 @@ $(document).ready(function () {
 <div id="loading-and-preparing-images" class="section level1">
 <h1>Loading and preparing images</h1>
 <p>This is a tutorial on how to load images and make them ready for downstream analysis.</p>
-<p>The images has to be binary .tiff files and are therefore assumed to be thresholded already (black (zero) if no signal is detected and white (one) if signal is detected). The .tiff files can contain multiple layers, or there can be a .tiff for each layer. Both are accepted, more on this later.</p>
+<p>The images has to be binary .tiff files and are therefore assumed to be thresholded already (black (zero) if no signal is detected and white (one) if signal is detected). The .tiff files can contain multiple layers, or there can be a .tiff for each layer. Both are accepted, more on this later. Also, a .tiff can contain multiple images.</p>
 <div id="the-example-images-can-be-downloaded-from-the-following-links" class="section level3">
 <h3>The example images can be downloaded from the following links:</h3>
 <p>Four species biofilm (for quantification and layer-based analysis): <a href="https://github.com/Russel88/RCon3D/blob/master/ExampleData.zip" class="uri">https://github.com/Russel88/RCon3D/blob/master/ExampleData.zip</a></p>
@@ -144,7 +144,7 @@ $(document).ready(function () {
 <div id="loading-the-images" class="section level2">
 <h2>Loading the images</h2>
 <p>Specify paths of images</p>
-<pre class="r"><code>path &lt;- &quot;/Projects/Alginate beads/Images&quot;</code></pre>
+<pre class="r"><code>path &lt;- &quot;//a00143.science.domain/cmf483/Documents/PhD/Projects/Alginate beads/Images&quot;</code></pre>
 <div id="convert-tiff-to-r-friendly-rds-files" class="section level3">
 <h3>Convert tiff to R-friendly RDS files</h3>
 <p><code>loadIMG</code> creates the RDS files, and when we run the script again we can just use <code>findIMG</code> to get the paths for the RDS files.</p>
@@ -160,7 +160,7 @@ $(document).ready(function () {
 <p>If the images has been loaded previously, we can use <code>findIMG</code> to get the paths:</p>
 <pre class="r"><code># img &lt;- findIMG(path)</code></pre>
 <p>We test the dimensions of the loaded images to ensure they are as expected:</p>
-<pre class="r"><code>lapply(1:length(img), function(x) dim(readRDS(img[x])))</code></pre>
+<pre class="r"><code>lapply(img, function(x) dim(readRDS(x)))</code></pre>
 <pre><code>## [[1]]
 ## [1] 1178 1178   51
 ## 
@@ -195,6 +195,17 @@ $(document).ready(function () {
 <pre class="r"><code>print(img.pan)
 print(img.xan)</code></pre>
 </div>
+</div>
+<div id="smoothing-optional" class="section level2">
+<h2>Smoothing (optional)</h2>
+<p>We might want to smooth images before downstream analysis. So far only median smoothing is included</p>
+<pre class="r"><code>img.s &lt;- smoothIMG(img, kern.smooth = c(3, 3, 3), type.smooth = &quot;box&quot;, cores = 1)</code></pre>
+<p><code>type.smooth</code>: Type of kernel for smooth “box” includes diagonals, “diamond” is without diagonals <code>kern.smooth</code>: Range of median smoothing in the x,y,z directions. Has to be odd integers. c(3,3,3) means immediate neighbours in all directions; imagine a box of size 3x3x3 centered on a focal pixel. The value of the focal pixel will then be the median of all 27 pixels in the box.</p>
+</div>
+<div id="morphing-optional" class="section level2">
+<h2>Morphing (optional)</h2>
+<p>We might want to morph images before downstream analysis. This is basically image manipulation, and should only be applied if there is good reason for it. See details in <code>?morphIMG</code> and <code>?mmand::erode</code>.</p>
+<pre class="r"><code>img.m &lt;- morphIMG(imgs, morph = NULL, kern = c(3, 3, 3), type = &quot;box&quot;, cores = 1)</code></pre>
 </div>
 <div id="the-null-channel-optional" class="section level2">
 <h2>The null channel (optional)</h2>

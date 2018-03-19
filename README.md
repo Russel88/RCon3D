@@ -6,10 +6,16 @@ microbial biofilms, microcolonies and communities.
 
 ### Citation
 
-If you use the `quant` and `layer_split` functions please cite: [Liu et
-al. (2017) Low-abundant species facilitates specific spatial
-organisation that promotes multispecies biofilm formation. *Envir.
+If you use functions in the notebooks **Loading and preparing images**
+or **Quantification of images** please cite: [Liu et al. (2017)
+Low-abundant species facilitates specific spatial organisation that
+promotes multispecies biofilm formation. *Envir.
 Microbiol.*](http://onlinelibrary.wiley.com/doi/10.1111/1462-2920.13816/abstract)
+
+If you use functions in the notebook **Co-aggregation and relative
+positioning** please cite: Liu et al. (2018) Micro-scale intermixing; a
+requisite for stable and synergistic co-establishment in a four-species
+biofilm. *ISMEJ* (in press)
 
 ### Install package
 
@@ -24,11 +30,16 @@ analyses](https://nbviewer.jupyter.org/github/Russel88/RCon3D/blob/master/Notebo
 [Quantification of
 images](https://nbviewer.jupyter.org/github/Russel88/RCon3D/blob/master/Notebooks/Quant.html)
 
-[Dynamic sectioning of
-images](https://nbviewer.jupyter.org/github/Russel88/RCon3D/blob/master/Notebooks/Section.html)
-
 [Co-aggregation and relative
 positioning](https://nbviewer.jupyter.org/github/Russel88/RCon3D/blob/master/Notebooks/Coagg.html)
+
+[Dynamic sectioning of images in
+z-direction](https://nbviewer.jupyter.org/github/Russel88/RCon3D/blob/master/Notebooks/Section.html)
+
+### Multi-threading
+
+Most functions can run in parallel by setting the `cores` argument. This
+will highly speed up analyses, but will also use more memory.
 
 ### All functions
 
@@ -36,6 +47,10 @@ positioning](https://nbviewer.jupyter.org/github/Russel88/RCon3D/blob/master/Not
 RDS files ready for downstream analysis
 
 `findIMG` Find already loaded images in a set directory
+
+`smoothIMG` Median smooth images
+
+`morphIMG` Apply mathematical morphology kernel on image
 
 `merge_channels` Create arrays based on combinations of channels. E.g.
 intersects, unions or subtractions
@@ -57,9 +72,6 @@ undirected version of `occupancy`
 
 `cross_ratio` Estimates the ratio between two channels (targets), at
 some distance from a focal channel
-
-`clumps` Find 3D clumps (aggregates) based on clumping together
-neighbouring pixels.
 
 `create_random` Create random images for testing
 

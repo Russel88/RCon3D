@@ -12,7 +12,7 @@ center_of_mass(imgs, channels)
 \item{channels}{Character vector with name(s) of channels. Channel names should be in the names of the array files}
 }
 \value{
-A dataframe with number of pixels for each layer
+A list with the centers of mass in x, y, z format for each image
 }
 \description{
 Find Center of Mass in images
