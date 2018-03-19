@@ -13,10 +13,10 @@
 clumps_plot <- function(clumps.out, replica = 1, col = "agg", pwidth = NULL, zstep = NULL, center = NULL, radius = NULL){
   
   # Find positions
-  M <- reshape2::melt(clumps.out[[2]][[replica]])
+  M <- reshape2::melt(clumps.out[[length(clumps.out)]][[replica]])
   M <- M[!is.na(M$value),]
 
-  img.dims <- dim(clumps.out[[2]][[replica]])
+  img.dims <- dim(clumps.out[[length(clumps.out)]][[replica]])
   
   # Colour by aggregate
   if(col == "agg"){
