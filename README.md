@@ -13,9 +13,9 @@ promotes multispecies biofilm formation. *Envir.
 Microbiol.*](http://onlinelibrary.wiley.com/doi/10.1111/1462-2920.13816/abstract)
 
 If you use functions in the notebook **Co-aggregation and relative
-positioning** please cite: Liu et al. (2018) Micro-scale intermixing; a
+positioning** please cite: [Liu et al. (2018) Micro-scale intermixing; a
 requisite for stable and synergistic co-establishment in a four-species
-biofilm. *ISMEJ* (in press)
+biofilm. *ISMEJ*](https://rdcu.be/LSda)
 
 ### Install package
 
