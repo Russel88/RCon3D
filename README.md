@@ -12,10 +12,15 @@ Low-abundant species facilitates specific spatial organisation that
 promotes multispecies biofilm formation. *Envir.
 Microbiol.*](http://onlinelibrary.wiley.com/doi/10.1111/1462-2920.13816/abstract)
 
-If you use functions in the notebook **Co-aggregation and relative
-positioning** please cite: [Liu et al. (2018) Micro-scale intermixing; a
-requisite for stable and synergistic co-establishment in a four-species
-biofilm. *ISMEJ*](https://rdcu.be/LSda)
+If you use the `co_agg` function please cite: [Liu et al. (2018)
+Micro-scale intermixing; a requisite for stable and synergistic
+co-establishment in a four-species biofilm.
+*ISMEJ*](https://rdcu.be/LSda)
+
+If you use the `clumps` or `occupancy` functions please cite: Røder HL.,
+Herschend J., Russel J., Andersen MF., Madsen JS., Sørensen SJ. &
+Burmølle M. (2018) Enhanced bacterial mutualism through an evolved
+biofilm phenotype. *ISMEJ* (in press)
 
 ### Install package
 
@@ -35,6 +40,9 @@ positioning](https://nbviewer.jupyter.org/github/Russel88/RCon3D/blob/master/Not
 
 [Dynamic sectioning of images in
 z-direction](https://nbviewer.jupyter.org/github/Russel88/RCon3D/blob/master/Notebooks/Section.html)
+
+[Detecting
+aggregates](https://nbviewer.jupyter.org/github/Russel88/RCon3D/blob/master/Notebooks/Clumps.html)
 
 ### Multi-threading
 
@@ -86,6 +94,10 @@ what layers to analyze in `occupancy`, `clumps`, `co_agg` and
 
 `xy_splits` Splits the image in each xy position and then run an
 analysis
+
+`clumps` Detects and quantifys clumps by aggregating pixels
+
+`clumps_plot` Plots the output from `clumps`
 
 #### Acknowledgment note:
 

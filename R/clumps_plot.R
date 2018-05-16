@@ -8,14 +8,29 @@
 #' @param zstep Microns between the layers
 #' @param center 3D coordinates (c(x,y,z)) of where to center circular outline
 #' @param radius Radius of the circular outline, in microns if pwidth and zstep are provided, else in pixels
+#' @param thresh Clumps smaller than this are not plotted (in pixels)
+#' @param thresm.m If TRUE will apply threshold to sizes in microns instead of pixels
 #' @keywords array image aggregate
 #' @export
-clumps_plot <- function(clumps.out, replica = 1, col = "agg", pwidth = NULL, zstep = NULL, center = NULL, radius = NULL){
+clumps_plot <- function(clumps.out, replica = 1, col = "agg", pwidth = NULL, zstep = NULL, center = NULL, radius = NULL, thresh = 0, thresh.m = FALSE){
   
   # Find positions
   M <- reshape2::melt(clumps.out[[length(clumps.out)]][[replica]])
   M <- M[!is.na(M$value),]
 
+  # Remove by threshold
+  subsize <- clumps.out[[1]][clumps.out[[1]]$Img == unique(clumps.out[[1]]$Img)[1],]
+  if(thresh.m){
+    if("Size.micron" %in% colnames(subsize)){
+      rem <- as.character(subsize[subsize$Size.micron < thresh,"ID"])
+    } else {
+      stop("Clump size in microns not found. Either set thresh.m = FALSE or give 'clumps' both the zstep and pwidth argument")
+    }
+  } else {
+    rem <- as.character(subsize[subsize$Size < thresh,"ID"])
+  }
+  M <- M[!M$value %in% rem,]
+  
   img.dims <- dim(clumps.out[[length(clumps.out)]][[replica]])
   
   # Colour by aggregate

@@ -5,7 +5,8 @@
 \title{Plot 3D aggregates}
 \usage{
 clumps_plot(clumps.out, replica = 1, col = "agg", pwidth = NULL,
-  zstep = NULL, center = NULL, radius = NULL)
+  zstep = NULL, center = NULL, radius = NULL, thresh = 0,
+  thresh.m = FALSE)
 }
 \arguments{
 \item{clumps.out}{Output from \code{clumps}}
@@ -21,6 +22,10 @@ clumps_plot(clumps.out, replica = 1, col = "agg", pwidth = NULL,
 \item{center}{3D coordinates (c(x,y,z)) of where to center circular outline}
 
 \item{radius}{Radius of the circular outline, in microns if pwidth and zstep are provided, else in pixels}
+
+\item{thresh}{Clumps smaller than this are not plotted (in pixels)}
+
+\item{thresm.m}{If TRUE will apply threshold to sizes in microns instead of pixels}
 }
 \description{
 Provide pwidth and zstep to get true aspect ratio. Provide center and radius to draw a circular outline
