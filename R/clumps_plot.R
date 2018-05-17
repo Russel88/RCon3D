@@ -63,9 +63,11 @@ clumps_plot <- function(clumps.out, replica = 1, col = "agg", pwidth = NULL, zst
                      by.x = "value", by.y = "ID")
     dist.df <- dist.df[!is.na(dist.df$dist),]
     
-    if(length(unique(M$value)) != length(clumps.out$Aggregates$ID)){
-      warning("Not all clumps plotted: The clumps below the threshold are omitted as there is no distance information in them")
-    }
+    if(thresh == 0){
+      if(length(unique(M$value)) != length(clumps.out$Aggregates[clumps.out$Aggregates$Img == unique(clumps.out$Aggregates$Img)[replica],"ID"])){
+        warning("Not all clumps plotted: Some clumps are omitted as there is no distance information in them. Maybe a threshold was set in the clumps function.")
+      }
+    } 
     
     # Colours. Red is close to center, Blue is away from center
     cols <- myColorRamp(c("red", "blue"), dist.df$dist) 
