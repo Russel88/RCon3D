@@ -39,12 +39,18 @@ xy_splits <- function(imgs,channels,do,upper.part=0.5,layer.start=NULL,cores=1) 
   # Loop for each channel
   for(ch in 1:length(channels)){
     
+    message(paste("\nLoading channel",ch))
+    
     # Load images
     ch_files <- imgs[grep(channels[ch], imgs)]
     
+    pb <- txtProgressBar(max = length(ch_files), style = 3)
+    progress <- function(n) setTxtProgressBar(pb, n)
+    pbopts <- list(progress = progress)
+    
     cl <- makeCluster(cores)
     registerDoSNOW(cl)
-    result.image <- foreach(k = 1:length(ch_files)) %dopar% {
+    result.image <- foreach(k = 1:length(ch_files), .options.snow = pbopts) %dopar% {
       
       # Load RDS
       ch_t <- readRDS(ch_files[k])
@@ -75,15 +81,15 @@ xy_splits <- function(imgs,channels,do,upper.part=0.5,layer.start=NULL,cores=1) 
   if(is.function(do)) do <- FALSE
   if(do == "section"){
     
-    message("Starting sectioning")
+    message("\nStarting sectioning")
     
     pb <- txtProgressBar(max = length(ch_files), style = 3)
     progress <- function(n) setTxtProgressBar(pb, n)
-    opts <- list(progress = progress)
+    pbopts <- list(progress = progress)
     cl <- makeCluster(cores)
     registerDoSNOW(cl)
-    section.results <- foreach(s = 1:length(ch_files), .options.snow = opts) %dopar% {
-
+    section.results <- foreach(s = 1:length(ch_files), .options.snow = pbopts) %dopar% {
+  
       # Extract
       chs <- lapply(1:length(channels),function(ch){
         results[[ch]][[s]]
