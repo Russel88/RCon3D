@@ -32,7 +32,7 @@ clumps <- function(imgs,channels,kern.neighbour=c(3,3,3),type.neighbour="box",ke
   
   # For each image
   if(cores > 1){
-    cl <- makeCluster(cores)
+    cl <- parallel::makeCluster(cores)
     registerDoSNOW(cl)
     on.exit(stopCluster(cl))
   } else {
@@ -74,12 +74,16 @@ clumps <- function(imgs,channels,kern.neighbour=c(3,3,3),type.neighbour="box",ke
     ch_agg <- components(ch_t,kern.n)
 
     # Extract aggregates
-    afr <- as.data.frame(table(ch_agg))
-    colnames(afr) <- c("ID","Size")
+    if(all(is.na(ch_agg))){
+      afr <- data.frame(ID = NA, Size = NA)
+    } else {
+      afr <- as.data.frame(table(ch_agg))
+      colnames(afr) <- c("ID","Size")
+      afr <- afr[afr$Size >= thresh,]
+    }
     if(!is.null(pwidth) & !is.null(zstep)) afr$Size.micron <- afr$Size * pwidth^2 * zstep
     afr$Img <- gsub(channels[1],"",sub(paste0("_Array.*"),"",sub(".*/", "", ch_files.x[[k]][1])))
-    afr <- afr[afr$Size >= thresh,]
-    
+
     # Extract if multiple channels
     if(length(channels) > 1){
       afr.list <- list()
@@ -109,19 +113,22 @@ clumps <- function(imgs,channels,kern.neighbour=c(3,3,3),type.neighbour="box",ke
       edge.y <- c(1,dim(ch_agg)[2])
       edge.z <- c(1,dim(ch_agg)[3])
       
-      touch <- t(sapply(coordsl, function(ac) c(sum(sapply(ac[,1], function(x) x %in% edge.x)),
-                                               sum(sapply(ac[,2], function(x) x %in% edge.y)),
-                                               sum(sapply(ac[,3], function(x) x %in% edge.z)))))
-      
-      colnames(touch) <- c("Edge.x","Edge.y","Edge.z")
-      
-      afr <- cbind(afr, touch)
-      
-      # Distance
-      if(!is.null(points) & !is.null(pwidth) & !is.null(zstep)){
-        afr$dist <- sqrt(((afr$x-points[[k]][1])*pwidth)^2 + 
-                           ((afr$y-points[[k]][2])*pwidth)^2 + 
-                           ((afr$z-points[[k]][3])*zstep)^2)
+      if(all(is.na(ch_agg))){
+        touch <- data.frame(Edge.x = NA, Edge.y = NA, Edge.z = NA)
+        afr <- cbind(afr, touch)
+        if(!is.null(points) & !is.null(pwidth) & !is.null(zstep)) afr$dist <- NA
+      } else {
+        touch <- t(sapply(coordsl, function(ac) c(sum(sapply(ac[,1], function(x) x %in% edge.x)),
+                                                  sum(sapply(ac[,2], function(x) x %in% edge.y)),
+                                                  sum(sapply(ac[,3], function(x) x %in% edge.z)))))
+        colnames(touch) <- c("Edge.x","Edge.y","Edge.z")
+        afr <- cbind(afr, touch)
+        # Distance
+        if(!is.null(points) & !is.null(pwidth) & !is.null(zstep)){
+          afr$dist <- sqrt(((afr$x-points[[k]][1])*pwidth)^2 + 
+                             ((afr$y-points[[k]][2])*pwidth)^2 + 
+                             ((afr$z-points[[k]][3])*zstep)^2)
+        }
       }
 
       if(length(channels) > 1){
@@ -189,6 +196,12 @@ clumps <- function(imgs,channels,kern.neighbour=c(3,3,3),type.neighbour="box",ke
   } else afrxn <- afrx
   
   arrays <- lapply(res.list, function(x) x[[2]])
+  
+  if(any(is.na(afrxn$ID))){
+    message("\nNo aggregates found in the following images:")
+    message(paste(afrxn[is.na(afrxn$ID),"Img"],"\n"))
+    afrxn <- afrxn[!is.na(afrxn$ID),]
+  } 
   
   if(length(channels) > 1){
     All <- list(Aggregates=afrxn,Aggregates_split=res.split,Arrays=arrays)
