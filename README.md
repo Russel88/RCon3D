@@ -1,4 +1,4 @@
-RCon3D: Analyzing 3D confocal images of microbial biofilms/communities
+﻿RCon3D: Analyzing 3D confocal images of microbial biofilms/communities
 ----------------------------------------------------------------------
 
 This is an R package for various 3D analyses on confocal images of
@@ -17,10 +17,9 @@ Micro-scale intermixing; a requisite for stable and synergistic
 co-establishment in a four-species biofilm.
 *ISMEJ*](https://rdcu.be/LSda)
 
-If you use the `clumps` or `occupancy` functions please cite: Røder HL.,
-Herschend J., Russel J., Andersen MF., Madsen JS., Sørensen SJ. &
-Burmølle M. (2018) Enhanced bacterial mutualism through an evolved
-biofilm phenotype. *ISMEJ* (in press)
+If you use the `clumps` or `occupancy` functions please cite: [Røder et al. 
+(2018) Enhanced bacterial mutualism through an evolved biofilm phenotype. 
+*ISMEJ*](https://www.nature.com/articles/s41396-018-0165-2)
 
 ### Install package
 
