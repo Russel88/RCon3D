@@ -19,7 +19,7 @@ co-establishment in a four-species biofilm.
 
 If you use the `clumps` or `occupancy` functions please cite: [Røder et al. 
 (2018) Enhanced bacterial mutualism through an evolved biofilm phenotype. 
-*ISMEJ*](https://www.nature.com/articles/s41396-018-0165-2)
+*ISMEJ*](https://rdcu.be/2wnn)
 
 ### Install package
 
