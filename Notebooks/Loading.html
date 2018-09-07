@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 
@@ -120,8 +120,8 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">RCon3D</h1>
 <h4 class="author"><em>Jakob Russel</em></h4>
-<h4 class="date"><em><ol start="19" style="list-style-type: decimal">
-<li>mar. 2017</li>
+<h4 class="date"><em><ol start="7" style="list-style-type: decimal">
+<li>sep. 2018</li>
 </ol></em></h4>
 
 </div>
@@ -130,7 +130,9 @@ $(document).ready(function () {
 <div id="loading-and-preparing-images" class="section level1">
 <h1>Loading and preparing images</h1>
 <p>This is a tutorial on how to load images and make them ready for downstream analysis.</p>
-<p>The images has to be binary .tiff files and are therefore assumed to be thresholded already (black (zero) if no signal is detected and white (one) if signal is detected). The .tiff files can contain multiple layers, or there can be a .tiff for each layer. Both are accepted, more on this later. Also, a .tiff can contain multiple images.</p>
+<p><strong>The images has to be .tiff or .tif files</strong></p>
+<p>The images can be either binary or greyscale. Therefore, different colours/channels should be split in different .tiff files. If they are greyscale they should be thresholded before further analysis (see section on thresholding below)</p>
+<p>The .tiff files can contain multiple layers, or there can be a .tiff for each layer. Both are accepted (see details in <code>loadIMG</code>). Also, a .tiff can contain multiple images. As long as the channels are in different .tiff files.</p>
 <div id="the-example-images-can-be-downloaded-from-the-following-links" class="section level3">
 <h3>The example images can be downloaded from the following links:</h3>
 <p>Four species biofilm (for quantification and layer-based analysis): <a href="https://github.com/Russel88/RCon3D/blob/master/ExampleData.zip" class="uri">https://github.com/Russel88/RCon3D/blob/master/ExampleData.zip</a></p>
@@ -141,39 +143,83 @@ $(document).ready(function () {
 <h3>Load package</h3>
 <pre class="r"><code>library(RCon3D)</code></pre>
 </div>
-<div id="loading-the-images" class="section level2">
-<h2>Loading the images</h2>
+</div>
+<div id="loading-the-images" class="section level1">
+<h1>Loading the images</h1>
 <p>Specify paths of images</p>
-<pre class="r"><code>path &lt;- &quot;/Data&quot;</code></pre>
-<div id="convert-tiff-to-r-friendly-rds-files" class="section level3">
-<h3>Convert tiff to R-friendly RDS files</h3>
+<pre class="r"><code>path &lt;- &quot;C:/Images&quot;</code></pre>
+<div id="convert-tiff-to-r-friendly-rds-files" class="section level2">
+<h2>Convert tiff to R-friendly RDS files</h2>
 <p><code>loadIMG</code> creates the RDS files, and when we run the script again we can just use <code>findIMG</code> to get the paths for the RDS files.</p>
 <p><code>channels</code> should be unique and exclusive names in the filenames of the images.</p>
 <p>The following might give warnings about TIFF image tags that cannot be read. This should not be a problem.</p>
 <pre class="r"><code>img &lt;- loadIMG(path, channels = c(&quot;C0&quot;,&quot;C1&quot;))</code></pre>
-<pre><code>## Loading image 1</code></pre>
-<pre><code>## Loading image 2</code></pre>
-<pre><code>## Loading image 3</code></pre>
-<pre><code>## Loading image 4</code></pre>
+<div id="naming-of-images-before-loading" class="section level3">
+<h3>Naming of images before loading</h3>
+<p>Naming the images properly is important before loading them into R.</p>
+<p>The channels has to be unique strings in the names.</p>
+<p>In general having unique strings for all treatments/timepoint/etc. makes subsequent analysis easier, as the functions can grap this information from the image names.</p>
+<div id="good-naming" class="section level4">
+<h4>Good naming:</h4>
+<ul>
+<li>C1_Control_24hours.tif</li>
+<li>C2_Control_24hours.tif</li>
+<li>C1_Control_48hours.tif</li>
+<li>C2_Control_48hours.tif</li>
+<li>C1_Treat_24hours.tif</li>
+<li>C2_Treat_24hours.tif</li>
+<li>C1_Treat_48hours.tif</li>
+<li>C2_Treat_48hours.tif</li>
+</ul>
+</div>
+<div id="bad-naming" class="section level4">
+<h4>Bad Naming:</h4>
+<ul>
+<li>C1_C101.tif</li>
+<li>C2_C102.tif</li>
+<li>C1_C103.tif</li>
+<li>C2_C104.tif</li>
+<li>C1_C201.tif</li>
+<li>C2_C202.tif</li>
+<li>C1_C203.tif</li>
+<li>C2_C204.tif</li>
+</ul>
+<p>The above naming is bad, because the channel naming “C1” and “C2” (before the underscore) is part of the naming (after underscore), which will confuse the functions. Calling the channels “C1_” and “C2_” in <code>loadIMG</code> would fix the problem.</p>
+</div>
+</div>
+<div id="check-the-loaded-images" class="section level3">
+<h3>Check the loaded images</h3>
 <p>Check that the number of images are as expected:</p>
 <pre class="r"><code>print(img)</code></pre>
 <p>If the images has been loaded previously, we can use <code>findIMG</code> to get the paths:</p>
-<pre class="r"><code># img &lt;- findIMG(path)</code></pre>
+<pre class="r"><code>img &lt;- findIMG(path)</code></pre>
 <p>We test the dimensions of the loaded images to ensure they are as expected:</p>
 <pre class="r"><code>lapply(img, function(x) dim(readRDS(x)))</code></pre>
-<pre><code>## [[1]]
-## [1] 1178 1178   51
-## 
-## [[2]]
-## [1] 1178 1178   51
-## 
-## [[3]]
-## [1] 1178 1178   51
-## 
-## [[4]]
-## [1] 1178 1178   51</code></pre>
 <p><code>img</code> contains the paths for the RDS files, and this is the input for subsequent analyses.</p>
 </div>
+</div>
+<div id="thresholding" class="section level2">
+<h2>Thresholding</h2>
+<p>If the images has not been thresholded yet, they should be before further analysis.</p>
+<p><code>threshIMG</code> applies either Otsu’s threshold, BEM (<a href="https://www.nature.com/articles/s41598-018-31012-5" class="uri">https://www.nature.com/articles/s41598-018-31012-5</a>), or manual thresholds on the images. Use Otsu’s method if the intensity histogram is bimodal (two peaks), and use BEM if the intensity histogram peaks at zero.</p>
+<p>The output of <code>threshIMG</code> are the paths for the thresholded images, which can be used for further analysis.</p>
+<p>The default options in <code>threshIMG</code> is no threshold, so remember to choose a method!</p>
+<pre class="r"><code>imgT &lt;- threshIMG(img, method = &quot;Otsu&quot;)</code></pre>
+<p>You can use the mmand package to plot the output:</p>
+<pre class="r"><code># The 1 means image number 1
+# The 5 means layer number 5
+mmand::display(readRDS(imgT[1])[,,5])</code></pre>
+<p>We can run different algorithms on different channels by simply subsetting <code>img</code>:</p>
+<pre class="r"><code># Splitting by channels
+img.C0 &lt;- img[grep(&quot;C0&quot;,img)]
+img.C1 &lt;- img[grep(&quot;C1&quot;,img)]
+
+# Thresholding
+img.C0T &lt;- threshIMG(img.C0, method = &quot;Otsu&quot;)
+img.C1T &lt;- threshIMG(img.C1, method = &quot;BEM&quot;)
+
+# Combining
+img.T &lt;- c(img.C0T,img.C1T)</code></pre>
 </div>
 <div id="prepare-images-optional" class="section level2">
 <h2>Prepare images (optional)</h2>
