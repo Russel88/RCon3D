@@ -26,7 +26,7 @@ tiff_to_array <- function(channels,split,multi,multi.name) {
       message(paste("Loading image",f))
       
       # list the file paths
-      files <- dir(subdirs[f], ".tif", full.names = T)
+      files <- dir(subdirs[f], "\\.tif", full.names = T)
       
       cFiles <- list()
       
