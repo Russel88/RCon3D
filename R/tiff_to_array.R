@@ -47,7 +47,7 @@ tiff_to_array <- function(channels,split,multi,multi.name) {
     
   } else {
     
-    files <- dir(getwd(), ".tif", full.names = T)
+    files <- dir(getwd(), "\\.tif", full.names = T)
     
     for(f in 1:length(files)){
       
@@ -74,7 +74,7 @@ tiff_to_array <- function(channels,split,multi,multi.name) {
             cArray[cArray > 0] <- 0
             cArray[is.na(cArray)] <- 1
           }
-          saveRDS(cArray, file = gsub(".tif",paste0("_",multi.name[k],"_Array.R"),files[f]))
+          saveRDS(cArray, file = gsub("\\.ti[f]*",paste0("_",multi.name[k],"_Array.R"),files[f]))
         }
         
       } else {
@@ -96,7 +96,7 @@ tiff_to_array <- function(channels,split,multi,multi.name) {
           cArray[cArray > 0] <- 0
           cArray[is.na(cArray)] <- 1
         }
-        saveRDS(cArray, file = gsub(".tif","_Array.R",files[f]))
+        saveRDS(cArray, file = gsub("\\.ti[f]*","_Array.R",files[f]))
       }
     }
   }
