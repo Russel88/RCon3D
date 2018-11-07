@@ -36,7 +36,6 @@ threshIMG <- function(imgs, method = "Manual", cores = 1, breaks = 100, opt = 0.
     
     # Define functions
     BEM <- function(x, opt = 0.1, BEM.opt){
-      require(minpack.lm)
       bit8 <- TRUE
       if(max(x) <= 1){
         bit8 <- FALSE
