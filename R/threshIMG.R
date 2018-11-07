@@ -1,6 +1,6 @@
 #' Apply thresholding on image and save as RDS
 #'
-#' Thresholding
+#' A single threshold is found for each image/z-stack. 
 #' @param imgs The paths of array files; i.e. output from \code{loadIMG} or \code{findIMG} functions.
 #' @param method Either Manual, Otsu, or BEM
 #' @param cores Integer. Number of cores to use for parallel computing.
@@ -32,8 +32,8 @@ threshIMG <- function(imgs, method = "Manual", cores = 1, breaks = 100, opt = 0.
     registerDoSNOW(cl)
   }
   
-  res <- foreach(i=1:length(imgs), .options.snow = opts) %dopar% {
-    
+  res <- foreach(i=1:length(imgs), .options.snow = opts, .packages = "minpack.lm") %dopar% {
+   
     # Define functions
     BEM <- function(x, opt = 0.1, BEM.opt){
       bit8 <- TRUE
