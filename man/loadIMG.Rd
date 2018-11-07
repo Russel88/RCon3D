@@ -4,7 +4,8 @@
 \alias{loadIMG}
 \title{Load .tif images into R}
 \usage{
-loadIMG(path, channels, split = FALSE, multi = NULL, multi.name = NULL)
+loadIMG(path, channels, split = FALSE, multi = NULL,
+  multi.name = NULL)
 }
 \arguments{
 \item{path}{The path of either a folder with all .tif files to be loaded (if split=FALSE), or a folder where each image is in a separate subfolder with all z-stacks and channels in that folder (if split=TRUE)}
