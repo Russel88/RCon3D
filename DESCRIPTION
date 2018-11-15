@@ -10,9 +10,10 @@ Imports:
    mmand,
    tiff,
    fastmatch,
-   minpack.lm
+   minpack.lm,
+   reshape2
 Suggests:
-   rootSolve, rgl, reshape2
+   rootSolve, rgl
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true

@@ -11,6 +11,7 @@
 #' @param thresh Clumps smaller than this are not plotted (in pixels)
 #' @param thresm.m If TRUE will apply threshold to sizes in microns instead of pixels
 #' @keywords array image aggregate
+#' @import reshape2
 #' @export
 clumps_plot <- function(clumps.out, replica = 1, col = "agg", pwidth = NULL, zstep = NULL, center = NULL, radius = NULL, thresh = 0, thresh.m = FALSE){
   
@@ -30,6 +31,7 @@ clumps_plot <- function(clumps.out, replica = 1, col = "agg", pwidth = NULL, zst
     rem <- as.character(subsize[subsize$Size < thresh,"ID"])
   }
   M <- M[!M$value %in% rem,]
+  if(nrow(M) == 0) stop("Threshold too high! No aggregates left after thresholding")
   
   img.dims <- dim(clumps.out[[length(clumps.out)]][[replica]])
   
