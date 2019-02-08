@@ -34,6 +34,7 @@ quant <- function(imgs,channels,naming = NULL,cores = 1) {
     opts <- list(progress = progress)
     
     # Loop foreach image
+    k <- NULL
     qua <- foreach(k = 1:length(ch_files), .combine = rbind, .options.snow = opts) %dopar% {
 
       # Load RDS

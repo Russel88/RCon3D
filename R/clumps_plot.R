@@ -9,9 +9,10 @@
 #' @param center 3D coordinates (c(x,y,z)) of where to center circular outline
 #' @param radius Radius of the circular outline, in microns if pwidth and zstep are provided, else in pixels
 #' @param thresh Clumps smaller than this are not plotted (in pixels)
-#' @param thresm.m If TRUE will apply threshold to sizes in microns instead of pixels
+#' @param thresh.m If TRUE will apply threshold to sizes in microns instead of pixels
 #' @keywords array image aggregate
 #' @import reshape2
+#' @importFrom grDevices colorRamp rgb
 #' @export
 clumps_plot <- function(clumps.out, replica = 1, col = "agg", pwidth = NULL, zstep = NULL, center = NULL, radius = NULL, thresh = 0, thresh.m = FALSE){
   

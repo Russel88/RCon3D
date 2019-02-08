@@ -33,6 +33,7 @@ clumps_dist <- function(clumps.x, clumps.y = clumps.x, pwidth = 1, zstep = 1, co
   progress <- function(n) setTxtProgressBar(pb, n)
   opts <- list(progress = progress)
   
+  i <- NULL
   out <- foreach(i = 1:length(unique(clumps.x$Img)), .combine = rbind, .options.snow = opts) %dopar% {
     
     # Subset

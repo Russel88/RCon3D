@@ -50,6 +50,8 @@ xy_splits <- function(imgs,channels,do,upper.part=0.5,layer.start=NULL,cores=1) 
     
     cl <- makeCluster(cores)
     registerDoSNOW(cl)
+    
+    k <- NULL
     result.image <- foreach(k = 1:length(ch_files), .options.snow = pbopts) %dopar% {
       
       # Load RDS
@@ -88,6 +90,8 @@ xy_splits <- function(imgs,channels,do,upper.part=0.5,layer.start=NULL,cores=1) 
     pbopts <- list(progress = progress)
     cl <- makeCluster(cores)
     registerDoSNOW(cl)
+    
+    s <- NULL
     section.results <- foreach(s = 1:length(ch_files), .options.snow = pbopts) %dopar% {
   
       # Extract

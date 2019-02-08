@@ -1,4 +1,7 @@
-﻿RCon3D: Analyzing 3D confocal images of microbial biofilms/communities
+﻿[![Travis Build
+Status](https://travis-ci.org/Russel88/RCon3D.svg?branch=master)](https://travis-ci.org/Russel88/RCon3D)
+
+RCon3D: Analyzing 3D confocal images of microbial biofilms/communities
 ----------------------------------------------------------------------
 
 This is an R package for various 3D analyses on confocal images of

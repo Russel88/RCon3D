@@ -5,16 +5,20 @@ Authors@R: person("Jakob", "Russel", email = "russel2620@gmail.com", role = c("a
 Description: Various 3D analyses of confocal images. E.g. Quantification, co-aggregation and identifying 3D aggregates.
 Depends: R (>= 3.2.5)
 Imports:
+   stats,
+   utils,
    foreach,
    doSNOW,
    mmand,
    tiff,
    fastmatch,
    minpack.lm,
-   reshape2
+   reshape2,
+   graphics,
+   grDevices
 Suggests:
    rootSolve, rgl
-License: GPL (>= 3)
+License: GPL (>= 3) | file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1

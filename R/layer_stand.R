@@ -10,6 +10,8 @@
 
 layer_stand <- function(qua,trim=FALSE,layer.start=NULL){
   
+  i <- NULL
+  
   # Make Exp variable in qua dataframe
   if(length(colnames(qua)) > 4){
     cols <- colnames(qua)[5:length(colnames(qua))]

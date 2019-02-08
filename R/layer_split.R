@@ -22,6 +22,7 @@ layer_split <- function(qua,side.x,side.y,pt,add.t,add.b,channel=NULL,trim=FALSE
   qua$Exp <- do.call(paste, c(qua[cols], sep="_"))
   } else qua$Exp <- 1
   
+  i <- NULL
   LS <- foreach(i=unique(qua$Exp),.combine=rbind) %do% {
     
     Temp <- qua[qua$Exp == i,]

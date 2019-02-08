@@ -10,7 +10,8 @@
 #' @param BEM.opt List. A list of options for model fitting for the BEM method. Passed to the nlsLM function.
 #' @keywords array image
 #' @return Prints thresholds. saves thresholded RDS files and outputs the path for the thresholded images.
-#' @import foreach doSNOW minpack.lm
+#' @import foreach doSNOW minpack.lm stats utils
+#' @importFrom graphics hist.default
 #' @export
 
 threshIMG <- function(imgs, method = "Manual", cores = 1, breaks = 100, opt = 0.1, thresh = rep(0,length(imgs)), BEM.opt = list(start = list(a=-1e6, b=0.1, c=1e6), control = nls.lm.control(maxiter=1e3))) {
@@ -32,6 +33,7 @@ threshIMG <- function(imgs, method = "Manual", cores = 1, breaks = 100, opt = 0.
     registerDoSNOW(cl)
   }
   
+  i <- NULL
   res <- foreach(i=1:length(imgs), .options.snow = opts, .packages = "minpack.lm") %dopar% {
    
     # Define functions

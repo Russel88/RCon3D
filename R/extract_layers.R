@@ -11,6 +11,7 @@
 extract_layers <- function(splitdf,part,...){
 
   Split <- subset(splitdf,splitdf$Split == part,...)
+  i <- NULL
   Part <- foreach(i = unique(Split$Exp)) %do% {
     Temp <- Split[Split$Exp == i,]
     Llist <- c(min(as.numeric(Temp$Layer)):max(as.numeric(Temp$Layer)))

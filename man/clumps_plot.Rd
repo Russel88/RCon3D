@@ -25,7 +25,7 @@ clumps_plot(clumps.out, replica = 1, col = "agg", pwidth = NULL,
 
 \item{thresh}{Clumps smaller than this are not plotted (in pixels)}
 
-\item{thresm.m}{If TRUE will apply threshold to sizes in microns instead of pixels}
+\item{thresh.m}{If TRUE will apply threshold to sizes in microns instead of pixels}
 }
 \description{
 Provide pwidth and zstep to get true aspect ratio. Provide center and radius to draw a circular outline

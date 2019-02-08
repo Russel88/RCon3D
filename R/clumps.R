@@ -43,6 +43,7 @@ clumps <- function(imgs,channels,kern.neighbour=c(3,3,3),type.neighbour="box",ke
   progress <- function(n) setTxtProgressBar(pb, n)
   opts <- list(progress = progress)
 
+  k <- NULL
   res.list <- foreach(k = 1:length(ch_files.x), .options.snow = opts, .packages = "mmand") %dopar% {
     
     # Load

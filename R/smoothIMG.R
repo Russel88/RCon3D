@@ -25,6 +25,7 @@ smoothIMG <- function(imgs,kern.smooth=c(3,3,3),type.smooth="box",cores=1) {
   progress <- function(n) setTxtProgressBar(pb, n)
   opts <- list(progress = progress)
 
+  k <- NULL
   res.list <- foreach(k = 1:length(imgs), .options.snow = opts, .packages = "mmand") %dopar% {
     
     # Load
