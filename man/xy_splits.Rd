@@ -4,8 +4,7 @@
 \alias{xy_splits}
 \title{Analyses for each xy position}
 \usage{
-xy_splits(imgs, channels, do, upper.part = 0.5, layer.start = NULL,
-  cores = 1)
+xy_splits(imgs, channels, do, upper.part = 0.5, layer.start = NULL, cores = 1)
 }
 \arguments{
 \item{imgs}{The paths of array files; i.e. output from \code{loadIMG} or \code{findIMG} functions.}

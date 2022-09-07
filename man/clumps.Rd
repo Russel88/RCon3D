@@ -4,10 +4,22 @@
 \alias{clumps}
 \title{Find 3D aggregates/clumps}
 \usage{
-clumps(imgs, channels, kern.neighbour = c(3, 3, 3),
-  type.neighbour = "box", kern.smooth = NULL, type.smooth = "box",
-  layers = NULL, pwidth = NULL, zstep = NULL, naming = NULL,
-  coords = FALSE, thresh = 0, points = NULL, cores = 1)
+clumps(
+  imgs,
+  channels,
+  kern.neighbour = c(3, 3, 3),
+  type.neighbour = "box",
+  kern.smooth = NULL,
+  type.smooth = "box",
+  layers = NULL,
+  pwidth = NULL,
+  zstep = NULL,
+  naming = NULL,
+  coords = FALSE,
+  thresh = 0,
+  points = NULL,
+  cores = 1
+)
 }
 \arguments{
 \item{imgs}{The paths of array files; i.e. output from \code{loadIMG} or \code{findIMG} functions.}

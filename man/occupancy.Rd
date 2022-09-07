@@ -5,13 +5,36 @@
 \alias{occupancy.default}
 \title{3D Occupancy}
 \usage{
-occupancy(imgs, focal.channel, target.channel, size, npixel, R = 10,
-  dstep = 1, pwidth, zstep, cores = 1, kern.smooth = NULL,
-  layers = NULL, naming = NULL)
+occupancy(
+  imgs,
+  focal.channel,
+  target.channel,
+  size,
+  npixel,
+  R = 10,
+  dstep = 1,
+  pwidth,
+  zstep,
+  cores = 1,
+  kern.smooth = NULL,
+  layers = NULL,
+  naming = NULL
+)
 
-occupancy.default(imgs, focal.channel, target.channel, size, npixel,
-  dstep = 1, pwidth, zstep, cores = 1, kern.smooth = NULL,
-  layers = NULL, naming = NULL)
+occupancy.default(
+  imgs,
+  focal.channel,
+  target.channel,
+  size,
+  npixel,
+  dstep = 1,
+  pwidth,
+  zstep,
+  cores = 1,
+  kern.smooth = NULL,
+  layers = NULL,
+  naming = NULL
+)
 }
 \arguments{
 \item{imgs}{The paths of array files; i.e. output from \code{loadIMG} or \code{findIMG} functions.}

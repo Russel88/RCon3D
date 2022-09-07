@@ -4,8 +4,7 @@
 \alias{morphIMG}
 \title{Apply mathematical morphology kernel on image and save as RDS}
 \usage{
-morphIMG(imgs, morph = NULL, kern = c(3, 3, 3), type = "box",
-  cores = 1)
+morphIMG(imgs, morph = NULL, kern = c(3, 3, 3), type = "box", cores = 1)
 }
 \arguments{
 \item{imgs}{The paths of array files; i.e. output from \code{loadIMG} or \code{findIMG} functions.}

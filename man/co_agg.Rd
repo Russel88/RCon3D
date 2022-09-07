@@ -5,11 +5,34 @@
 \alias{co_agg.default}
 \title{3D co-aggregation}
 \usage{
-co_agg(imgs, channels, size, npixel, R = 10, dstep = 1, pwidth, zstep,
-  cores = 1, kern.smooth = NULL, layers = NULL, naming = NULL)
+co_agg(
+  imgs,
+  channels,
+  size,
+  npixel,
+  R = 10,
+  dstep = 1,
+  pwidth,
+  zstep,
+  cores = 1,
+  kern.smooth = NULL,
+  layers = NULL,
+  naming = NULL
+)
 
-co_agg.default(imgs, channels, size, npixel, dstep = 1, pwidth, zstep,
-  cores = 1, kern.smooth = NULL, layers = NULL, naming = NULL)
+co_agg.default(
+  imgs,
+  channels,
+  size,
+  npixel,
+  dstep = 1,
+  pwidth,
+  zstep,
+  cores = 1,
+  kern.smooth = NULL,
+  layers = NULL,
+  naming = NULL
+)
 }
 \arguments{
 \item{imgs}{The paths of array files; i.e. output from \code{loadIMG} or \code{findIMG} functions.}

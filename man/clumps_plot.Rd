@@ -4,9 +4,17 @@
 \alias{clumps_plot}
 \title{Plot 3D aggregates}
 \usage{
-clumps_plot(clumps.out, replica = 1, col = "agg", pwidth = NULL,
-  zstep = NULL, center = NULL, radius = NULL, thresh = 0,
-  thresh.m = FALSE)
+clumps_plot(
+  clumps.out,
+  replica = 1,
+  col = "agg",
+  pwidth = NULL,
+  zstep = NULL,
+  center = NULL,
+  radius = NULL,
+  thresh = 0,
+  thresh.m = FALSE
+)
 }
 \arguments{
 \item{clumps.out}{Output from \code{clumps}}

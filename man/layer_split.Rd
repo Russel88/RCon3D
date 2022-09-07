@@ -4,8 +4,17 @@
 \alias{layer_split}
 \title{Split quantification in Top, Middle and Bottom}
 \usage{
-layer_split(qua, side.x, side.y, pt, add.t, add.b, channel = NULL,
-  trim = FALSE, layer.start = NULL)
+layer_split(
+  qua,
+  side.x,
+  side.y,
+  pt,
+  add.t,
+  add.b,
+  channel = NULL,
+  trim = FALSE,
+  layer.start = NULL
+)
 }
 \arguments{
 \item{qua}{A dataframe from the \code{quant} function}

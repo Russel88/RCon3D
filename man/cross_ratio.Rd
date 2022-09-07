@@ -5,13 +5,36 @@
 \alias{cross_ratio.default}
 \title{3D cross-ratio}
 \usage{
-cross_ratio(imgs, focal.channel, target.channels, size, npixel, R = 10,
-  dstep = 1, pwidth, zstep, cores = 1, kern.smooth = NULL,
-  layers = NULL, naming = NULL)
+cross_ratio(
+  imgs,
+  focal.channel,
+  target.channels,
+  size,
+  npixel,
+  R = 10,
+  dstep = 1,
+  pwidth,
+  zstep,
+  cores = 1,
+  kern.smooth = NULL,
+  layers = NULL,
+  naming = NULL
+)
 
-cross_ratio.default(imgs, focal.channel, target.channels, size, npixel,
-  dstep = 1, pwidth, zstep, cores = 1, kern.smooth = NULL,
-  layers = NULL, naming = NULL)
+cross_ratio.default(
+  imgs,
+  focal.channel,
+  target.channels,
+  size,
+  npixel,
+  dstep = 1,
+  pwidth,
+  zstep,
+  cores = 1,
+  kern.smooth = NULL,
+  layers = NULL,
+  naming = NULL
+)
 }
 \arguments{
 \item{imgs}{The paths of array files; i.e. output from \code{loadIMG} or \code{findIMG} functions.}

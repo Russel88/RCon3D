@@ -4,10 +4,16 @@
 \alias{threshIMG}
 \title{Apply thresholding on image and save as RDS}
 \usage{
-threshIMG(imgs, method = "Manual", cores = 1, breaks = 100,
-  opt = 0.1, thresh = rep(0, length(imgs)), BEM.opt = list(start =
-  list(a = -1e+06, b = 0.1, c = 1e+06), control = nls.lm.control(maxiter =
-  1000)))
+threshIMG(
+  imgs,
+  method = "Manual",
+  cores = 1,
+  breaks = 100,
+  opt = 0.1,
+  thresh = rep(0, length(imgs)),
+  BEM.opt = list(start = list(a = -1e+06, b = 0.1, c = 1e+06), control =
+    nls.lm.control(maxiter = 1000))
+)
 }
 \arguments{
 \item{imgs}{The paths of array files; i.e. output from \code{loadIMG} or \code{findIMG} functions.}

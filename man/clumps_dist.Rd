@@ -4,8 +4,7 @@
 \alias{clumps_dist}
 \title{Find distances between 3D aggregates/clumps}
 \usage{
-clumps_dist(clumps.x, clumps.y = clumps.x, pwidth = 1, zstep = 1,
-  cores = 1)
+clumps_dist(clumps.x, clumps.y = clumps.x, pwidth = 1, zstep = 1, cores = 1)
 }
 \arguments{
 \item{clumps.x}{Data.frame output from the \code{clumps} function (...$Aggregates)}

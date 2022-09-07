@@ -4,8 +4,7 @@
 \alias{smoothIMG}
 \title{Median smooth image and save as RDS}
 \usage{
-smoothIMG(imgs, kern.smooth = c(3, 3, 3), type.smooth = "box",
-  cores = 1)
+smoothIMG(imgs, kern.smooth = c(3, 3, 3), type.smooth = "box", cores = 1)
 }
 \arguments{
 \item{imgs}{The paths of array files; i.e. output from \code{loadIMG} or \code{findIMG} functions.}

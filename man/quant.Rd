@@ -4,7 +4,7 @@
 \alias{quant}
 \title{Quantifies the pixels in images}
 \usage{
-quant(imgs, channels, naming = NULL, cores = 1)
+quant(imgs, channels, naming = NULL, cores = 1, axis = 3)
 }
 \arguments{
 \item{imgs}{The paths of array files; i.e. output from \code{loadIMG} or \code{findIMG} functions.}
@@ -14,12 +14,14 @@ quant(imgs, channels, naming = NULL, cores = 1)
 \item{naming}{Optional. Add metadata to the output dataframe by looking through names of array files. Should be a list of character vectors, each list element will be added as a variable. Example: naming=list(Time=c("T0","T1","T2")). The function inserts a variable called Time, and then looks through the names of the array files and inserts characters mathcing either T0, T1 or T2}
 
 \item{cores}{Number of cores for parallel computing}
+
+\item{axis}{Axis to aggregate over (1: x, 2: y, 3:z). Default 3 (z-axis)}
 }
 \value{
 A dataframe with number of pixels for each layer
 }
 \description{
-Quantifies the number of pixels for each channel in each layer (z-stack)
+Quantifies the number of pixels for each channel in any direction (default z-stack)
 }
 \keyword{array}
 \keyword{image}
