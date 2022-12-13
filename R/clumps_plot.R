@@ -21,7 +21,7 @@ clumps_plot <- function(clumps.out, replica = 1, col = "agg", pwidth = NULL, zst
   M <- M[!is.na(M$value),]
 
   # Remove by threshold
-  subsize <- clumps.out[[1]][clumps.out[[1]]$Img == unique(clumps.out[[1]]$Img)[1],]
+  subsize <- clumps.out[[1]][clumps.out[[1]]$Img == unique(clumps.out[[1]]$Img)[replica],]
   if(thresh.m){
     if("Size.micron" %in% colnames(subsize)){
       rem <- as.character(subsize[subsize$Size.micron < thresh,"ID"])
